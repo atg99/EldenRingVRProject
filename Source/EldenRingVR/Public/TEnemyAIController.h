@@ -29,7 +29,15 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UAIPerceptionComponent* aiPercep;
 
+	UPROPERTY(EditAnywhere)
+	APawn* playerPawn;
+
+	UPROPERTY()
+	bool bPlayerDetacted;
 public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	
 	UFUNCTION()
 	void OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus);
 };

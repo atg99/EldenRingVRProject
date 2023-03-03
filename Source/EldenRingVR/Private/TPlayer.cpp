@@ -29,6 +29,6 @@ void ATPlayer::Tick(float DeltaTime)
 void ATPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
 }
 
