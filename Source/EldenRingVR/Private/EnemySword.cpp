@@ -5,6 +5,7 @@
 
 #include "EnemyBase.h"
 #include "TPlayer.h"
+#include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -19,14 +20,18 @@ AEnemySword::AEnemySword()
 	if (TempMesh.Succeeded()) {
 		sword->SetSkeletalMesh(TempMesh.Object);
 	}
+
+	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("boxComp"));
+	boxComp->SetupAttachment(sword);
+	boxComp->SetCollisionProfileName(FName("EnemyWeaponOverlap"));
 }
 
 // Called when the game starts or when spawned
 void AEnemySword::BeginPlay()
 {
 	Super::BeginPlay();
-
-	sword->OnComponentBeginOverlap.AddDynamic(this, &AEnemySword::SwordBeginOverlap);
+	
+	boxComp->OnComponentBeginOverlap.AddDynamic(this, &AEnemySword::SwordBeginOverlap);
 	
 }
 
@@ -41,13 +46,15 @@ void AEnemySword::SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//플레이어에게 칼이 닿았다
-	if(onwerEnemy->playerPawn == OtherActor)
+	ATPlayer* player0 = Cast<ATPlayer>(OtherActor);
+	if(player0)
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("PlayerHit")));
 		//데미지 함수
 
 		//플레이어 임펙트
+		WeaponTrace();
 		
 	}
 }

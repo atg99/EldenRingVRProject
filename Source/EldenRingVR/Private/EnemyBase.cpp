@@ -23,7 +23,7 @@ void AEnemyBase::BeginPlay()
 	AEnemySword* sword = Cast<AEnemySword>(weapon->GetChildActor());
 	if(sword)
 	{
-		sword->onwerEnemy = this;
+		sword->ownerEnemy = this;
 	}
 	playerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
