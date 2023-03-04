@@ -30,4 +30,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UBossAttackPattern* BossPattern;
+	
+	
 };

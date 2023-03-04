@@ -3,6 +3,9 @@
 
 #include "Boss.h"
 #include "BossAttackPattern.h"
+#include "BossAIController.h"
+
+
 
 // Sets default values
 ABoss::ABoss()
@@ -11,12 +14,18 @@ ABoss::ABoss()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BossPattern = CreateDefaultSubobject<UBossAttackPattern>(TEXT("BossPattern"));
+
+	AIControllerClass = ABossAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
+
 }
 
 // Called when the game starts or when spawned
 void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 

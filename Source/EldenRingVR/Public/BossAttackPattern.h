@@ -36,9 +36,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void LocationSet();
 	UFUNCTION(BlueprintCallable)
+		void RotationSet();
+	UFUNCTION(BlueprintCallable)
 		void JumpAttack(float time);
 	UFUNCTION(BlueprintCallable)
 		void TailAttack(float time);
+	UFUNCTION(BlueprintCallable)
+		void BackStep(float time);
 
 
 	float Speed = 0.01f;
@@ -47,14 +51,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Excel = 0.0005f;
 	float Rate = 0.1f;
-	float Distance = 1100;
+	float JumpAttackDistance = 1100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BackStepDistance = 1000;
 
 	FVector BossLocation;
 	FVector TargetLocation;
+	FVector HeadToTargetV;
 	FRotator BossRotation;
+	FRotator TargetRotation;
+	FRotator HeadToTargetR;
+
+	float Timer = 0;
 
 	bool IsJumpAttack;
+	bool IsTailAttack;
+	bool IsBackStep;
+
 	bool IsLocationReset;
+	bool IsRotationReset;
 	
 	int32 TailAttackCount = 0;
 };
