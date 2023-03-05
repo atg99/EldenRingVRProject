@@ -6,6 +6,8 @@
 #include "EnemySword.h"
 #include "TEnemyAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -34,7 +36,7 @@ void AEnemyBase::BeginPlay()
 
 	GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
 	
-	ATEnemyAIController* con = Cast<ATEnemyAIController>(GetController());
+	con = Cast<ATEnemyAIController>(GetController());
 	//con->aiBehavior = behaviorTree;
 	
 	AEnemySword* sword = Cast<AEnemySword>(weapon->GetChildActor());
@@ -43,6 +45,9 @@ void AEnemyBase::BeginPlay()
 		sword->ownerEnemy = this;
 	}
 	playerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+	bDecrease = false;
+	bIncrease = false;
 }
 
 // Called every frame
@@ -50,6 +55,25 @@ void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// if(bDecrease)
+	// {
+	// 	//속도를 천천히 줄인다
+	// 	GetCharacterMovement()->MaxWalkSpeed = FMath::Lerp(600, eSpeed, DeltaTime*time);
+	// 	if(GetCharacterMovement()->MaxWalkSpeed <= eSpeed)
+	// 	{
+	// 		GetCharacterMovement()->MaxWalkSpeed = eSpeed;
+	// 		bDecrease = false;
+	// 	}
+	// }
+	// else if(bIncrease)
+	// {
+	// 	GetCharacterMovement()->MaxWalkSpeed = FMath::Lerp(300, eSpeed, DeltaTime*time);
+	// 	if(GetCharacterMovement()->MaxWalkSpeed >= eSpeed)
+	// 	{
+	// 		GetCharacterMovement()->MaxWalkSpeed = eSpeed;
+	// 		bIncrease = false;
+	// 	}
+	// }
 }
 
 // Called to bind functionality to input
@@ -62,5 +86,77 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void AEnemyBase::ChangeSpeed(float speed)
 {
 	GetCharacterMovement()->MaxWalkSpeed = speed;
+}
+
+void AEnemyBase::DeathAction()
+{
+	PlayAnimMontage(enemyAnim, 1, TEXT("Death"));
+}
+
+void AEnemyBase::SetRagdoll()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AEnemySword* sword = Cast<AEnemySword>(weapon->GetChildActor());
+	sword->boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	
+	sword->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	
+	sword->sword->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	
+	sword->sword->SetSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+}
+
+void AEnemyBase::DamageReact_F()
+{
+	PlayAnimMontage(enemyAnim, 1, TEXT("HitF"));
+}
+
+void AEnemyBase::AttackPatten1()
+{
+	PlayAnimMontage(enemyAnim, 1, TEXT("Attack1"));
+}
+
+void AEnemyBase::AttackPatten2()
+{
+	PlayAnimMontage(enemyAnim, 1, TEXT("Attack2"));
+}
+
+void AEnemyBase::BattleStart()
+{
+	PlayAnimMontage(enemyAnim, 1, TEXT("BattleStart"));
+}
+
+void AEnemyBase::DecreaseSpeed(float len, float speed)
+{
+	// len 에 deltaTime을 곱한다
+	time = len;
+	eSpeed = speed;
+	bDecrease = true;
+}
+
+void AEnemyBase::IncreaseSpeed(float len, float speed)
+{
+	// len 에 deltaTime을 곱한다
+	time = len;
+	eSpeed = speed;
+	bIncrease = true;
+}
+
+void AEnemyBase::OnDamaged(float damage)
+{
+	enemyHP -= damage;
+	con->SetbHitValue();
+	if(enemyHP <= 0)
+	{
+		EnemyDie();
+	}
+}
+
+void AEnemyBase::EnemyDie()
+{
+	con->SetbDieValue();
 }
 

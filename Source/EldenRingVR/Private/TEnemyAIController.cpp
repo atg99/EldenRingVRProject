@@ -23,7 +23,7 @@ ATEnemyAIController::ATEnemyAIController()
 void ATEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	aiPercep->OnTargetPerceptionUpdated.AddDynamic(this, &ATEnemyAIController::OnTargetUpdate);
 
 	playerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
@@ -49,19 +49,17 @@ void ATEnemyAIController::Tick(float DeltaTime)
 		GetBlackboardComponent()->SetValueAsObject(FName("Player"), playerPawn);
 		GetPawn()->SetActorRotation(FRotator(0,(playerPawn->GetActorLocation()-GetPawn()->GetActorLocation()).Rotation().Yaw,0));
 	}
-	
-
 }
 
 void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
 {
 	//감지한 자극의 종류를 문자열로 저장한다
 	FString s =UKismetSystemLibrary::GetClassDisplayName(UAIPerceptionSystem::GetSenseClassForStimulus(this, Stimulus));
-
+	//Stimulus.SetExpirationAge(3);
+	//Stimulus.AgeStimulus()
 	if(s == "AISense_Sight")
 	{
 		if (Stimulus.WasSuccessfullySensed()&& Actor->ActorHasTag(TEXT("Player"))) {
-			//GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), Actor->GetActorLocation());
 			//플레이어 감지가 참
 			bPlayerDetacted = true;
 			if (GEngine)
@@ -69,20 +67,57 @@ void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
 		
 		}
 		//플레이어가 아닌것을 보아도 유지
-		else if(Stimulus.WasSuccessfullySensed())
+		else if(Stimulus.WasSuccessfullySensed() && !Actor->ActorHasTag(TEXT("Player")))
 		{
-		
+			ResetPlayerValue();
 		}
+		//Stimulus.IsExpired() == true
 		else {
 			//플레이어의 값을 초기화한다
-			GetBlackboardComponent()->ClearValue(TEXT("Player"));
+			//FTimerHandle TimerHandle_ResetPlayerValue;
+			//GetWorldTimerManager().SetTimer(TimerHandle_ResetPlayerValue, this, &ATEnemyAIController::ResetPlayerValue, 2.0f, false);
 			//감지가 안되면 거짓이 된다
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("else")));
-			bPlayerDetacted = false;
+			//bPlayerDetacted = false;
 		}
 	}
 	
 }
+
+void ATEnemyAIController::MoveToPlayer()
+{
+	EPathFollowingRequestResult::Type result = MoveToActor(playerPawn);
+}
+
+void ATEnemyAIController::StopMoveTo()
+{
+	StopMovement();
+}
+
+void ATEnemyAIController::ResetPlayerValue()
+{
+	GetBlackboardComponent()->ClearValue(TEXT("Player"));
+	bPlayerDetacted = false;
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Reset player value")));
+}
+
+void ATEnemyAIController::SetbHitValue()
+{
+	GetBlackboardComponent()->SetValueAsBool(TEXT("bHit"), true);
+}
+
+void ATEnemyAIController::ClearbHitValue()
+{
+	GetBlackboardComponent()->SetValueAsBool(TEXT("bHit"), false);
+}
+
+void ATEnemyAIController::SetbDieValue()
+{
+	GetBlackboardComponent()->SetValueAsBool(TEXT("bDie"), true);
+}
+
+
 
 

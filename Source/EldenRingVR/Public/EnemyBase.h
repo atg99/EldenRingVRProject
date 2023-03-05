@@ -40,4 +40,59 @@ public:
 
 	UFUNCTION()
 	virtual void ChangeSpeed(float speed);
+
+	UFUNCTION()
+	void DeathAction();
+
+	UFUNCTION()
+	void SetRagdoll();
+	
+	UFUNCTION()
+	void DamageReact_F();
+	
+	UFUNCTION()
+	void AttackPatten1();
+
+	UFUNCTION()
+	void AttackPatten2();
+
+	UFUNCTION()
+	void BattleStart();
+
+	//이 값이 변하면 이속 변경
+	UPROPERTY()
+	bool bDecrease;
+
+	UPROPERTY()
+	bool bIncrease;
+	
+	UFUNCTION()
+	void DecreaseSpeed(float len, float speed);
+	
+	UFUNCTION()
+	void IncreaseSpeed(float len, float speed);
+
+	UFUNCTION(BlueprintCallable)
+	void OnDamaged(float damage);
+	
+	UFUNCTION()
+	void EnemyDie();
+private:
+
+	UPROPERTY()
+	class ATEnemyAIController* con;
+	
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* enemyAnim;
+
+	UPROPERTY()
+	float time = 1;
+
+	UPROPERTY()
+	float eSpeed;
+
+	UPROPERTY()
+	float enemyHP = 100;
 };
+
+

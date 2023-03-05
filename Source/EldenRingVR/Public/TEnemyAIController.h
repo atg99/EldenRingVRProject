@@ -45,7 +45,29 @@ public:
 
 	UPROPERTY(EditAnywhere) 
 	class UBehaviorTree* aiBehavior;
+
+	UPROPERTY()
+	bool bHit = false;
 	
 	UFUNCTION()
 	virtual void OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus);
+
+	UFUNCTION()
+	void MoveToPlayer();
+
+	UFUNCTION()
+	void StopMoveTo();
+
+	UFUNCTION()
+	void ResetPlayerValue();
+
+	UFUNCTION()
+	void SetbHitValue();
+	
+	UFUNCTION()
+	void ClearbHitValue();
+
+	UFUNCTION()
+	void SetbDieValue();
+	
 };
