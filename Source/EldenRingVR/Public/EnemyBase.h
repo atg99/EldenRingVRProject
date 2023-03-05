@@ -29,6 +29,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UChildActorComponent* weapon;
 
+	//UPROPERTY(EditAnywhere)
+	//class UAIPerceptionComponent* aiPercep;
+
+	//UPROPERTY(EditAnywhere)
+	//class UBehaviorTree* behaviorTree;
+	
 	UPROPERTY(EditAnywhere)
 	APawn* playerPawn;
+
+	UFUNCTION()
+	virtual void ChangeSpeed(float speed);
 };

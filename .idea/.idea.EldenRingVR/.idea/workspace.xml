@@ -5,7 +5,29 @@
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d3102999-2a9c-4fe0-8ef3-70588c3f0937" name="Changes" comment="" />
+    <list default="true" id="d3102999-2a9c-4fe0-8ef3-70588c3f0937" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EldenRingVR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EldenRingVR/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultGame.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultGame.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BossyEnemy/Animations/RootMotion/Attacks/Boss_Attack_Running_Simple_RM.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BossyEnemy/Animations/RootMotion/Attacks/Boss_Attack_Running_Simple_RM.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BossyEnemy/SkeletalMesh/SK_Mannequin_UE4_WithWeapon_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BossyEnemy/SkeletalMesh/SK_Mannequin_UE4_WithWeapon_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/Mannequin_UE4/Rigs/RTG_UE4Manny_UE5Manny.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/Mannequin_UE4/Rigs/RTG_UE4Manny_UE5Manny.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/AI/BB_TEnemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/AI/BB_TEnemy.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/AI/BP_TEnemyAIController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/AI/BP_TEnemyAIController.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/AI/BT_TEnemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/AI/BT_TEnemy.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_TEnemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_TEnemy.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_TPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_TPlayer.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_ThirdPersonElden.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_ThirdPersonElden.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/EnemyAnimation/BS_EnemyWalk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/EnemyAnimation/BS_EnemyWalk.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/TaeGunLevel.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/TaeGunLevel.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/VRTemplate/Maps/VRTemplateMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VRTemplate/Maps/VRTemplateMap.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/EldenRingVR.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/EldenRingVR.Build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyBase.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/TEnemyAIController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/TEnemyAIController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyBase.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/TEnemyAIController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/TEnemyAIController.h" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,9 +51,9 @@
   },
   &quot;keyToStringList&quot;: {
     &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\SBAuser\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\SBAuser\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\SBAuser\\AppData\\Local\\Symbols\\src&quot;
+      &quot;C:\\Users\\atg99\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\atg99\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\atg99\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
 }</component>
@@ -161,6 +183,9 @@
       <workItem from="1677831642266" duration="4729000" />
       <workItem from="1677839391097" duration="3717000" />
       <workItem from="1677845501926" duration="1660000" />
+      <workItem from="1677902186388" duration="802000" />
+      <workItem from="1677906093784" duration="21250000" />
+      <workItem from="1677985741054" duration="8921000" />
     </task>
     <servers />
   </component>
@@ -170,5 +195,16 @@
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/EldenRingVR/Private/SwordedEnemyAICon.cpp</url>
+          <line>22</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

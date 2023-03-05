@@ -9,6 +9,7 @@
 /**
  * 
  */
+
 UCLASS()
 class ELDENRINGVR_API ATEnemyAIController : public AAIController
 {
@@ -21,11 +22,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
-
-	UPROPERTY(EditAnywhere) 
-	class UBehaviorTree* aiBehavior;
-
 	UPROPERTY(EditAnywhere)
 	class UAIPerceptionComponent* aiPercep;
 
@@ -33,11 +29,23 @@ private:
 	APawn* playerPawn;
 
 	UPROPERTY()
-	bool bPlayerDetacted;
+	bool bPlayerDetacted = false;
+
+	UPROPERTY()
+	class UBehaviorTree* BT;
+
+	UPROPERTY()
+	class UBlackboardData* BB;
+
+private:
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere) 
+	class UBehaviorTree* aiBehavior;
 	
 	UFUNCTION()
-	void OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus);
+	virtual void OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus);
 };

@@ -4,7 +4,11 @@
 #include "EnemyBase.h"
 
 #include "EnemySword.h"
+#include "TEnemyAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AIPerceptionComponent.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -14,12 +18,25 @@ AEnemyBase::AEnemyBase()
 
 	weapon = CreateDefaultSubobject<UChildActorComponent>(TEXT("weapon"));
 	weapon->SetupAttachment(GetMesh(), FName("sword"));
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	//behaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("behavior"));
+	//AIControllerClass = ATEnemyAIController::StaticClass();;
+
+	//aiPercep = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 }
 
 // Called when the game starts or when spawned
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
+	
+	ATEnemyAIController* con = Cast<ATEnemyAIController>(GetController());
+	//con->aiBehavior = behaviorTree;
+	
 	AEnemySword* sword = Cast<AEnemySword>(weapon->GetChildActor());
 	if(sword)
 	{
@@ -40,5 +57,10 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AEnemyBase::ChangeSpeed(float speed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = speed;
 }
 
