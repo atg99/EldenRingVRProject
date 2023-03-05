@@ -48,6 +48,9 @@ public:
 
 	UPROPERTY()
 	bool bHit = false;
+
+	UPROPERTY()
+	bool bNoClear;
 	
 	UFUNCTION()
 	virtual void OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus);
@@ -69,5 +72,8 @@ public:
 
 	UFUNCTION()
 	void SetbDieValue();
+
+	UFUNCTION()
+	void NoClearTimer();
 	
 };

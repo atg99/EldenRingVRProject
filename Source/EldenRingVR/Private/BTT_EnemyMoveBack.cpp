@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "EnemyBase.h"
+#include "TEnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -21,8 +22,12 @@ EBTNodeResult::Type UBTT_EnemyMoveBack::ExecuteTask(UBehaviorTreeComponent& Owne
 	{
 		return EBTNodeResult::Failed;
 	}
-	AEnemyBase* enemy = Cast<AEnemyBase>(OwnerComp.GetAIOwner()->GetPawn());
-	//
+	auto aiCon = Cast<ATEnemyAIController>(OwnerComp.GetAIOwner());
+	aiCon->bNoClear = true;
+	aiCon->NoClearTimer();
+	
+	AEnemyBase* enemy = Cast<AEnemyBase>(aiCon->GetPawn());
+	
 	FVector enemyLoc =  enemy->GetActorLocation();
 	// //적을 마주보는 뒤쪽으로 이동한다
 	// EPathFollowingRequestResult::Type result = OwnerComp.GetAIOwner()->MoveToLocation(enemyLoc - enemy->GetActorForwardVector()*300, 10);

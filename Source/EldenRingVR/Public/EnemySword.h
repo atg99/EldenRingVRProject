@@ -32,9 +32,15 @@ public:
 	UPROPERTY()
 	class AEnemyBase* ownerEnemy;
 	
+	UPROPERTY()
+	bool bDoOnce;
+	
 	UFUNCTION()
 	void SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+	//UFUNCTION()
+	//void SwordEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 	UFUNCTION()
 	void WeaponTrace();
 };

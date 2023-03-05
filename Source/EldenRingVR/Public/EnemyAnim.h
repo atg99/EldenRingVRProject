@@ -40,5 +40,11 @@ private:
 	
 	UFUNCTION()
 	void AnimNotify_SetRagdoll();
+
+	UFUNCTION()
+	void AnimNotify_AttackT();
+
+	UFUNCTION()
+	void AnimNotify_AttackF();
 	
 };

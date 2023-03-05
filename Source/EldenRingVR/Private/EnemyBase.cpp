@@ -37,9 +37,10 @@ void AEnemyBase::BeginPlay()
 	GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
 	
 	con = Cast<ATEnemyAIController>(GetController());
+	
 	//con->aiBehavior = behaviorTree;
 	
-	AEnemySword* sword = Cast<AEnemySword>(weapon->GetChildActor());
+	sword = Cast<AEnemySword>(weapon->GetChildActor());
 	if(sword)
 	{
 		sword->ownerEnemy = this;
@@ -96,7 +97,7 @@ void AEnemyBase::DeathAction()
 void AEnemyBase::SetRagdoll()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	AEnemySword* sword = Cast<AEnemySword>(weapon->GetChildActor());
+	
 	sword->boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	
@@ -158,5 +159,10 @@ void AEnemyBase::OnDamaged(float damage)
 void AEnemyBase::EnemyDie()
 {
 	con->SetbDieValue();
+}
+
+void AEnemyBase::SetSwordDoOnce()
+{
+	sword->bDoOnce = false;
 }
 

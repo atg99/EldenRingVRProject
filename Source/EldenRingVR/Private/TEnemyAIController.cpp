@@ -73,6 +73,12 @@ void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
 		}
 		//Stimulus.IsExpired() == true
 		else {
+			//뒤로 움직이는 동안은 초기화 안함
+			if(bNoClear)
+			{
+				return;
+			}
+			ResetPlayerValue();
 			//플레이어의 값을 초기화한다
 			//FTimerHandle TimerHandle_ResetPlayerValue;
 			//GetWorldTimerManager().SetTimer(TimerHandle_ResetPlayerValue, this, &ATEnemyAIController::ResetPlayerValue, 2.0f, false);
@@ -116,6 +122,14 @@ void ATEnemyAIController::ClearbHitValue()
 void ATEnemyAIController::SetbDieValue()
 {
 	GetBlackboardComponent()->SetValueAsBool(TEXT("bDie"), true);
+}
+
+void ATEnemyAIController::NoClearTimer()
+{
+	FTimerHandle TimerHandle_NoClear;
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle_NoClear, FTimerDelegate::CreateLambda([this]()->void {bNoClear = true;}), 4, false);
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle_NoClear, FTimerDelegate::CreateLambda([this]()->void {bNoClear = true;}), 4, false);
+	GetWorldTimerManager().SetTimer(TimerHandle_NoClear, FTimerDelegate::CreateLambda([this]()->void {bNoClear = false;}), 4, false);
 }
 
 

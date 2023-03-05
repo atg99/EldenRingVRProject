@@ -38,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	APawn* playerPawn;
 
+	UPROPERTY()
+	bool bAttack;
+
 	UFUNCTION()
 	virtual void ChangeSpeed(float speed);
 
@@ -77,10 +80,16 @@ public:
 	
 	UFUNCTION()
 	void EnemyDie();
+
+	UFUNCTION()
+	void SetSwordDoOnce();
 private:
 
 	UPROPERTY()
 	class ATEnemyAIController* con;
+	
+	UPROPERTY()
+	class AEnemySword* sword;
 	
 	UPROPERTY(EditAnywhere)
 	class UAnimMontage* enemyAnim;

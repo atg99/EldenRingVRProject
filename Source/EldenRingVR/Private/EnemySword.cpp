@@ -32,6 +32,7 @@ void AEnemySword::BeginPlay()
 	Super::BeginPlay();
 	
 	boxComp->OnComponentBeginOverlap.AddDynamic(this, &AEnemySword::SwordBeginOverlap);
+	//boxComp->OnComponentEndOverlap.AddDynamic(this, &AEnemySword::SwordEndOverlap);
 	
 }
 
@@ -45,6 +46,10 @@ void AEnemySword::Tick(float DeltaTime)
 void AEnemySword::SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if(!ownerEnemy->bAttack||bDoOnce)
+	{
+		return;
+	}
 	//플레이어에게 칼이 닿았다
 	ATPlayer* player0 = Cast<ATPlayer>(OtherActor);
 	if(player0)
@@ -55,9 +60,21 @@ void AEnemySword::SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 		//플레이어 임펙트
 		WeaponTrace();
+
+		bDoOnce = true;
 		
 	}
 }
+
+// void AEnemySword::SwordEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+// 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+// {
+// 	ATPlayer* player0 = Cast<ATPlayer>(OtherActor);
+// 	if(player0)
+// 	{
+// 		bDoOnce = false;
+// 	}
+// }
 
 void AEnemySword::WeaponTrace()
 {

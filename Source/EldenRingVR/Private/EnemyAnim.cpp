@@ -40,3 +40,14 @@ void UEnemyAnim::AnimNotify_SetRagdoll()
 {
 	enemy->SetRagdoll();
 }
+
+void UEnemyAnim::AnimNotify_AttackT()
+{
+	enemy->bAttack = true;
+	enemy->SetSwordDoOnce();
+}
+
+void UEnemyAnim::AnimNotify_AttackF()
+{
+	enemy->bAttack = false;
+}
