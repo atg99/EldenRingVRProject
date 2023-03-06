@@ -83,6 +83,9 @@ public:
 
 	UFUNCTION()
 	void SetSwordDoOnce();
+
+	UFUNCTION()
+	void Dash(float force);
 private:
 
 	UPROPERTY()

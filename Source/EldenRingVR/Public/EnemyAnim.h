@@ -46,5 +46,7 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_AttackF();
-	
+
+	UFUNCTION()
+	void AnimNotify_Dash();
 };

@@ -5,25 +5,7 @@
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d3102999-2a9c-4fe0-8ef3-70588c3f0937" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EldenRingVR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EldenRingVR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/BossyEnemy/SkeletalMesh/SK_Mannequin_UE4_WithWeapon_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BossyEnemy/SkeletalMesh/SK_Mannequin_UE4_WithWeapon_Skeleton.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Architecture/Floor_400x400.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TaeGun/AI/BT_TEnemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/AI/BT_TEnemy.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_ThirdPersonElden.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_ThirdPersonElden.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TaeGun/EnemyAnimation/EnemyAnimMontage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/EnemyAnimation/EnemyAnimMontage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/BTT_EnemyMoveBack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/BTT_EnemyMoveBack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyAnim.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyAnim.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemySword.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemySword.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/TEnemyAIController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/TEnemyAIController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/BTT_EnemyMoveBack.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/BTT_EnemyMoveBack.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyAnim.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyAnim.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemySword.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemySword.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/TEnemyAIController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/TEnemyAIController.h" afterDir="false" />
-    </list>
+    <list default="true" id="d3102999-2a9c-4fe0-8ef3-70588c3f0937" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,9 +29,9 @@
   },
   &quot;keyToStringList&quot;: {
     &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\atg99\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\atg99\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\atg99\\AppData\\Local\\Symbols\\src&quot;
+      &quot;C:\\Users\\SBAuser\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\SBAuser\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\SBAuser\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
 }</component>
@@ -184,6 +166,9 @@
       <workItem from="1677985741054" duration="8921000" />
       <workItem from="1678003035285" duration="29770000" />
       <workItem from="1678041329824" duration="3421000" />
+      <workItem from="1678074672189" duration="5000" />
+      <workItem from="1678074829903" duration="137000" />
+      <workItem from="1678075208283" duration="6844000" />
     </task>
     <servers />
   </component>

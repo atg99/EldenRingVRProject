@@ -49,6 +49,15 @@ void ATEnemyAIController::Tick(float DeltaTime)
 		GetBlackboardComponent()->SetValueAsObject(FName("Player"), playerPawn);
 		GetPawn()->SetActorRotation(FRotator(0,(playerPawn->GetActorLocation()-GetPawn()->GetActorLocation()).Rotation().Yaw,0));
 	}
+	
+	if(GetPawn()->GetDistanceTo(playerPawn) < 250)
+	{
+		GetBlackboardComponent()->SetValueAsBool(TEXT("bClose"), true);
+	}
+	else
+	{
+		GetBlackboardComponent()->SetValueAsBool(TEXT("bClose"), false);
+	}
 }
 
 void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
