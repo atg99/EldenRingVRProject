@@ -8,6 +8,10 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/Vector.h"
 #include "Math/Rotator.h"
+#include "BossAIController.h"
+#include "GameFramework/Pawn.h"
+#include "BehaviorTree/BlackBoardData.h"
+#include "BehaviorTree/BlackBoardComponent.h"
 
 
 // Sets default values for this component's properties
@@ -17,7 +21,8 @@ UBossAttackPattern::UBossAttackPattern()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
-	// ...
+	
+	
 }
 
 void UBossAttackPattern::InitializeComponent()
@@ -25,6 +30,9 @@ void UBossAttackPattern::InitializeComponent()
 	Super::InitializeComponent();
 
 	Boss = Cast<ABoss>(GetOwner());
+
+	
+
 }
 
 
@@ -39,6 +47,9 @@ void UBossAttackPattern::BeginPlay()
 	TargetLocation = Target->GetActorLocation();
 
 	BossRotation = Target->GetActorRotation();
+	
+
+
 
 }
 
@@ -47,6 +58,8 @@ void UBossAttackPattern::BeginPlay()
 void UBossAttackPattern::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+
 	if (IsJumpAttack)
 	{
 		JumpAttack(DeltaTime);
@@ -172,3 +185,4 @@ void UBossAttackPattern::BackStep(float time)
 		Timer = 0;
 	}
 }
+

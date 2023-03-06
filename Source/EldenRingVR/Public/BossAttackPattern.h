@@ -27,10 +27,10 @@ public:
 
 public:
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class ABoss* Boss;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class ATPlayer* Target;
 
 	UFUNCTION(BlueprintCallable)
@@ -43,7 +43,7 @@ public:
 		void TailAttack(float time);
 	UFUNCTION(BlueprintCallable)
 		void BackStep(float time);
-
+	
 
 	float Speed = 0.01f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -61,15 +61,26 @@ public:
 	FRotator BossRotation;
 	FRotator TargetRotation;
 	FRotator HeadToTargetR;
+	FVector JumpAttackLoc;
 
 	float Timer = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsJumpAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsTailAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsBackStep;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsLocationReset;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsRotationReset;
 	
 	int32 TailAttackCount = 0;
+
+
+
+
+
+
 };

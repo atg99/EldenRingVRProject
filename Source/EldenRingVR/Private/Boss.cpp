@@ -6,7 +6,6 @@
 #include "BossAIController.h"
 
 
-
 // Sets default values
 ABoss::ABoss()
 {
@@ -26,6 +25,9 @@ void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+	BossAI = Cast<ABossAIController>(GetController());
+	BossAI->TargetSet();
 	
 }
 

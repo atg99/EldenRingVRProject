@@ -26,5 +26,10 @@ public:
 	UPROPERTY()
 		class UBlackboardComponent* BlackboardComp;
 
-	static const FName TargetLocKey;
+
+	UPROPERTY()
+	class ABoss* OwnerBoss;
+
+	void TargetSet();
+
 };

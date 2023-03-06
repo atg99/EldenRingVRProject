@@ -30,6 +30,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UBossAttackPattern* BossPattern;
-	
+
+	UPROPERTY()
+		class ABossAIController* BossAI;
 	
 };

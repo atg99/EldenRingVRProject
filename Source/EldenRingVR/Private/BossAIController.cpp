@@ -5,9 +5,11 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackBoardData.h"
 #include "BehaviorTree/BlackBoardComponent.h"
+#include "Boss.h"
+#include "BossAttackPattern.h"
+#include "TPlayer.h"
 
 
-const FName ABossAIController::TargetLocKey(TEXT("TargetLoc"));
 
 ABossAIController::ABossAIController()
 {
@@ -21,16 +23,25 @@ ABossAIController::ABossAIController()
 	{
 		BTBoss = BT.Object;
 	}
+
 }
 
 void ABossAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
+	
 	if (UseBlackboard(BBBoss, BlackboardComp))
 	{
 		RunBehaviorTree(BTBoss);
-		//BlackboardComp->SetValueAsVector(TargetLocKey, InPawn->GetActorLocation());
-	}
+		
+		OwnerBoss = Cast<ABoss>(InPawn);
 	
+		
+	}
+}
+
+void ABossAIController::TargetSet()
+{
+	BlackboardComp->SetValueAsObject(TEXT("TargetKey"), OwnerBoss->BossPattern->Target);
 }
