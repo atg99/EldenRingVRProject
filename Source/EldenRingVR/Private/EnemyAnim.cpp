@@ -33,7 +33,7 @@ void UEnemyAnim::AnimNotify_BlendF()
 
 void UEnemyAnim::AnimNotify_ClearbHit()
 {
-	aICon->GetBlackboardComponent()->SetValueAsBool(FName("bHit"), false);
+	aICon->ClearbHitValue();
 }
 
 void UEnemyAnim::AnimNotify_SetRagdoll()
@@ -50,4 +50,9 @@ void UEnemyAnim::AnimNotify_AttackT()
 void UEnemyAnim::AnimNotify_AttackF()
 {
 	enemy->bAttack = false;
+}
+
+void UEnemyAnim::AnimNotify_Dash()
+{
+	enemy->Dash(700);
 }

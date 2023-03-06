@@ -122,7 +122,7 @@ void AEnemyBase::AttackPatten1()
 
 void AEnemyBase::AttackPatten2()
 {
-	PlayAnimMontage(enemyAnim, 1, TEXT("Attack2"));
+	PlayAnimMontage(enemyAnim, 1.5, TEXT("Attack2"));
 }
 
 void AEnemyBase::BattleStart()
@@ -149,11 +149,15 @@ void AEnemyBase::IncreaseSpeed(float len, float speed)
 void AEnemyBase::OnDamaged(float damage)
 {
 	enemyHP -= damage;
-	con->SetbHitValue();
+	
 	if(enemyHP <= 0)
 	{
 		EnemyDie();
+		return;
 	}
+	con->SetbHitValue();
+	con->StopMoveTo();
+	DamageReact_F();
 }
 
 void AEnemyBase::EnemyDie()
@@ -164,5 +168,10 @@ void AEnemyBase::EnemyDie()
 void AEnemyBase::SetSwordDoOnce()
 {
 	sword->bDoOnce = false;
+}
+
+void AEnemyBase::Dash(float force)
+{
+	LaunchCharacter(GetActorForwardVector()*force, true, false);
 }
 
