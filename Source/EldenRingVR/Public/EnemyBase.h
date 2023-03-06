@@ -86,6 +86,9 @@ public:
 
 	UFUNCTION()
 	void Dash(float force);
+
+	UFUNCTION(BlueprintCallable)
+	void Desmemberment(FName hitBone);
 private:
 
 	UPROPERTY()
@@ -105,6 +108,9 @@ private:
 
 	UPROPERTY()
 	float enemyHP = 100;
+
+	UPROPERTY(EditAnywhere)
+	class UMaterialInterface* bloodDecal;
 };
 
 

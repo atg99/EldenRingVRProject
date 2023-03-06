@@ -11,6 +11,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Materials/MaterialInterface.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -104,7 +107,7 @@ void AEnemyBase::SetRagdoll()
 	sword->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	
 	sword->sword->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	//GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	
 	sword->sword->SetSimulatePhysics(true);
 	GetMesh()->SetSimulatePhysics(true);
@@ -173,5 +176,40 @@ void AEnemyBase::SetSwordDoOnce()
 void AEnemyBase::Dash(float force)
 {
 	LaunchCharacter(GetActorForwardVector()*force, true, false);
+}
+
+void AEnemyBase::Desmemberment(FName hitBone)
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *hitBone.ToString()));
+	if(hitBone == "spine_02")
+	{
+		return;
+	}
+	
+	GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
+
+	if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
+		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" || hitBone == "head" || hitBone == "neck_01")
+	{
+		SetRagdoll();
+	}
+
+	FVector cam = UKismetMathLibrary::GetForwardVector(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->K2_GetActorRotation());
+	FVector camForward = cam * FMath::RandRange(100.f, 300.f);
+	FVector up = GetActorUpVector()*FMath::RandRange(50.f, 150.f);
+	FVector socketLoc = GetMesh()->GetSocketLocation(hitBone);
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->AddImpulseAtLocation(camForward + up, socketLoc, hitBone);
+
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	FHitResult result;
+	
+	GetWorld()->LineTraceSingleByChannel(result, socketLoc, socketLoc+FVector(0,0,-1)*1500, ECC_Visibility
+	, params);
+
+	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-63, -128, -128), result.Location, FVector(0,0,1).Rotation(), 60);
 }
 
