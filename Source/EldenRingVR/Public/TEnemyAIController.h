@@ -78,5 +78,10 @@ public:
 
 	UFUNCTION()
 	void SetbCrawl();
+
+	UFUNCTION()
+	void DisableBT();
+
+	
 	
 };

@@ -233,8 +233,11 @@ void AEnemyBase::Crawl()
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Crawlllllllllll")));
 	sword->SetRagdoll();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	ChangeSpeed(50);
-	con->SetbCrawl();
+	ChangeSpeed(500);
+	//con->SetbCrawl();
+
+	con->DisableBT();
+	con->MoveToPlayer();
 	PlayEnemyAnim(TEXT("Crawl"));
 }
 
