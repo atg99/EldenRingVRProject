@@ -101,15 +101,10 @@ void AEnemyBase::SetRagdoll()
 {
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
-	sword->boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	sword->SetRagdoll();
 	//weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	
-	sword->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-	
-	sword->sword->SetCollisionProfileName(TEXT("Ragdoll"));
-	//GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	
-	sword->sword->SetSimulatePhysics(true);
 	GetMesh()->SetSimulatePhysics(true);
 }
 
@@ -131,6 +126,11 @@ void AEnemyBase::AttackPatten2()
 void AEnemyBase::BattleStart()
 {
 	PlayAnimMontage(enemyAnim, 1, TEXT("BattleStart"));
+}
+
+void AEnemyBase::PlayEnemyAnim(FName session)
+{
+	PlayAnimMontage(enemyAnim, 1, session);
 }
 
 void AEnemyBase::DecreaseSpeed(float len, float speed)
@@ -187,17 +187,31 @@ void AEnemyBase::Desmemberment(FName hitBone)
 		return;
 	}
 	
-	GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
-
-	if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
+	
+	if(GetMesh()->IsSimulatingPhysics(hitBone))
+	{
+		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
+	}
+	else if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
 		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" || hitBone == "head" || hitBone == "neck_01")
 	{
-		SetRagdoll();
+		//SetRagdoll();
+		Crawl();
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(hitBone, true);
+		// FTimerHandle TimerHandle_Ragdoll;
+		// GetWorldTimerManager().SetTimer(TimerHandle_Ragdoll, FTimerDelegate::CreateLambda([this]()->void
+		// {
+		// 	GetMesh()->SetSimulatePhysics(false);	
+		// }), 0.2f, false);
+	}
+	else
+	{
+		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
 	}
 
 	FVector cam = UKismetMathLibrary::GetForwardVector(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->K2_GetActorRotation());
-	FVector camForward = cam * FMath::RandRange(100.f, 300.f);
-	FVector up = GetActorUpVector()*FMath::RandRange(50.f, 150.f);
+	FVector camForward = cam * FMath::RandRange(1000.f, 3000.f);
+	FVector up = GetActorUpVector()*FMath::RandRange(500.f, 1500.f);
 	FVector socketLoc = GetMesh()->GetSocketLocation(hitBone);
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -211,5 +225,16 @@ void AEnemyBase::Desmemberment(FName hitBone)
 	, params);
 
 	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-63, -128, -128), result.Location, FVector(0,0,1).Rotation(), 60);
+}
+
+void AEnemyBase::Crawl()
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Crawlllllllllll")));
+	sword->SetRagdoll();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ChangeSpeed(50);
+	con->SetbCrawl();
+	PlayEnemyAnim(TEXT("Crawl"));
 }
 

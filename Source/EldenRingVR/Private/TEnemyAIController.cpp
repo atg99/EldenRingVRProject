@@ -141,6 +141,11 @@ void ATEnemyAIController::NoClearTimer()
 	GetWorldTimerManager().SetTimer(TimerHandle_NoClear, FTimerDelegate::CreateLambda([this]()->void {bNoClear = false;}), 4, false);
 }
 
+void ATEnemyAIController::SetbCrawl()
+{
+	GetBlackboardComponent()->SetValueAsBool(TEXT("bCrawl"), true);
+}
+
 
 
 

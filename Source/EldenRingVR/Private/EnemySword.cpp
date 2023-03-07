@@ -103,3 +103,11 @@ void AEnemySword::WeaponTrace()
 	);
 }
 
+void AEnemySword::SetRagdoll()
+{
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	sword->SetCollisionProfileName(TEXT("Ragdoll"));
+	sword->SetSimulatePhysics(true);
+	boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
