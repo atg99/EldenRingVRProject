@@ -20,14 +20,7 @@ ABoss::ABoss()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	
 	FName RightHandSocket(TEXT("RightHandSocket"));
-	//Dagger = CreateDefaultSubobject<ADagger>(TEXT("Dagger"));
-	//ConstructorHelpers::FClassFinder<ADagger>BossDagger(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_Dagger.BP_Dagger_C'"));
-	//if (BossDagger.Succeeded())
-	//{
-	//	DaggerFac = BossDagger.Class;
-	//}
 	
-	//Dagger->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform, RightHandSocket);
 	Dagger = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapon_Pack/Skeletal_Mesh/SK_Dagger_1.SK_Dagger_1'"));
 	if (DaggerMesh.Succeeded())
@@ -56,10 +49,7 @@ void ABoss::BeginPlay()
 	BossAI->TargetSet();
 	BossAnimInst = Cast<UBossAnim>(GetMesh()->GetAnimInstance());
 
-	//FActorSpawnParameters SpawnParams;
-	//SpawnParams.Owner = this;
-	//Dagger = GetWorld()->SpawnActor<ADagger>(DaggerFac, FVector(-3.855936f, 89.917361f, 50.000000f), GetActorRotation(), SpawnParams);
-	//Dagger->AttachToActor(this, FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHandSocket"));
+	
 
 	BossPattern->DaggerAttackThrow1();
 
