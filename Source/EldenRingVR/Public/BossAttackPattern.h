@@ -32,6 +32,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class ATPlayer* Target;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class ADagger> DaggerFac;
+	UPROPERTY(EditAnywhere)
+	class ADagger* DaggerAct;
 
 	UFUNCTION(BlueprintCallable)
 		void LocationSet();
@@ -43,6 +47,13 @@ public:
 		void TailAttack(float time);
 	UFUNCTION(BlueprintCallable)
 		void BackStep(float time);
+	UFUNCTION(BlueprintCallable)
+		void DaggerAttackThrow1();
+	UFUNCTION(BlueprintCallable)
+		void DaggerAttackThrow2();	
+	UFUNCTION(BlueprintCallable)
+		void DaggerAttackThrow3();
+	
 	
 
 	float Speed = 0.01f;
@@ -75,6 +86,9 @@ public:
 	bool IsLocationReset;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsRotationReset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsDaggerThrow;
 	
 	int32 TailAttackCount = 0;
 

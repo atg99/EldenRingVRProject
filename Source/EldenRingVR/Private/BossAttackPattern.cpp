@@ -12,6 +12,11 @@
 #include "GameFramework/Pawn.h"
 #include "BehaviorTree/BlackBoardData.h"
 #include "BehaviorTree/BlackBoardComponent.h"
+#include "BossAnim.h"
+#include "Engine/World.h"
+
+#include "Dagger.h"
+
 
 
 // Sets default values for this component's properties
@@ -22,7 +27,11 @@ UBossAttackPattern::UBossAttackPattern()
 	PrimaryComponentTick.bCanEverTick = true;
 	bWantsInitializeComponent = true;
 	
-	
+	ConstructorHelpers::FClassFinder<ADagger>BossDagger(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_Dagger.BP_Dagger_C'"));
+	if (BossDagger.Succeeded())
+	{
+		DaggerFac = BossDagger.Class;
+	}
 }
 
 void UBossAttackPattern::InitializeComponent()
@@ -50,7 +59,6 @@ void UBossAttackPattern::BeginPlay()
 	
 
 
-
 }
 
 
@@ -76,6 +84,8 @@ void UBossAttackPattern::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		Timer += DeltaTime;
 		BackStep(Timer);
 	}
+	
+	
 }
 
 void UBossAttackPattern::LocationSet()
@@ -125,6 +135,7 @@ void UBossAttackPattern::JumpAttack(float time)
 		{
 			IsJumpAttack = false;
 			IsLocationReset = false;
+			
 		}
 	}
 }
@@ -186,3 +197,29 @@ void UBossAttackPattern::BackStep(float time)
 	}
 }
 
+void UBossAttackPattern::DaggerAttackThrow1()
+{
+	Boss->BossAnimInst->DaggerAttack(FName("DaggerStart"));
+	Boss->Dagger->SetVisibility(true);
+	FTimerHandle DaggerThrowTime;
+	GetWorld()->GetTimerManager().SetTimer(DaggerThrowTime, this, &UBossAttackPattern::DaggerAttackThrow2, 2.0f, false);
+
+}
+void UBossAttackPattern::DaggerAttackThrow2()
+{
+	Boss->BossAnimInst->DaggerAttack(FName("Dagger"));
+
+}
+
+void UBossAttackPattern::DaggerAttackThrow3()
+{
+	
+	Boss->Dagger->SetVisibility(false);
+	LocationSet();
+	RotationSet();
+	FActorSpawnParameters SpawnInfo;
+	DaggerAct = GetWorld()->SpawnActor<ADagger>(DaggerFac, Boss->Dagger->GetComponentLocation(), Boss->Dagger->GetComponentRotation(), SpawnInfo);
+	HeadToTargetV = (TargetLocation - BossLocation).GetSafeNormal();
+	HeadToTargetR = FRotator(0, HeadToTargetV.Rotation().Yaw, 0);
+	DaggerAct->DaggerThrow(HeadToTargetV, HeadToTargetR);
+}

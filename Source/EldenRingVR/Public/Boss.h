@@ -33,5 +33,15 @@ public:
 
 	UPROPERTY()
 		class ABossAIController* BossAI;
+	UPROPERTY(EditAnywhere)
+		class USkeletalMeshComponent* Dagger;
+	//UPROPERTY(EditAnywhere)
+	//	TSubclassOf<class ADagger> DaggerFac;
+	//UPROPERTY(EditAnywhere)
+	//	class ADagger* Dagger;
+
+
+	UPROPERTY()
+		class UBossAnim* BossAnimInst;
 	
 };
