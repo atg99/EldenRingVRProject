@@ -43,4 +43,7 @@ public:
 	
 	UFUNCTION()
 	void WeaponTrace();
+
+	UFUNCTION()
+	void SetRagdoll();
 };

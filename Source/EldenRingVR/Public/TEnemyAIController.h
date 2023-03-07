@@ -75,5 +75,8 @@ public:
 
 	UFUNCTION()
 	void NoClearTimer();
+
+	UFUNCTION()
+	void SetbCrawl();
 	
 };

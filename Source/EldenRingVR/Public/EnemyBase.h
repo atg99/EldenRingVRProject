@@ -62,6 +62,9 @@ public:
 	UFUNCTION()
 	void BattleStart();
 
+	UFUNCTION()
+	void PlayEnemyAnim(FName session);
+
 	//이 값이 변하면 이속 변경
 	UPROPERTY()
 	bool bDecrease;
@@ -86,6 +89,12 @@ public:
 
 	UFUNCTION()
 	void Dash(float force);
+
+	UFUNCTION(BlueprintCallable)
+	void Desmemberment(FName hitBone);
+
+	UFUNCTION()
+	void Crawl();
 private:
 
 	UPROPERTY()
@@ -105,6 +114,9 @@ private:
 
 	UPROPERTY()
 	float enemyHP = 100;
+
+	UPROPERTY(EditAnywhere)
+	class UMaterialInterface* bloodDecal;
 };
 
 
