@@ -146,6 +146,17 @@ void ATEnemyAIController::SetbCrawl()
 	GetBlackboardComponent()->SetValueAsBool(TEXT("bCrawl"), true);
 }
 
+void ATEnemyAIController::DisableBT()
+{
+	if (aiBehavior)
+	{
+		//abort();
+		FString reason;
+		BrainComponent->StopLogic(reason);
+		
+	}
+}
+
 
 
 
