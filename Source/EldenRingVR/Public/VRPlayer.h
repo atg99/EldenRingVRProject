@@ -27,30 +27,30 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//ÀÌµ¿¼Óµµ
+	//ì´ë™ì†ë„
 	UPROPERTY(EditAnywhere)
 		float moveSpeed = 500;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputMappingContext* IMC_VRInput;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Move;
-	// ÀÌµ¿ Ã³¸®
+	// ì´ë™ ì²˜ë¦¬
 	void Move(const FInputActionValue& Values);
-	// ¸¶¿ì½º ÀÔ·Â
+	// ë§ˆìš°ìŠ¤ ì…ë ¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Mouse;
-	// ¸¶¿ì½º È¸Àü
+	// ë§ˆìš°ìŠ¤ íšŒì „
 	void Turn(const FInputActionValue& Values);
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "VRCamera")
 		class UCameraComponent* VRCamera;
-	// VRÄÁÆ®·Ñ·¯
+	// VRì»¨íŠ¸ë¡¤ëŸ¬
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class UMotionControllerComponent* LeftHand;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class UMotionControllerComponent* RightHand;
-	// »ç¿ëÇÒ ¼Õ ¸ğµ¨
+	// ì‚¬ìš©í•  ì† ëª¨ë¸
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class USkeletalMeshComponent* LeftHandMesh;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
