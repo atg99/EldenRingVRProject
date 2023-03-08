@@ -33,12 +33,12 @@ AEnemyBase::AEnemyBase()
 }
 
 // Called when the game starts or when spawned
-void AEnemyBase::BeginPlay()
-{
-	Super::BeginPlay();
+	void AEnemyBase::BeginPlay()
+	{
+		Super::BeginPlay();
 
-	GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
-	
+		GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
+		
 	con = Cast<ATEnemyAIController>(GetController());
 	
 	//con->aiBehavior = behaviorTree;
@@ -182,29 +182,24 @@ void AEnemyBase::Desmemberment(FName hitBone)
 {
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *hitBone.ToString()));
-	if(hitBone == "spine_02")
-	{
-		return;
-	}
 	
-	
-	if(GetMesh()->IsSimulatingPhysics(hitBone))
+	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="head"||hitBone!="spine_03"||hitBone!="spine_02"))
 	{
 		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
 	}
 	else if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
-		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" || hitBone == "head" || hitBone == "neck_01")
+		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" || hitBone == "head" || hitBone == "neck_01"||hitBone=="spine_03"||hitBone == "spine_02")
 	{
 		//SetRagdoll();
 		Crawl();
-		GetMesh()->SetAllBodiesBelowSimulatePhysics(hitBone, true);
+		//GetMesh()->SetAllBodiesBelowSimulatePhysics(hitBone, true);
 		// FTimerHandle TimerHandle_Ragdoll;
 		// GetWorldTimerManager().SetTimer(TimerHandle_Ragdoll, FTimerDelegate::CreateLambda([this]()->void
 		// {
 		// 	GetMesh()->SetSimulatePhysics(false);	
 		// }), 0.2f, false);
 	}
-	else
+	else if(!GetMesh()->IsSimulatingPhysics(hitBone))
 	{
 		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
 	}
@@ -234,10 +229,10 @@ void AEnemyBase::Crawl()
 	sword->SetRagdoll();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ChangeSpeed(500);
-	//con->SetbCrawl();
+	con->SetbCrawl();
 
-	con->DisableBT();
-	con->MoveToPlayer();
+	//con->DisableBT();
+	//con->MoveToPlayer();
 	PlayEnemyAnim(TEXT("Crawl"));
 }
 
