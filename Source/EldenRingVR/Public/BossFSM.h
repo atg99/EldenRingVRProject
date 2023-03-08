@@ -4,22 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "BossAttackPattern.generated.h"
+#include "BossFSM.generated.h"
 
+UENUM(BlueprintType)
+enum class EBossState : uint8
+{
+	Idle,
+	Move,
+	Attack,
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class ELDENRINGVR_API UBossAttackPattern : public UActorComponent
+class ELDENRINGVR_API UBossFSM : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UBossAttackPattern();
+	UBossFSM();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	virtual void InitializeComponent() override;
 
 public:	
 	// Called every frame
@@ -32,10 +38,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class ATPlayer* Target;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
+		EBossState BState = EBossState::Idle;
+
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class ADagger> DaggerFac;
+		TSubclassOf<class ADagger> DaggerFac;
 	UPROPERTY(EditAnywhere)
-	class ADagger* DaggerAct;
+		class ADagger* DaggerAct;
+
+	void IdleState();
+	void MoveState();
+	void AttackState();
 
 	UFUNCTION(BlueprintCallable)
 		void LocationSet();
@@ -50,21 +64,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void DaggerAttackThrow1();
 	UFUNCTION(BlueprintCallable)
-		void DaggerAttackThrow2();	
+		void DaggerAttackThrow2();
 	UFUNCTION(BlueprintCallable)
 		void DaggerAttackThrow3();
-	
-	
+
+
 
 	float Speed = 0.01f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Decel = 0.00008f;	
+		float Decel = 0.00008f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Excel = 0.0005f;
+		float Excel = 0.0005f;
 	float Rate = 0.1f;
 	float JumpAttackDistance = 1100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float BackStepDistance = 1000;
+		float BackStepDistance = 1000;
 
 	FVector BossLocation;
 	FVector TargetLocation;
@@ -77,24 +91,22 @@ public:
 	float Timer = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsJumpAttack;
+		bool IsJumpAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsTailAttack;
+		bool IsTailAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsBackStep;
+		bool IsBackStep;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsLocationReset;
+		bool IsLocationReset;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsRotationReset;
+		bool IsRotationReset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsDaggerThrow;
-	
+		bool IsDaggerThrow;
+
 	int32 TailAttackCount = 0;
 
 
 
-
-
-
+		
 };

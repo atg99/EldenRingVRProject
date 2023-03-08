@@ -28,16 +28,15 @@ public:
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UBossAttackPattern* BossPattern;
-
-	UPROPERTY()
-		class ABossAIController* BossAI;
 	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* Dagger;
 
 
 	UPROPERTY()
 		class UBossAnim* BossAnimInst;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSMComponent)
+		class UBossFSM* BossFSM;
+
 	
 };
