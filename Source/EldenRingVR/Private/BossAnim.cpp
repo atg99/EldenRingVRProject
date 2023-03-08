@@ -3,7 +3,7 @@
 
 #include "BossAnim.h"
 #include "Boss.h"
-#include "BossAttackPattern.h"
+#include "BossFSM.h"
 
 UBossAnim::UBossAnim()
 {
@@ -30,11 +30,11 @@ void UBossAnim::DaggerAttack(FName SectionName)
 void UBossAnim::AnimNotify_DaggerSlashEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
-	Boss->BossPattern->IsBackStep = true;
+	Boss->BossFSM->IsBackStep = true;
 }
 
 void UBossAnim::AnimNotify_ThrowDagger()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
-	Boss->BossPattern->DaggerAttackThrow3();
+	Boss->BossFSM->DaggerAttackThrow3();
 }

@@ -2,10 +2,9 @@
 
 
 #include "Boss.h"
-#include "BossAttackPattern.h"
-#include "BossAIController.h"
 #include "BossAnim.h"
 #include "Dagger.h"
+#include "BossFSM.h"
 
 
 // Sets default values
@@ -13,11 +12,6 @@ ABoss::ABoss()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	BossPattern = CreateDefaultSubobject<UBossAttackPattern>(TEXT("BossPattern"));
-
-	AIControllerClass = ABossAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	
 	FName RightHandSocket(TEXT("RightHandSocket"));
 	
@@ -37,6 +31,8 @@ ABoss::ABoss()
 	{
 		GetMesh()->SetAnimInstanceClass(BossAnim.Class);
 	}
+
+	BossFSM = CreateDefaultSubobject<UBossFSM>(TEXT("BossFSM"));
 }
 
 // Called when the game starts or when spawned
@@ -44,14 +40,9 @@ void ABoss::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
-	BossAI = Cast<ABossAIController>(GetController());
-	BossAI->TargetSet();
 	BossAnimInst = Cast<UBossAnim>(GetMesh()->GetAnimInstance());
 
-	
-
-	BossPattern->DaggerAttackThrow1();
+	BossFSM->DaggerAttackThrow1();
 
 
 }
