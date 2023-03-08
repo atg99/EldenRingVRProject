@@ -144,6 +144,7 @@ void ATEnemyAIController::NoClearTimer()
 void ATEnemyAIController::SetbCrawl()
 {
 	GetBlackboardComponent()->SetValueAsBool(TEXT("bCrawl"), true);
+	
 }
 
 void ATEnemyAIController::DisableBT()

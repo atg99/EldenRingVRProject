@@ -63,7 +63,7 @@ public:
 	void BattleStart();
 
 	UFUNCTION()
-	void PlayEnemyAnim(FName session);
+	void PlayEnemyAnim(FName session, float rate);
 
 	//이 값이 변하면 이속 변경
 	UPROPERTY()
