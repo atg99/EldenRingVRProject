@@ -71,8 +71,8 @@ void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
 		if (Stimulus.WasSuccessfullySensed()&& Actor->ActorHasTag(TEXT("Player"))) {
 			//플레이어 감지가 참
 			bPlayerDetacted = true;
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Detect")));
+			//if (GEngine)
+			//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Detect")));
 		
 		}
 		//플레이어가 아닌것을 보아도 유지
@@ -92,8 +92,8 @@ void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
 			//FTimerHandle TimerHandle_ResetPlayerValue;
 			//GetWorldTimerManager().SetTimer(TimerHandle_ResetPlayerValue, this, &ATEnemyAIController::ResetPlayerValue, 2.0f, false);
 			//감지가 안되면 거짓이 된다
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("else")));
+			//if (GEngine)
+			//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("else")));
 			//bPlayerDetacted = false;
 		}
 	}
@@ -102,6 +102,8 @@ void ATEnemyAIController::OnTargetUpdate(AActor* Actor, FAIStimulus Stimulus)
 
 void ATEnemyAIController::MoveToPlayer()
 {
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("moveto")));
 	EPathFollowingRequestResult::Type result = MoveToActor(playerPawn);
 }
 
@@ -114,8 +116,6 @@ void ATEnemyAIController::ResetPlayerValue()
 {
 	GetBlackboardComponent()->ClearValue(TEXT("Player"));
 	bPlayerDetacted = false;
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Reset player value")));
 }
 
 void ATEnemyAIController::SetbHitValue()
