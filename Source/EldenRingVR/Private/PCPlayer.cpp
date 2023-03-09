@@ -74,6 +74,8 @@ void APCPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		InputSystem->BindAction(IA_Move, ETriggerEvent::Triggered, this, &APCPlayer::Move);
 		InputSystem->BindAction(IA_Mouse, ETriggerEvent::Triggered, this, &APCPlayer::Turn);
+		InputSystem->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &APCPlayer::onActionJump);
+
 	}
 }
 
@@ -84,9 +86,14 @@ void APCPlayer::Move(const FInputActionValue& Values)
 	AddMovementInput(GetActorRightVector(), Axis.Y);
 }
 
-void APCPlayer::Turn(const FInputActionValue& Values)
+void APCPlayer::Turn(const FInputActionValue& Values)	
 {
 	FVector2D Axis = Values.Get<FVector2D>();
 	AddControllerYawInput(Axis.X);
 	AddControllerPitchInput(Axis.Y);
+}
+
+void APCPlayer::onActionJump()
+{
+	Jump();
 }

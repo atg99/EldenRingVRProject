@@ -69,6 +69,8 @@ void AVRPlayer::BeginPlay()
 			subSystem->AddMappingContext(IMC_VRInput, 0);
 		}
 	}
+
+	hp = maxHp;
 }
 
 // Called every frame

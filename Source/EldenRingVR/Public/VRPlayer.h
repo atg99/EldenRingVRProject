@@ -55,4 +55,9 @@ protected:
 		class USkeletalMeshComponent* LeftHandMesh;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class USkeletalMeshComponent* RightHandMesh;
+	// ปýธํทย
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int hp;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int maxHp = 100;
 };

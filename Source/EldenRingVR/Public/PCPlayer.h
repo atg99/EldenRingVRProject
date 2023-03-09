@@ -46,6 +46,13 @@ public:
 		class UInputAction* IA_Mouse;
 	// 마우스 회전
 	void Turn(const FInputActionValue& Values);
+
+	//점프 입력
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Jump;
+	//점프 처리
+	void onActionJump();
+
 		
 
 };
