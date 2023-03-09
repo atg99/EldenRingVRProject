@@ -5,6 +5,7 @@
 
 #include "EnemySword.h"
 #include "TEnemyAIController.h"
+#include "VectorTypes.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -26,6 +27,9 @@ AEnemyBase::AEnemyBase()
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	originMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("OriginMesh"));
+	originMesh->SetupAttachment(RootComponent);
+	originMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	//behaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("behavior"));
 	//AIControllerClass = ATEnemyAIController::StaticClass();;
 
@@ -78,6 +82,27 @@ void AEnemyBase::Tick(float DeltaTime)
 	// 		bIncrease = false;
 	// 	}
 	// }
+	if(bMerge)
+	{
+		mergeTime += DeltaTime*0.5;
+		
+		
+		GetMesh()->SetWorldLocation(FMath::Lerp(curTransform.GetLocation(), originTransform.GetLocation(), mergeTime), false, nullptr, ETeleportType::TeleportPhysics);
+		//GetMesh()->SetWorldRotation(FMath::Lerp(curTransform.GetRotation(), originTransform.GetRotation(), mergeTime), false, nullptr, ETeleportType::TeleportPhysics);
+		//UE::Geometry::Lerp()
+		if(mergeTime >= 2)
+		{
+			
+			GetMesh()->SetWorldLocation(originTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+			GetMesh()->SetWorldRotation(originTransform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+			bMerge = false;
+			mergeTime = 0;
+			GetMesh()->SetSimulatePhysics(false);
+			GetMesh()->bPauseAnims = false;
+			//GetMesh()->SetCollisionProfileName(TEXT("EnemyPreset"));
+			//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -241,5 +266,18 @@ void AEnemyBase::Crawl()
 	//con->DisableBT();
 	//con->MoveToPlayer();
 	PlayEnemyAnim(TEXT("Crawl"), 5);
+}
+
+void AEnemyBase::EnemyMerge()
+{
+	StopAnimMontage();
+	GetMesh()->bPauseAnims = true;
+	GetMesh()->SetSimulatePhysics(true);
+	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//GetMesh()->SetCollisionProfileName(TEXT("ReverseMeshPreset"));
+	originTransform = originMesh->GetComponentTransform();
+		
+	curTransform = GetMesh()->GetComponentTransform();
+	bMerge = true;
 }
 

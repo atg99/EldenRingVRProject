@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UChildActorComponent* weapon;
 
+	UPROPERTY(EditAnywhere)
+	class USkeletalMeshComponent* originMesh;
+
 	//UPROPERTY(EditAnywhere)
 	//class UAIPerceptionComponent* aiPercep;
 
@@ -95,6 +98,22 @@ public:
 
 	UFUNCTION()
 	void Crawl();
+
+	UFUNCTION(BlueprintCallable)
+	void EnemyMerge();
+
+	UPROPERTY()
+	bool bMerge;
+
+	UPROPERTY()
+	float mergeTime = 0;
+
+	UPROPERTY()
+	FTransform originTransform;
+
+	UPROPERTY()
+	FTransform curTransform ;
+	
 private:
 
 	UPROPERTY()
