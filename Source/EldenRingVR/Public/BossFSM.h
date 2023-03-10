@@ -10,8 +10,13 @@ UENUM(BlueprintType)
 enum class EBossState : uint8
 {
 	Idle,
+	Wait,
 	Move,
 	Attack,
+	JumpAttack,
+	TailAttack,
+	DaggerAttackThrow,
+	InwardSlash
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -48,7 +53,9 @@ public:
 		class ADagger* DaggerAct;
 
 	void IdleState();
+	void WaitState();
 	void MoveState();
+	
 	void AttackState();
 
 	UFUNCTION(BlueprintCallable)
@@ -56,17 +63,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void RotationSet();
 	UFUNCTION(BlueprintCallable)
-		void JumpAttack(float time);
+		void JumpAttackState(float time);
 	UFUNCTION(BlueprintCallable)
-		void TailAttack(float time);
+		void TailAttackState(float time);
 	UFUNCTION(BlueprintCallable)
 		void BackStep(float time);
 	UFUNCTION(BlueprintCallable)
-		void DaggerAttackThrow1();
+		void DaggerAttackThrowState();
 	UFUNCTION(BlueprintCallable)
 		void DaggerAttackThrow2();
 	UFUNCTION(BlueprintCallable)
-		void DaggerAttackThrow3();
+		void DaggerAttackThrow3();	
+	UFUNCTION(BlueprintCallable)
+		void InwardSlashState();
 
 
 
@@ -80,6 +89,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float BackStepDistance = 1000;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int JumpAnimNum;
+
 	FVector BossLocation;
 	FVector TargetLocation;
 	FVector HeadToTargetV;
@@ -89,6 +101,10 @@ public:
 	FVector JumpAttackLoc;
 
 	float Timer = 0;
+	float WaitTime = 3;
+	bool IsTimerSet;
+	FTimerHandle WaitTimer;
+	void IdleSet();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool IsJumpAttack;
@@ -100,9 +116,10 @@ public:
 		bool IsLocationReset;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool IsRotationReset;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool IsDaggerThrow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool IsInwardSlash;
 
 	int32 TailAttackCount = 0;
 

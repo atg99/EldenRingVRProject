@@ -25,16 +25,26 @@ void UBossAnim::DaggerAttack(FName SectionName)
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	Boss->PlayAnimMontage(DaggerAnim, 1, SectionName);
+	
 }
 
 void UBossAnim::AnimNotify_DaggerSlashEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	Boss->BossFSM->IsBackStep = true;
+	
+
 }
 
 void UBossAnim::AnimNotify_ThrowDagger()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	Boss->BossFSM->DaggerAttackThrow3();
+}
+
+void UBossAnim::AnimNotify_InwardSlashEnd()
+{
+	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	Boss->BossFSM->IsInwardSlash = false;
+	
 }

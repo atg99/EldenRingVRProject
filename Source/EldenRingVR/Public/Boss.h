@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* Dagger;
 
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* Mace;
+
 
 	UPROPERTY()
 		class UBossAnim* BossAnimInst;

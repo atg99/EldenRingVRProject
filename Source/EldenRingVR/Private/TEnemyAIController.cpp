@@ -105,6 +105,7 @@ void ATEnemyAIController::MoveToPlayer()
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("moveto")));
 	EPathFollowingRequestResult::Type result = MoveToActor(playerPawn);
+	UE_LOG(LogTemp, Warning, TEXT("%s aaaaa"), playerPawn);
 }
 
 void ATEnemyAIController::StopMoveTo()
@@ -144,6 +145,7 @@ void ATEnemyAIController::NoClearTimer()
 void ATEnemyAIController::SetbCrawl()
 {
 	GetBlackboardComponent()->SetValueAsBool(TEXT("bCrawl"), true);
+	UE_LOG(LogTemp, Warning, TEXT("aaa"));
 }
 
 void ATEnemyAIController::DisableBT()

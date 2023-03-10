@@ -14,7 +14,7 @@ ABoss::ABoss()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	FName RightHandSocket(TEXT("RightHandSocket"));
-	
+	FName LeftHandSocket(TEXT("LeftHandSocket"));
 	Dagger = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapon_Pack/Skeletal_Mesh/SK_Dagger_1.SK_Dagger_1'"));
 	if (DaggerMesh.Succeeded())
@@ -25,6 +25,16 @@ ABoss::ABoss()
 	Dagger->SetRelativeRotation(FRotator(0, -90, -90));
 	Dagger->SetRelativeScale3D(FVector(2.0f));
 	Dagger->SetVisibility(false);
+
+	Mace = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mace"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> MaceMesh(TEXT("/Script/Engine.StaticMesh'/Game/TW/Blueprint/SM_Mace1.SM_Mace1'"));
+	if (MaceMesh.Succeeded())
+	{
+		Mace->SetStaticMesh(MaceMesh.Object);
+	}
+	Mace->SetupAttachment(GetMesh(), LeftHandSocket);
+	Mace->SetRelativeRotation(FRotator(-90, 0, 0));
+	Mace->SetRelativeScale3D(FVector(1.5f));
 
 	ConstructorHelpers::FClassFinder<UBossAnim> BossAnim(TEXT("/Script/Engine.AnimBlueprint'/Game/TW/Animation/ABP_Boss.ABP_Boss_C'"));
 	if (BossAnim.Succeeded())
@@ -41,8 +51,6 @@ void ABoss::BeginPlay()
 	Super::BeginPlay();
 
 	BossAnimInst = Cast<UBossAnim>(GetMesh()->GetAnimInstance());
-
-	BossFSM->DaggerAttackThrow1();
 
 
 }

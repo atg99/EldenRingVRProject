@@ -228,7 +228,7 @@ void AEnemyBase::Crawl()
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Crawlllllllllll")));
 	sword->SetRagdoll();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	ChangeSpeed(500);
+	ChangeSpeed(500.0f);
 	con->SetbCrawl();
 
 	//con->DisableBT();

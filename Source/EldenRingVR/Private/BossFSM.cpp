@@ -49,6 +49,10 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		IdleState();
 		break;
 
+	case EBossState::Wait:
+		WaitState();
+		break;
+
 	case EBossState::Move:
 		MoveState();
 		break;
@@ -57,91 +61,184 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		AttackState();
 		break;
 
+	case EBossState::JumpAttack:
+		JumpAttackState(DeltaTime);
+		break;
 
+	case EBossState::TailAttack:
+		TailAttackState(DeltaTime);
+		break;
+		
+	case EBossState::DaggerAttackThrow:
+		DaggerAttackThrowState();
+		break;
+
+	case EBossState::InwardSlash:
+		InwardSlashState();
+		break;
+
+	}
+
+	if (IsBackStep)
+	{
+		Timer +=  DeltaTime;
+		BackStep(Timer);
 	}
 }
 
 void UBossFSM::IdleState()
 {
 
+	LocationSet();
+	RotationSet();
+	
+	
+
+	if (Target->GetDistanceTo(Boss) > 1000)
+	{
+		BState = EBossState::Move;
+	}
+	
+	else if (Target->GetDistanceTo(Boss) < 1000)
+	{
+		
+		IsTailAttack = true;
+		IsJumpAttack = true;
+		IsDaggerThrow = true;
+		IsInwardSlash = true;
+		BState = EBossState::InwardSlash;
+	}
+
+	Boss->Mace->SetRelativeRotation(FRotator(90, 0, 0));
+}
+
+void UBossFSM::WaitState()
+{
+	if (!IsTimerSet)
+	{
+		IsTimerSet = true;
+		GetWorld()->GetTimerManager().SetTimer(WaitTimer, this, &UBossFSM::IdleSet, WaitTime);
+
+		
+	}
+	Boss->Mace->SetRelativeRotation(FRotator(-90, 0, 0));
+	
+}
+
+void UBossFSM::IdleSet()
+{
+	BState = EBossState::Idle;
+	IsTimerSet = false;
+	GetWorld()->GetTimerManager().ClearTimer(WaitTimer);
 }
 
 void UBossFSM::MoveState()
 {
+	if (Target->GetDistanceTo(Boss) <= 1000)
+	{
+		BState = EBossState::Idle;
+	}
+
+	else
+	{
+		LocationSet();
+		RotationSet();
+
+		Boss->AddMovementInput(HeadToTargetV);
+		Boss->SetActorRotation(HeadToTargetR);
+	}
+
 
 }
 
 void UBossFSM::AttackState()
 {
-
+	
 }
 
 
-void UBossFSM::JumpAttack(float time)
+void UBossFSM::JumpAttackState(float time)
 {
-
-	if (Speed > 0.0f && Rate < 0.7f)
+	if (IsJumpAttack)
 	{
-		Speed -= Decel;
-		Rate += Speed;
-		Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate), UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 720, 0.5 * Rate)));
-	}
-	else
-	{
-		if (!IsLocationReset)
-		{
-			LocationSet();
-			RotationSet();
-			IsLocationReset = true;
-		}
 
-		if (Rate - 0.7f < 0.05)
+		if (Speed > 0.0f && Rate < 0.7f)
 		{
-			Speed += 0.001 * Excel;
+			JumpAnimNum = 1;
+			Speed -= Decel;
 			Rate += Speed;
-			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, 0, Rate - 0.7f)));
-
-		}
-		else if (Rate - 0.7f < 1)
-		{
-			Speed += Excel;
-			Rate += Speed;
-			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, 0, Rate - 0.7f)));
+			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate), UKismetMathLibrary::Lerp   (BossLocation.Y, TargetLocation.Y, Rate), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 720, 0.5 * Rate)));
 		}
 		else
 		{
-			IsJumpAttack = false;
-			IsLocationReset = false;
+			if (!IsLocationReset)
+			{
+				
+				LocationSet();
+				RotationSet();
+				IsLocationReset = true;
+			}
 
+			if (Rate - 0.7f < 0.05)
+			{
+				JumpAnimNum = 2;
+				Speed += 0.001 * Excel;
+				Rate += Speed;
+				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, 0, Rate -		0.7f)));
+
+			}
+			else if (Rate - 0.7f < 1)
+			{
+				Speed += Excel;
+				Rate += Speed;
+				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, 0, Rate -		0.7f)));
+			}
+			else
+			{
+				JumpAnimNum = 3;
+				IsJumpAttack = false;
+				IsLocationReset = false;
+				Speed = 0.01f;
+				Rate = 0.1f;
+				BState = EBossState::Wait;
+			}
 		}
 	}
+	
 }
 
 
-void UBossFSM::TailAttack(float time)
+void UBossFSM::TailAttackState(float time)
 {
-	if (TailAttackCount <= 25)
+	if (IsTailAttack)
 	{
-		Boss->AddActorLocalRotation(FRotator(0.0f, -1.0f, 0.0f));
-		TailAttackCount++;
+		if (TailAttackCount <= 25)
+		{
+			
+			Boss->AddActorLocalRotation(FRotator(0.0f, -1.0f, 0.0f));
+			TailAttackCount++;
+		}
+		else if (TailAttackCount <= 50)
+		{
+			Boss->AddActorLocalRotation(FRotator(0.0f, -0.04f, 0.0f));
+	
+			TailAttackCount++;
+		}
+		else if (TailAttackCount <= 110)
+		{
+			Boss->AddActorLocalRotation(FRotator(0.0f, 12.4333f, 0.0f));
+			TailAttackCount++;
+		}
+		else
+		{
+			
+			TailAttackCount = 0;
+			IsTailAttack = false;
+			BState = EBossState::Wait;
+		}
+	
 	}
-	else if (TailAttackCount <= 50)
-	{
-		Boss->AddActorLocalRotation(FRotator(0.0f, -0.04f, 0.0f));
-
-		TailAttackCount++;
-	}
-	else if (TailAttackCount <= 110)
-	{
-		Boss->AddActorLocalRotation(FRotator(0.0f, 12.4333f, 0.0f));
-		TailAttackCount++;
-	}
-	else
-	{
-		TailAttackCount = 0;
-		IsTailAttack = false;
-	}
-
+	
 
 }
 
@@ -151,13 +248,13 @@ void UBossFSM::BackStep(float time)
 	{
 		LocationSet();
 		RotationSet();
-		HeadToTargetV = (Target->GetActorLocation() - Boss->GetActorLocation()).GetSafeNormal();
-		HeadToTargetR = FRotator(0, HeadToTargetV.Rotation().Yaw, 0);
+		
 		IsLocationReset = true;
 		IsRotationReset = true;
 	}
 	if (time * 3 < 1)
 	{
+	
 		Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, time * 3, true));
 
 	}
@@ -167,6 +264,7 @@ void UBossFSM::BackStep(float time)
 	}
 	else
 	{
+
 		IsLocationReset = false;
 		IsRotationReset = false;
 		IsBackStep = false;
@@ -178,25 +276,34 @@ void UBossFSM::LocationSet()
 {
 	BossLocation = Boss->GetActorLocation();
 	TargetLocation = Target->GetActorLocation();
+	HeadToTargetV = (TargetLocation - BossLocation).GetSafeNormal();
+
 }
 
 void UBossFSM::RotationSet()
 {
 	BossRotation = Boss->GetActorRotation();
 	TargetRotation = Target->GetActorRotation();
+	HeadToTargetR = FRotator(0, HeadToTargetV.Rotation().Yaw, 0);
 }
 
-void UBossFSM::DaggerAttackThrow1()
+void UBossFSM::DaggerAttackThrowState()
 {
-	Boss->BossAnimInst->DaggerAttack(FName("DaggerStart"));
-	Boss->Dagger->SetVisibility(true);
-	FTimerHandle DaggerThrowTime;
-	GetWorld()->GetTimerManager().SetTimer(DaggerThrowTime, this, &UBossFSM::DaggerAttackThrow2, 2.0f, false);
+	if (IsDaggerThrow)
+	{
+		IsDaggerThrow = false;
+		Boss->BossAnimInst->DaggerAttack(FName("DaggerStart"));
+		Boss->Dagger->SetVisibility(true);
+		FTimerHandle DaggerThrowTime;
+		GetWorld()->GetTimerManager().SetTimer(DaggerThrowTime, this, &UBossFSM::DaggerAttackThrow2, 2.0f, false);
+	}
+
 
 }
 void UBossFSM::DaggerAttackThrow2()
 {
 	Boss->BossAnimInst->DaggerAttack(FName("Dagger"));
+	
 
 }
 
@@ -208,7 +315,18 @@ void UBossFSM::DaggerAttackThrow3()
 	RotationSet();
 	FActorSpawnParameters SpawnInfo;
 	DaggerAct = GetWorld()->SpawnActor<ADagger>(DaggerFac, Boss->Dagger->GetComponentLocation(), Boss->Dagger->GetComponentRotation(), SpawnInfo);
-	HeadToTargetV = (TargetLocation - BossLocation).GetSafeNormal();
-	HeadToTargetR = FRotator(0, HeadToTargetV.Rotation().Yaw, 0);
+	
+	
 	DaggerAct->DaggerThrow(HeadToTargetV, HeadToTargetR);
+	BState = EBossState::Wait;
+
+}
+
+void UBossFSM::InwardSlashState()
+{
+	if (!IsInwardSlash)
+	{
+		BState = EBossState::Wait;
+	
+	}
 }
