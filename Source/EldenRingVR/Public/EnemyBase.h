@@ -29,6 +29,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UChildActorComponent* weapon;
 
+	UPROPERTY(EditAnywhere)
+	class USkeletalMeshComponent* originMesh;
+
+	UPROPERTY(EditAnywhere)
+	class UPoseableMeshComponent* poseableMesh;
+
 	//UPROPERTY(EditAnywhere)
 	//class UAIPerceptionComponent* aiPercep;
 
@@ -63,7 +69,7 @@ public:
 	void BattleStart();
 
 	UFUNCTION()
-	void PlayEnemyAnim(FName session);
+	void PlayEnemyAnim(FName session, float rate);
 
 	//이 값이 변하면 이속 변경
 	UPROPERTY()
@@ -95,6 +101,25 @@ public:
 
 	UFUNCTION()
 	void Crawl();
+
+	UFUNCTION(BlueprintCallable)
+	void EnemyMerge();
+
+	UPROPERTY()
+	bool bMerge;
+
+	UPROPERTY()
+	float mergeTime = 0;
+
+	UPROPERTY()
+	FTransform originTransform;
+
+	UPROPERTY()
+	FTransform curTransform ;
+
+	UFUNCTION(BlueprintCallable)
+	void SetPoseableMeshToGetMesh();
+	
 private:
 
 	UPROPERTY()
@@ -117,6 +142,26 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UMaterialInterface* bloodDecal;
+
+	UFUNCTION()
+	void EnemyMergeV2Setup();
+
+	UFUNCTION()
+	void EnemyMergeV2();
+
+	UFUNCTION()
+	void EnemyMergeEnd();
+	
+	UPROPERTY()
+	bool bMergeV2;
+
+	UPROPERTY()
+	float mergeV2LerpTime;
+
+	UPROPERTY()
+	TArray<float> mergeDis;
+	
+	
 };
 
 

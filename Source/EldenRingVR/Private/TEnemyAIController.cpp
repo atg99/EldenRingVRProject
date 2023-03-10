@@ -145,7 +145,6 @@ void ATEnemyAIController::NoClearTimer()
 void ATEnemyAIController::SetbCrawl()
 {
 	GetBlackboardComponent()->SetValueAsBool(TEXT("bCrawl"), true);
-	UE_LOG(LogTemp, Warning, TEXT("aaa"));
 }
 
 void ATEnemyAIController::DisableBT()

@@ -5,9 +5,11 @@
 
 #include "EnemySword.h"
 #include "TEnemyAIController.h"
+#include "VectorTypes.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PoseableMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -26,6 +28,13 @@ AEnemyBase::AEnemyBase()
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	originMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("OriginMesh"));
+	originMesh->SetupAttachment(RootComponent);
+	originMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	poseableMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("poseableMesh"));
+	poseableMesh->SetupAttachment(RootComponent);
+	poseableMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//behaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("behavior"));
 	//AIControllerClass = ATEnemyAIController::StaticClass();;
 
@@ -33,13 +42,16 @@ AEnemyBase::AEnemyBase()
 }
 
 // Called when the game starts or when spawned
-	void AEnemyBase::BeginPlay()
-	{
-		Super::BeginPlay();
+void AEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
 
-		GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
+	GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
 		
 	con = Cast<ATEnemyAIController>(GetController());
+
+	poseableMesh->SetVisibility(false);
+	originMesh->SetVisibility(false);
 	
 	//con->aiBehavior = behaviorTree;
 	
@@ -78,6 +90,32 @@ void AEnemyBase::Tick(float DeltaTime)
 	// 		bIncrease = false;
 	// 	}
 	// }
+	if(bMerge)
+	{
+		mergeTime += DeltaTime*0.5;
+		
+		
+		GetMesh()->SetWorldLocation(FMath::Lerp(curTransform.GetLocation(), originTransform.GetLocation(), mergeTime), false, nullptr, ETeleportType::TeleportPhysics);
+		//GetMesh()->SetWorldRotation(FMath::Lerp(curTransform.GetRotation(), originTransform.GetRotation(), mergeTime), false, nullptr, ETeleportType::TeleportPhysics);
+		//UE::Geometry::Lerp()
+		if(mergeTime >= 2)
+		{
+			
+			GetMesh()->SetWorldLocation(originTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+			GetMesh()->SetWorldRotation(originTransform.GetRotation(), false, nullptr, ETeleportType::TeleportPhysics);
+			bMerge = false;
+			mergeTime = 0;
+			GetMesh()->SetSimulatePhysics(false);
+			GetMesh()->bPauseAnims = false;
+			//GetMesh()->SetCollisionProfileName(TEXT("EnemyPreset"));
+			//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
+
+	if(bMergeV2)
+	{
+		EnemyMergeV2();
+	}
 }
 
 // Called to bind functionality to input
@@ -128,9 +166,9 @@ void AEnemyBase::BattleStart()
 	PlayAnimMontage(enemyAnim, 1, TEXT("BattleStart"));
 }
 
-void AEnemyBase::PlayEnemyAnim(FName session)
+void AEnemyBase::PlayEnemyAnim(FName session, float rate)
 {
-	PlayAnimMontage(enemyAnim, 1, session);
+	PlayAnimMontage(enemyAnim, rate, session);
 }
 
 void AEnemyBase::DecreaseSpeed(float len, float speed)
@@ -183,16 +221,16 @@ void AEnemyBase::Desmemberment(FName hitBone)
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *hitBone.ToString()));
 	
-	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="head"||hitBone!="spine_03"||hitBone!="spine_02"))
+	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="head"&&hitBone!="spine_03"&&hitBone!="spine_02"&&hitBone!="neck_01"))
 	{
 		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
 	}
 	else if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
-		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" || hitBone == "head" || hitBone == "neck_01"||hitBone=="spine_03"||hitBone == "spine_02")
+		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" /*|| hitBone == "head" || hitBone == "neck_01"||hitBone=="spine_03"*/||hitBone == "spine_02")
 	{
 		//SetRagdoll();
 		Crawl();
-		//GetMesh()->SetAllBodiesBelowSimulatePhysics(hitBone, true);
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(hitBone, true);
 		// FTimerHandle TimerHandle_Ragdoll;
 		// GetWorldTimerManager().SetTimer(TimerHandle_Ragdoll, FTimerDelegate::CreateLambda([this]()->void
 		// {
@@ -201,8 +239,14 @@ void AEnemyBase::Desmemberment(FName hitBone)
 	}
 	else if(!GetMesh()->IsSimulatingPhysics(hitBone))
 	{
-		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
+		GetMesh()->SetAllBodiesBelowSimulatePhysics(hitBone, true);
+		//GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
 	}
+	else if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone == "head" || hitBone == "neck_01"||hitBone=="spine_03"))
+	{
+		Crawl();
+	}
+	
 
 	FVector cam = UKismetMathLibrary::GetForwardVector(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->K2_GetActorRotation());
 	FVector camForward = cam * FMath::RandRange(1000.f, 3000.f);
@@ -210,6 +254,7 @@ void AEnemyBase::Desmemberment(FName hitBone)
 	FVector socketLoc = GetMesh()->GetSocketLocation(hitBone);
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
 	GetMesh()->AddImpulseAtLocation(camForward + up, socketLoc, hitBone);
 
 	FCollisionQueryParams params;
@@ -227,12 +272,77 @@ void AEnemyBase::Crawl()
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Crawlllllllllll")));
 	sword->SetRagdoll();
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	ChangeSpeed(500.0f);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ChangeSpeed(500);
+
 	con->SetbCrawl();
 
 	//con->DisableBT();
 	//con->MoveToPlayer();
-	PlayEnemyAnim(TEXT("Crawl"));
+	PlayEnemyAnim(TEXT("Crawl"), 5);
+}
+
+void AEnemyBase::EnemyMerge()
+{
+	StopAnimMontage();
+	GetMesh()->bPauseAnims = true;
+	GetMesh()->SetSimulatePhysics(true);
+	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//GetMesh()->SetCollisionProfileName(TEXT("ReverseMeshPreset"));
+	originTransform = originMesh->GetComponentTransform();
+		
+	curTransform = GetMesh()->GetComponentTransform();
+	bMerge = true;
+}
+
+void AEnemyBase::SetPoseableMeshToGetMesh()
+{
+	if(!poseableMesh){ return; }
+	
+	for (auto PoseableBone : poseableMesh->GetAllSocketNames())
+	{
+		poseableMesh->SetBoneTransformByName(PoseableBone, GetMesh()->GetSocketTransform(PoseableBone), EBoneSpaces::WorldSpace);
+	}
+
+	EnemyMergeV2Setup();
+}
+
+void AEnemyBase::EnemyMergeV2Setup()
+{
+	GetMesh()->SetVisibility(false);
+	poseableMesh->SetVisibility(true);
+	bMergeV2 = true;
+}
+
+void AEnemyBase::EnemyMergeV2()
+{
+	mergeV2LerpTime = GetWorld()->DeltaTimeSeconds;
+	int a = 0;
+	for (auto Bone : poseableMesh->GetAllSocketNames())
+	{
+		FTransform From2 = poseableMesh->GetSocketTransform(Bone);
+		FTransform To = originMesh->GetSocketTransform(Bone);
+		FTransform lerpTransform = UKismetMathLibrary::TLerp(From2, To, mergeV2LerpTime);
+		poseableMesh->SetBoneTransformByName(Bone, lerpTransform, EBoneSpaces::WorldSpace);
+		a++;
+	}
+	
+	if(mergeV2LerpTime >= 1)
+	{
+		mergeV2LerpTime = 0;
+		bMergeV2 = false;
+		EnemyMergeEnd();
+	}
+}
+
+void AEnemyBase::EnemyMergeEnd() 
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("MergeV2 Done")));
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->SetWorldTransform(originMesh->GetComponentTransform());
+	GetMesh()->SetVisibility(true);
+	poseableMesh->SetVisibility(false);
 }
 
