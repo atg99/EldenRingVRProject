@@ -9,6 +9,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/PoseableMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -29,7 +30,11 @@ AEnemyBase::AEnemyBase()
 
 	originMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("OriginMesh"));
 	originMesh->SetupAttachment(RootComponent);
-	originMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	originMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	poseableMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("poseableMesh"));
+	poseableMesh->SetupAttachment(RootComponent);
+	poseableMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//behaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("behavior"));
 	//AIControllerClass = ATEnemyAIController::StaticClass();;
 
@@ -37,13 +42,16 @@ AEnemyBase::AEnemyBase()
 }
 
 // Called when the game starts or when spawned
-	void AEnemyBase::BeginPlay()
-	{
-		Super::BeginPlay();
+void AEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
 
-		GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
+	GetMesh()->HideBoneByName(TEXT("weapon"), PBO_None);
 		
 	con = Cast<ATEnemyAIController>(GetController());
+
+	poseableMesh->SetVisibility(false);
+	originMesh->SetVisibility(false);
 	
 	//con->aiBehavior = behaviorTree;
 	
@@ -102,6 +110,11 @@ void AEnemyBase::Tick(float DeltaTime)
 			//GetMesh()->SetCollisionProfileName(TEXT("EnemyPreset"));
 			//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		}
+	}
+
+	if(bMergeV2)
+	{
+		EnemyMergeV2();
 	}
 }
 
@@ -279,5 +292,55 @@ void AEnemyBase::EnemyMerge()
 		
 	curTransform = GetMesh()->GetComponentTransform();
 	bMerge = true;
+}
+
+void AEnemyBase::SetPoseableMeshToGetMesh()
+{
+	if(!poseableMesh){ return; }
+	
+	for (auto PoseableBone : poseableMesh->GetAllSocketNames())
+	{
+		poseableMesh->SetBoneTransformByName(PoseableBone, GetMesh()->GetSocketTransform(PoseableBone), EBoneSpaces::WorldSpace);
+	}
+
+	EnemyMergeV2Setup();
+}
+
+void AEnemyBase::EnemyMergeV2Setup()
+{
+	GetMesh()->SetVisibility(false);
+	poseableMesh->SetVisibility(true);
+	bMergeV2 = true;
+}
+
+void AEnemyBase::EnemyMergeV2()
+{
+	mergeV2LerpTime = GetWorld()->DeltaTimeSeconds;
+	int a = 0;
+	for (auto Bone : poseableMesh->GetAllSocketNames())
+	{
+		FTransform From2 = poseableMesh->GetSocketTransform(Bone);
+		FTransform To = originMesh->GetSocketTransform(Bone);
+		FTransform lerpTransform = UKismetMathLibrary::TLerp(From2, To, mergeV2LerpTime);
+		poseableMesh->SetBoneTransformByName(Bone, lerpTransform, EBoneSpaces::WorldSpace);
+		a++;
+	}
+	
+	if(mergeV2LerpTime >= 1)
+	{
+		mergeV2LerpTime = 0;
+		bMergeV2 = false;
+		EnemyMergeEnd();
+	}
+}
+
+void AEnemyBase::EnemyMergeEnd() 
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("MergeV2 Done")));
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->SetWorldTransform(originMesh->GetComponentTransform());
+	GetMesh()->SetVisibility(true);
+	poseableMesh->SetVisibility(false);
 }
 

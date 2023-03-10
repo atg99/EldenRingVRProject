@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* originMesh;
 
+	UPROPERTY(EditAnywhere)
+	class UPoseableMeshComponent* poseableMesh;
+
 	//UPROPERTY(EditAnywhere)
 	//class UAIPerceptionComponent* aiPercep;
 
@@ -113,6 +116,9 @@ public:
 
 	UPROPERTY()
 	FTransform curTransform ;
+
+	UFUNCTION(BlueprintCallable)
+	void SetPoseableMeshToGetMesh();
 	
 private:
 
@@ -136,6 +142,26 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UMaterialInterface* bloodDecal;
+
+	UFUNCTION()
+	void EnemyMergeV2Setup();
+
+	UFUNCTION()
+	void EnemyMergeV2();
+
+	UFUNCTION()
+	void EnemyMergeEnd();
+	
+	UPROPERTY()
+	bool bMergeV2;
+
+	UPROPERTY()
+	float mergeV2LerpTime;
+
+	UPROPERTY()
+	TArray<float> mergeDis;
+	
+	
 };
 
 
