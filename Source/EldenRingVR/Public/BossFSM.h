@@ -12,11 +12,14 @@ enum class EBossState : uint8
 	Idle,
 	Wait,
 	Move,
+	MoveClose,
 	Attack,
+	TurnToT,
 	JumpAttack,
 	TailAttack,
 	DaggerAttackThrow,
-	InwardSlash
+	InwardSlash,
+	SlashGround
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -47,6 +50,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
 		EBossState BState = EBossState::Idle;
 
+	EBossState ReservState;
+
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class ADagger> DaggerFac;
 	UPROPERTY(EditAnywhere)
@@ -55,6 +60,7 @@ public:
 	void IdleState();
 	void WaitState();
 	void MoveState();
+	void MoveCloseState();
 	
 	void AttackState();
 
@@ -62,6 +68,8 @@ public:
 		void LocationSet();
 	UFUNCTION(BlueprintCallable)
 		void RotationSet();
+	UFUNCTION(BlueprintCallable)
+		void TurnToTState();
 	UFUNCTION(BlueprintCallable)
 		void JumpAttackState(float time);
 	UFUNCTION(BlueprintCallable)
@@ -76,6 +84,8 @@ public:
 		void DaggerAttackThrow3();	
 	UFUNCTION(BlueprintCallable)
 		void InwardSlashState();
+	UFUNCTION(BlueprintCallable)
+		void SlashGroundState();
 
 
 
@@ -119,9 +129,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool IsDaggerThrow;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool IsInwardSlash;
+		bool IsInwardSlash;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool IsSlashGround;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool IsTurnToT;
+	
 
 	int32 TailAttackCount = 0;
+	int32 TurnToTCount = 0;
+
 
 
 

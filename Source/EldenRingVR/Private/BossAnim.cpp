@@ -32,7 +32,6 @@ void UBossAnim::AnimNotify_DaggerSlashEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	Boss->BossFSM->IsBackStep = true;
-	
 
 }
 
@@ -46,5 +45,11 @@ void UBossAnim::AnimNotify_InwardSlashEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	Boss->BossFSM->IsInwardSlash = false;
+	
+}
+void UBossAnim::AnimNotify_SlashGroundEnd()
+{
+	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	Boss->BossFSM->IsSlashGround = false;
 	
 }

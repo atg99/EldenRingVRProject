@@ -5,7 +5,7 @@
 #include "BossAnim.h"
 #include "Dagger.h"
 #include "BossFSM.h"
-
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABoss::ABoss()
@@ -43,6 +43,17 @@ ABoss::ABoss()
 	}
 
 	BossFSM = CreateDefaultSubobject<UBossFSM>(TEXT("BossFSM"));
+	DaggerComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DaggerComp"));
+	DaggerComp->SetupAttachment(Dagger);
+	DaggerComp->SetRelativeScale3D(FVector(0.7f));
+	DaggerComp->SetRelativeLocation(FVector(0, 0, 20));
+	DaggerComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	DaggerComp->OnComponentBeginOverlap.AddDynamic(this, &ABoss::OnDaggerBeginOverlap);
+	MaceComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MaceComp"));
+	MaceComp->SetupAttachment(Mace);
+	MaceComp->SetRelativeScale3D(FVector(0.7, 0.7, 1.2));
+	MaceComp->SetRelativeLocation(FVector(0, 0, 33.3333f));
+	MaceComp->OnComponentBeginOverlap.AddDynamic(this, &ABoss::OnMaceBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -69,3 +80,13 @@ void ABoss::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void ABoss::OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Dagger"));
+
+}
+
+void ABoss::OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Mace"));
+}

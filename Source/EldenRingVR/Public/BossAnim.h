@@ -32,5 +32,8 @@ public:
 	UFUNCTION()
 		void AnimNotify_ThrowDagger();
 	UFUNCTION()
-		void AnimNotify_InwardSlashEnd();
+		void AnimNotify_InwardSlashEnd();	
+	UFUNCTION()
+		void AnimNotify_SlashGroundEnd();
+
 };

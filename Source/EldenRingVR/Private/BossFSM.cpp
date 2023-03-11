@@ -12,6 +12,7 @@
 #include "GameFramework/Pawn.h"
 #include "BossAnim.h"
 #include "Engine/World.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values for this component's properties
 UBossFSM::UBossFSM()
@@ -57,8 +58,16 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		MoveState();
 		break;
 
+	case EBossState::MoveClose:
+		MoveCloseState();
+		break;
+
 	case EBossState::Attack:
 		AttackState();
+		break;
+
+	case EBossState::TurnToT:
+		TurnToTState();
 		break;
 
 	case EBossState::JumpAttack:
@@ -77,6 +86,9 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		InwardSlashState();
 		break;
 
+	case EBossState::SlashGround:
+		SlashGroundState();
+		break;
 	}
 
 	if (IsBackStep)
@@ -93,22 +105,98 @@ void UBossFSM::IdleState()
 	RotationSet();
 	
 	
-
+  
 	if (Target->GetDistanceTo(Boss) > 1000)
 	{
 		BState = EBossState::Move;
 	}
 	
-	else if (Target->GetDistanceTo(Boss) < 1000)
+	else if (Target->GetDistanceTo(Boss) < 1000 && 800 < Target->GetDistanceTo(Boss))
 	{
 		
-		IsTailAttack = true;
 		IsJumpAttack = true;
-		IsDaggerThrow = true;
-		IsInwardSlash = true;
-		BState = EBossState::InwardSlash;
+		BState = EBossState::JumpAttack;
 	}
+  
+	else
+	{
+		if (FVector::DotProduct(Boss->GetActorForwardVector(), HeadToTargetV) < 0)
+		{
+			int32 RandNum = FMath::RandRange(1, 4);
+			if (RandNum == 1)
+			{
+				if (Target->GetDistanceTo(Boss) <= 200)
+				{
+					IsTailAttack = true;
+					BState = EBossState::TailAttack;
+				}
+				else
+				{	
+					IsTailAttack = true;
+					ReservState = EBossState::TailAttack;
+					BState = EBossState::MoveClose;
+					
+				}
+			
+			}
+			else
+			{
+				BState = EBossState::TurnToT;
+			}
+		}
+		else
+		{
+			int32 RandNum = FMath::RandRange(1, 3);
+			if (RandNum == 1)
+			{
+				if (Target->GetDistanceTo(Boss) <= 200)
+				{
+					IsDaggerThrow = true;
+					BState = EBossState::DaggerAttackThrow;
+				}
+				else
+				{
+					IsDaggerThrow = true;
+					ReservState = EBossState::DaggerAttackThrow;
+					BState = EBossState::MoveClose;
+				}
 
+			}
+			else if (RandNum == 2)
+			{
+				if (Target->GetDistanceTo(Boss) <= 200)
+				{
+					IsInwardSlash = true;
+					BState = EBossState::InwardSlash;
+				}
+				else
+				{
+					IsInwardSlash = true;
+					ReservState = EBossState::InwardSlash;
+					BState = EBossState::MoveClose;
+				}
+
+			}
+			else if (RandNum == 3)
+			{
+				if (Target->GetDistanceTo(Boss) <= 200)
+				{
+					IsSlashGround = true;
+					BState = EBossState::SlashGround;
+				}
+				else
+				{
+					IsSlashGround = true;
+					ReservState = EBossState::SlashGround;
+					BState = EBossState::MoveClose;
+				}
+
+			}
+
+		}
+
+	}
+  
 	Boss->Mace->SetRelativeRotation(FRotator(90, 0, 0));
 }
 
@@ -132,6 +220,8 @@ void UBossFSM::IdleSet()
 	GetWorld()->GetTimerManager().ClearTimer(WaitTimer);
 }
 
+
+
 void UBossFSM::MoveState()
 {
 	if (Target->GetDistanceTo(Boss) <= 1000)
@@ -147,9 +237,25 @@ void UBossFSM::MoveState()
 		Boss->AddMovementInput(HeadToTargetV);
 		Boss->SetActorRotation(HeadToTargetR);
 	}
-
-
 }
+
+void UBossFSM::MoveCloseState()
+{
+	if (Target->GetDistanceTo(Boss) <= 200)
+	{
+		BState = ReservState;
+	}
+
+	else
+	{
+		LocationSet();
+		RotationSet();
+
+		Boss->AddMovementInput(HeadToTargetV);
+		Boss->SetActorRotation(HeadToTargetR);
+	}
+}
+
 
 void UBossFSM::AttackState()
 {
@@ -287,6 +393,29 @@ void UBossFSM::RotationSet()
 	HeadToTargetR = FRotator(0, HeadToTargetV.Rotation().Yaw, 0);
 }
 
+void UBossFSM::TurnToTState()
+{
+	if (TurnToTCount == 0)
+	{
+		LocationSet();
+		RotationSet();
+		TurnToTCount++;
+	}
+	
+	else if (TurnToTCount * 0.007 < 1)
+	{
+		Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, 0.007 * TurnToTCount, true));
+		TurnToTCount++;
+	}
+
+	else
+	{
+		TurnToTCount = 0;
+		BState = EBossState::Idle;
+	}
+
+}
+
 void UBossFSM::DaggerAttackThrowState()
 {
 	if (IsDaggerThrow)
@@ -294,6 +423,7 @@ void UBossFSM::DaggerAttackThrowState()
 		IsDaggerThrow = false;
 		Boss->BossAnimInst->DaggerAttack(FName("DaggerStart"));
 		Boss->Dagger->SetVisibility(true);
+		Boss->DaggerComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		FTimerHandle DaggerThrowTime;
 		GetWorld()->GetTimerManager().SetTimer(DaggerThrowTime, this, &UBossFSM::DaggerAttackThrow2, 2.0f, false);
 	}
@@ -330,3 +460,13 @@ void UBossFSM::InwardSlashState()
 	
 	}
 }
+
+void UBossFSM::SlashGroundState()
+{
+	if (!IsSlashGround)
+	{
+		BState = EBossState::Wait;
+	}
+
+}
+

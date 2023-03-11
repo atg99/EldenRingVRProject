@@ -2,6 +2,8 @@
 
 
 #include "Dagger.h"
+#include "Components/CapsuleComponent.h"
+#include "Boss.h"
 
 // Sets default values
 ADagger::ADagger()
@@ -15,7 +17,12 @@ ADagger::ADagger()
 	{
 		DaggerComp->SetStaticMesh(DaggerMesh.Object);
 	}
-	
+	DaggerCapComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DaggerCap"));
+	DaggerCapComp->SetupAttachment(DaggerComp);
+	DaggerCapComp->SetRelativeScale3D(FVector(0.7f));
+	DaggerCapComp->SetRelativeLocation(FVector(0, 0, 20));
+	DaggerCapComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	DaggerCapComp->OnComponentBeginOverlap.AddDynamic(this, &ADagger::OnDaggerBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -38,8 +45,14 @@ void ADagger::Tick(float DeltaTime)
 
 }
 
+void ADagger::OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
+}
+
 void ADagger::DaggerThrow(FVector vec, FRotator rot)
 {
+	DaggerCapComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	ToTargetV = vec;
 	ToTargetR = rot;
 	SetActorRotation(rot + FRotator(0, 90, -90));

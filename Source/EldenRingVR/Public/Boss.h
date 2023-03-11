@@ -33,6 +33,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* Mace;
+	UPROPERTY(EditAnywhere)
+		class UCapsuleComponent* DaggerComp;
+	UPROPERTY(EditAnywhere)
+		class UCapsuleComponent* MaceComp;
 
 
 	UPROPERTY()
@@ -40,6 +44,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSMComponent)
 		class UBossFSM* BossFSM;
+
+	UFUNCTION()
+		void OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 MaxHP = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int32 CurHP = MaxHP;
+
 
 	
 };
