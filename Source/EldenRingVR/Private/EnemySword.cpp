@@ -57,7 +57,7 @@ void AEnemySword::SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("PlayerHit")));
 		//데미지 함수
-
+		
 		//플레이어 임펙트
 		WeaponTrace();
 
