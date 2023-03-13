@@ -103,4 +103,7 @@ private:
 
 	UPROPERTY()
 	int32 increaseSTR;
+
+	UPROPERTY()
+	class AVRPlayer* player;
 };
