@@ -11,6 +11,7 @@
 #include <DrawDebugHelpers.h>
 #include <HeadMountedDisplayFunctionLibrary.h>
 #include <Components/CapsuleComponent.h>
+#include "BossHP.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -56,6 +57,12 @@ AVRPlayer::AVRPlayer()
 	RollingCircle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RollingCircle"));
 	RollingCircle->SetupAttachment(RootComponent);
 	RollingCircle->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	ConstructorHelpers::FClassFinder<UBossHP> BossHPCL(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/TW/UI/UI_Boss.UI_Boss_C'"));
+	if (BossHPCL.Succeeded())
+	{
+		BossHPC = BossHPCL.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -79,6 +86,13 @@ void AVRPlayer::BeginPlay()
 	HP = maxHP;
 	MP = maxMP;
 	Stamina = maxStamina;
+
+	BossHP = CreateWidget<UBossHP>(GetWorld(), BossHPC);
+	if (GetWorld()->GetMapName() == FString("UEDPIE_0_T_Lev"))
+	{
+		BossHP->AddToViewport();
+
+	}
 }
 
 // Called every frame

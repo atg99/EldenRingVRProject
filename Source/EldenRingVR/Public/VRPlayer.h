@@ -126,4 +126,12 @@ private:
 
 	void DoAttack();
 	void DoDefence();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<class UBossHP> BossHPC;
+
+	UPROPERTY()
+		class UBossHP* BossHP;
+
 };

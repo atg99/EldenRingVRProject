@@ -45,7 +45,7 @@ public:
 		class ABoss* Boss;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class APCPlayer* Target;
+		class AVRPlayer* Target;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
 		EBossState BState = EBossState::Idle;
