@@ -104,19 +104,29 @@ void APCPlayer::onActionJump()
 
 void APCPlayer::Attack()
 {
-	//auto anim = Cast<UPCPlayerAnim>(GetMesh()->GetAnimInstance());
-	//anim->OnAttack(TEXT("ATStart"));
+	UE_LOG(LogTemp, Log, TEXT("attack"));
+	auto anim = Cast<UPCPlayerAnim>(GetMesh()->GetAnimInstance());
+	anim->OnAttack(TEXT("ATStart"));
 	//PlayAnimMontage(AttackMontageFactory);
 	
 }
 void APCPlayer::Defence()
 {
+	UE_LOG(LogTemp, Log, TEXT("defence"));
+
 	//PlayAnimMontage(AttackMontageFactory);
-	//auto anim = Cast<UPCPlayerAnim>(GetMesh()->GetAnimInstance());
-	//anim->OnAttack(TEXT("DFStart"));
+	auto anim = Cast<UPCPlayerAnim>(GetMesh()->GetAnimInstance());
+	anim->OnAttack(TEXT("DFStart"));
 }
 void APCPlayer::Desh()
 {
+}
 
+void APCPlayer::OnMyAttack()
+{
+}
+
+void APCPlayer::OnMyDefence()
+{
 }
 

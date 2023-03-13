@@ -56,6 +56,7 @@ protected:
 		class USkeletalMeshComponent* LeftHandMesh;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class USkeletalMeshComponent* RightHandMesh;
+public:	
 	// 생명력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int HP;
@@ -72,7 +73,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int maxStamina = 100;
 
-public:	// 회피 시작하기
+	// 회피 시작하기
 	UPROPERTY(VisibleAnywhere, Category = "Rolling")
 		class UStaticMeshComponent* RollingCircle;
 	// 회피 활성화 여부

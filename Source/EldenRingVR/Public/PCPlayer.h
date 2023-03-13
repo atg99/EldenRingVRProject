@@ -79,6 +79,6 @@ public:
 		void OnAttack(FName sectionName);
 	*/
 	
-
-	
+	void OnMyAttack();
+	void OnMyDefence();
 };
