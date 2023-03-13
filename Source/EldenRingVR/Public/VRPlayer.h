@@ -36,6 +36,7 @@ public:
 		class UInputAction* IA_Move;
 	// 이동 처리
 	void Move(const FInputActionValue& Values);
+public:
 	// 마우스 입력
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Mouse;
@@ -57,7 +58,66 @@ protected:
 		class USkeletalMeshComponent* RightHandMesh;
 	// 생명력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int hp;
+		int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int maxHp = 100;
+		int maxHP = 100;
+	// 마나
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int MP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int maxMP = 100;
+	// 스테미나
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int Stamina;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int maxStamina = 100;
+
+public:	// 회피 시작하기
+	UPROPERTY(VisibleAnywhere, Category = "Rolling")
+		class UStaticMeshComponent* RollingCircle;
+	// 회피 활성화 여부
+	bool bRolling = false;
+	// 회피 버튼 눌렀을때
+	void RollingStart(const FInputActionValue& Values);
+	// 회피 버튼 땟을때
+	void RollingEnd(const FInputActionValue& Values);
+	// 회피 기능 리셋
+	bool ResetRolling();
+	// 직선 회피 처리하기
+	void DrawRollingStraight();
+	// 회피선과 충돌체크 함수
+	bool CheckHitRolling(FVector LastPos, FVector& CurPos);
+	// 충돌 처리 함수
+	bool HitTest(FVector LastPos, FVector CurPos, FHitResult& HitInfo);
+	// 회피 입력액션
+		UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Rolling;
+	// 텔레포트할 위치
+	FVector RollingLocation;
+	
+private:
+	// 회피 사용여부
+	UPROPERTY(EditAnywhere, Category = "Rolling", meta = (AllowPrivateAccess = true))
+		bool IsRolling = true;
+
+	// 타이머
+	UPROPERTY()
+		FTimerHandle RollingHandle;
+	// 경과시간
+	UPROPERTY()
+		float CurTime = 0;
+	// 워프할 때 걸릴 시간
+	UPROPERTY(EditAnywhere, Category = "Rolling", meta = (AllowPrivateAccess = true))
+		float RollingTime = 0.4f;
+
+	// 회피 수행할 함수
+	void DoRolling();
+	//점프 입력
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Jump;
+	//점프 처리
+	void onActionJump();
+
+	void DoAttack();
+	void DoDefence();
 };

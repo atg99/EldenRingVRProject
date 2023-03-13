@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include <DrawDebugHelpers.h>
 #include <Components/CapsuleComponent.h>
+#include "PCPlayerAnim.h"
 
 
 // Sets default values
@@ -75,6 +76,9 @@ void APCPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		InputSystem->BindAction(IA_Move, ETriggerEvent::Triggered, this, &APCPlayer::Move);
 		InputSystem->BindAction(IA_Mouse, ETriggerEvent::Triggered, this, &APCPlayer::Turn);
 		InputSystem->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &APCPlayer::onActionJump);
+		InputSystem->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &APCPlayer::Attack);
+		InputSystem->BindAction(IA_Defence, ETriggerEvent::Triggered, this, &APCPlayer::Defence);
+		InputSystem->BindAction(IA_Desh, ETriggerEvent::Triggered, this, &APCPlayer::Desh);
 
 	}
 }
@@ -97,3 +101,22 @@ void APCPlayer::onActionJump()
 {
 	Jump();
 }
+
+void APCPlayer::Attack()
+{
+	//auto anim = Cast<UPCPlayerAnim>(GetMesh()->GetAnimInstance());
+	//anim->OnAttack(TEXT("ATStart"));
+	//PlayAnimMontage(AttackMontageFactory);
+	
+}
+void APCPlayer::Defence()
+{
+	//PlayAnimMontage(AttackMontageFactory);
+	//auto anim = Cast<UPCPlayerAnim>(GetMesh()->GetAnimInstance());
+	//anim->OnAttack(TEXT("DFStart"));
+}
+void APCPlayer::Desh()
+{
+
+}
+
