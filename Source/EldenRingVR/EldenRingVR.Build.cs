@@ -9,7 +9,7 @@ public class EldenRingVR : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "GameplayTasks", "EnhancedInput", "HeadMountedDisplay"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "GameplayTasks", "EnhancedInput", "HeadMountedDisplay", "UMG"});
 
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

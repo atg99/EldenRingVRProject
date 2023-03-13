@@ -16,6 +16,13 @@ void ATPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (BossHPFac)
+	{
+		BossHP = GetWorld()->SpawnActor(BossHPFac);
+	}
+
+	BossHP->SetActorEnableCollision(false);
+	
 }
 
 // Called every frame
@@ -23,6 +30,9 @@ void ATPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	BossHP->SetActorLocation(GetActorLocation() + GetActorForwardVector() * 1000 - FVector::UpVector * 100);
+	BossHP->SetActorRotation(FRotator(0, (BossHP->GetActorLocation() - GetActorLocation()).Rotation().Yaw + 180, 0));
+	
 }
 
 // Called to bind functionality to input

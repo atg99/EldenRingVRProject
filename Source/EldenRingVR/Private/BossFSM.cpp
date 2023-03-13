@@ -290,14 +290,14 @@ void UBossFSM::JumpAttackState(float time)
 				JumpAnimNum = 2;
 				Speed += 0.001 * Excel;
 				Rate += Speed;
-				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, 0, Rate -		0.7f)));
+				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
 
 			}
 			else if (Rate - 0.7f < 1)
 			{
 				Speed += Excel;
 				Rate += Speed;
-				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, 0, Rate -		0.7f)));
+				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
 			}
 			else
 			{
