@@ -26,49 +26,49 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// ½ºÇÁ¸µ¾Ï
+	// ìŠ¤í”„ë§ì•”
 	UPROPERTY(EditAnywhere)
 		class USpringArmComponent* springArmComp;
-	// Ä«¸Ş¶ó
+	// ì¹´ë©”ë¼
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* cameraComp;
-	//ÀÌµ¿¼Óµµ
+	//ì´ë™ì†ë„
 	UPROPERTY(EditAnywhere)
 		float moveSpeed = 500;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputMappingContext* IMC_VRInput;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Move;
-	// ÀÌµ¿ Ã³¸®
+	// ì´ë™ ì²˜ë¦¬
 	void Move(const FInputActionValue& Values);
-	// ¸¶¿ì½º ÀÔ·Â
+	// ë§ˆìš°ìŠ¤ ì…ë ¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Mouse;
-	// ¸¶¿ì½º È¸Àü
+	// ë§ˆìš°ìŠ¤ íšŒì „
 	void Turn(const FInputActionValue& Values);
 
-	//Á¡ÇÁ ÀÔ·Â
+	//ì í”„ ì…ë ¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Jump;
-	//Á¡ÇÁ Ã³¸®
+	//ì í”„ ì²˜ë¦¬
 	void onActionJump();
-	// °ø°İÀÔ·Â
+	// ê³µê²©ì…ë ¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Attack;
-	//°ø°İÃ³¸®
+	//ê³µê²©ì²˜ë¦¬
 	void Attack();
-	//¹æ¾îÀÔ·Â
+	//ë°©ì–´ì…ë ¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Defence;
-	//¹æ¾îÃ³¸®
+	//ë°©ì–´ì²˜ë¦¬
 	void Defence();
-	//´ë½ÃÀÔ·Â
+	//ëŒ€ì‹œì…ë ¥
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Desh;
-	//´ë½ÃÃ³¸®
+	//ëŒ€ì‹œì²˜ë¦¬
 	void Desh();
 
-	//¸ùÅ¸ÁÖ
+	//ëª½íƒ€ì£¼
 	UPROPERTY(EditAnywhere)
 	class UAnimMontage* AttackMontageFactory;
 

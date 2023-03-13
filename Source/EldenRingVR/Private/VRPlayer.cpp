@@ -18,11 +18,11 @@ AVRPlayer::AVRPlayer()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// VRÄ«¸Ş¶ó »ı¼º
+	// VRì¹´ë©”ë¼ ìƒì„±
 	VRCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("VRCamera"));
 	VRCamera->SetupAttachment(RootComponent);
 	VRCamera->bUsePawnControlRotation = true;
-	// ¼Õ Ãß°¡
+	// ì† ì¶”ê°€
 	LeftHand = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftHand"));
 	LeftHand->SetupAttachment(RootComponent);
 	LeftHand->SetTrackingMotionSource(FName("Left"));
@@ -30,13 +30,13 @@ AVRPlayer::AVRPlayer()
 	RightHand->SetupAttachment(RootComponent);
 	RightHand->SetTrackingMotionSource(FName("Right"));
 
-	//½ºÄÌ·¹Å» ¸Ş½Ã ÄÄÆ÷³ÍÆ® ¸¸µé±â
+	//ìŠ¤ì¼ˆë ˆíƒˆ ë©”ì‹œ ì»´í¬ë„ŒíŠ¸ ë§Œë“¤ê¸°
 	LeftHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LeftHandMesh"));
 	LeftHandMesh->SetupAttachment(LeftHand);
 	RightHandMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RightHandMesh"));
 	RightHandMesh->SetupAttachment(RightHand);
 
-	// ¿Ş¼Õ ¸Ş½Ã ÇÒ´ç
+	// ì™¼ì† ë©”ì‹œ í• ë‹¹
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_left.SKM_MannyXR_left'"));
 	if (TempMesh.Succeeded())
 	{
@@ -44,7 +44,7 @@ AVRPlayer::AVRPlayer()
 		LeftHandMesh->SetRelativeLocation(FVector(-2.9, -3.5, 4.5));
 		LeftHandMesh->SetRelativeRotation(FRotator(-25, -180, 90));
 	}
-	// ¿À¸¥¼Õ ¸Ş½Ã ÇÒ´ç
+	// ì˜¤ë¥¸ì† ë©”ì‹œ í• ë‹¹
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>TempMesh2(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/MannequinsXR/Meshes/SKM_MannyXR_right.SKM_MannyXR_right'"));
 	if (TempMesh2.Succeeded())
 	{
@@ -52,7 +52,7 @@ AVRPlayer::AVRPlayer()
 		RightHandMesh->SetRelativeLocation(FVector(-2.9, 3.5, 4.5));
 		RightHandMesh->SetRelativeRotation(FRotator(25, 0, 90));
 	}
-	//È¸ÇÇ
+	//íšŒí”¼
 	RollingCircle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RollingCircle"));
 	RollingCircle->SetupAttachment(RootComponent);
 	RollingCircle->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -62,7 +62,7 @@ AVRPlayer::AVRPlayer()
 void AVRPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	//Enhanced Input »ç¿ëÃ³¸®
+	//Enhanced Input ì‚¬ìš©ì²˜ë¦¬
 	auto PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PC)
 	{
@@ -85,7 +85,7 @@ void AVRPlayer::BeginPlay()
 void AVRPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// È¸ÇÇ È®ÀÎ Ã³¸®
+	// íšŒí”¼ í™•ì¸ ì²˜ë¦¬
 	if (bRolling)
 	{
 		DrawRollingStraight();
@@ -123,39 +123,39 @@ void AVRPlayer::Turn(const FInputActionValue& Values)
 	AddControllerPitchInput(Axis.Y);
 }
 
-// È¸ÇÇ ±â´É È°¼ºÈ­Ã³¸®
+// íšŒí”¼ ê¸°ëŠ¥ í™œì„±í™”ì²˜ë¦¬
 void AVRPlayer::RollingStart(const FInputActionValue& Values)
 {
-	// ´©¸£°í ÀÖ´Â Áß¿¡´Â »ç¿ëÀÚ°¡ ¾îµğ¸¦ °¡¸®Å°´ÂÁö ÁÖ½ÃÇÏ°í ½Í´Ù.
+	// ëˆ„ë¥´ê³  ìˆëŠ” ì¤‘ì—ëŠ” ì‚¬ìš©ìê°€ ì–´ë””ë¥¼ ê°€ë¦¬í‚¤ëŠ”ì§€ ì£¼ì‹œí•˜ê³  ì‹¶ë‹¤.
 	bRolling = true;
 }
 
 void AVRPlayer::RollingEnd(const FInputActionValue& Values)
 {
-	// È¸ÇÇ ±â´É ¸®¼Â
-	// ¸¸¾à ÅÚ·¹Æ÷Æ®°¡ ºÒ°¡´ÉÇÏ´Ù¸é
+	// íšŒí”¼ ê¸°ëŠ¥ ë¦¬ì…‹
+	// ë§Œì•½ í…”ë ˆí¬íŠ¸ê°€ ë¶ˆê°€ëŠ¥í•˜ë‹¤ë©´
 	if (ResetRolling() == false)
 	{
-		// ´ÙÀ½ Ã³¸®¸¦ ÇÏÁö ¾Ê´Â´Ù.
+		// ë‹¤ìŒ ì²˜ë¦¬ë¥¼ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 		return;
 	}
 
-	// È¸ÇÇ »ç¿ë½Ã È¸ÇÇÃ³¸®
+	// íšŒí”¼ ì‚¬ìš©ì‹œ íšŒí”¼ì²˜ë¦¬
 	if (IsRolling)
 	{
 		DoRolling();
 		return;
 	}
-	// ±×·¸Áö ¾ÊÀ»°æ¿ì È¸ÇÇ
-	// È¸ÇÇ À§Ä¡·Î ÀÌµ¿ÇÏ°í ½Í´Ù.
+	// ê·¸ë ‡ì§€ ì•Šì„ê²½ìš° íšŒí”¼
+	// íšŒí”¼ ìœ„ì¹˜ë¡œ ì´ë™í•˜ê³  ì‹¶ë‹¤.
 	SetActorLocation(RollingLocation + FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 }
 
 bool AVRPlayer::ResetRolling()
 {
-	// È¸ÇÇ°¡ È°¼ºÈ­ µÇ¾î ÀÖÀ» ¶§¸¸ È¸ÇÇ °¡´ÉÇÏ´Ù.
+	// íšŒí”¼ê°€ í™œì„±í™” ë˜ì–´ ìˆì„ ë•Œë§Œ íšŒí”¼ ê°€ëŠ¥í•˜ë‹¤.
 	bool bCanRolling = RollingCircle->GetVisibleFlag();
-	// ½áÅ¬ ¾Èº¸ÀÌ°Ô Ã³¸®
+	// ì¨í´ ì•ˆë³´ì´ê²Œ ì²˜ë¦¬
 	RollingCircle->SetVisibility(false);
 	bRolling = false;
 	
@@ -166,12 +166,12 @@ bool AVRPlayer::ResetRolling()
 void AVRPlayer::DrawRollingStraight()
 {
 	
-	// Á÷¼±À» ±×¸®°í ½Í´Ù.
-	// ÇÊ¿äÁ¤º¸ : ½ÃÀÛÁ¡, Á¾·áÁ¡
+	// ì§ì„ ì„ ê·¸ë¦¬ê³  ì‹¶ë‹¤.
+	// í•„ìš”ì •ë³´ : ì‹œì‘ì , ì¢…ë£Œì 
 	FVector StartPos = VRCamera->GetComponentLocation();
 	FVector EndPos = StartPos + VRCamera->GetForwardVector() * 500;
 
-	// µÎ Á¡ »çÀÌ¿¡ Ãæµ¹Ã¼°¡ ÀÖ´ÂÁö Ã¼Å©ÇÏÀÚ	
+	// ë‘ ì  ì‚¬ì´ì— ì¶©ëŒì²´ê°€ ìˆëŠ”ì§€ ì²´í¬í•˜ì	
 	CheckHitRolling(StartPos, EndPos);
 	
 	DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Red, false, -1, 0, 1);
@@ -181,14 +181,14 @@ bool AVRPlayer::CheckHitRolling(FVector LastPos, FVector& CurPos)
 {
 	FHitResult HitInfo;
 	bool bHit = HitTest(LastPos, CurPos, HitInfo);
-	// ¸¸¾à ºÎµúÈù ´ë»óÀÌ ¹Ù´ÚÀÌ¶ó¸é
+	// ë§Œì•½ ë¶€ë”ªíŒ ëŒ€ìƒì´ ë°”ë‹¥ì´ë¼ë©´
 	if (bHit && HitInfo.GetActor()->GetName().Contains(TEXT("Floor")))
 	{
-		// ¸¶Áö¸· Á¡À»(EndPos) ÃÖÁ¾ Á¡À¸·Î ¼öÁ¤ÇÏ°í ½Í´Ù.
+		// ë§ˆì§€ë§‰ ì ì„(EndPos) ìµœì¢… ì ìœ¼ë¡œ ìˆ˜ì •í•˜ê³  ì‹¶ë‹¤.
 		CurPos = HitInfo.Location;
-		// ½áÅ¬ È°¼ºÈ­
+		// ì¨í´ í™œì„±í™”
 		RollingCircle->SetVisibility(true);
-		// ÅÚ·¹Æ÷Æ®½áÅ¬À» À§Ä¡
+		// í…”ë ˆí¬íŠ¸ì¨í´ì„ ìœ„ì¹˜
 		RollingCircle->SetWorldLocation(CurPos);
 		RollingLocation = CurPos;
 	}
@@ -202,7 +202,7 @@ bool AVRPlayer::CheckHitRolling(FVector LastPos, FVector& CurPos)
 bool AVRPlayer::HitTest(FVector LastPos, FVector CurPos, FHitResult& HitInfo)
 {
 	FCollisionQueryParams Params;
-	// ÀÚ±âÀÚ½ÅÀº ¹«½ÃÇØ¶ó
+	// ìê¸°ìì‹ ì€ ë¬´ì‹œí•´ë¼
 	Params.AddIgnoredActor(this);
 
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitInfo, LastPos, CurPos, ECC_Visibility, Params);
@@ -211,41 +211,41 @@ bool AVRPlayer::HitTest(FVector LastPos, FVector CurPos, FHitResult& HitInfo)
 }
 void AVRPlayer::DoRolling()
 {
-	// ¿öÇÁ±â´ÉÀÌ È°¼ºÈ­ µÇ¾î ÀÖÀ» ¶§
+	// ì›Œí”„ê¸°ëŠ¥ì´ í™œì„±í™” ë˜ì–´ ìˆì„ ë•Œ
 	if (IsRolling == false)
 	{
 		return;
 	}
-	// ¿öÇÁÃ³¸® ÇÏ°í ½Í´Ù.
-	// -> ÀÏÁ¤½Ã°£µ¿¾È ºü¸£°Ô ÀÌµ¿ÇÏ´Â°Å¾ß
-	// °æ°ú½Ã°£ ÃÊ±âÈ­
+	// ì›Œí”„ì²˜ë¦¬ í•˜ê³  ì‹¶ë‹¤.
+	// -> ì¼ì •ì‹œê°„ë™ì•ˆ ë¹ ë¥´ê²Œ ì´ë™í•˜ëŠ”ê±°ì•¼
+	// ê²½ê³¼ì‹œê°„ ì´ˆê¸°í™”
 	CurTime = 0;
-	// Ãæµ¹Ã¼ ºñÈ°¼ºÈ­ 
+	// ì¶©ëŒì²´ ë¹„í™œì„±í™” 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	// 3. ½Ã°£ÀÌ Èê·¯¾ßÇÑ´Ù.
-	// 2. ÀÏÁ¤½Ã°£µ¿¾È
-	// [Ä¸Ã³]()->{ body }
+	// 3. ì‹œê°„ì´ í˜ëŸ¬ì•¼í•œë‹¤.
+	// 2. ì¼ì •ì‹œê°„ë™ì•ˆ
+	// [ìº¡ì²˜]()->{ body }
 	GetWorld()->GetTimerManager().SetTimer(RollingHandle, FTimerDelegate::CreateLambda(
 		[this]()->void
 		{
 			// body
-			// ÀÏÁ¤½Ã°£¾È¿¡ ¸ñÀûÁö¿¡ µµÂøÇÏ°í ½Í´Ù.
-			// 1. ½Ã°£ÀÌ Èê·¯¾ßÇÑ´Ù.
+			// ì¼ì •ì‹œê°„ì•ˆì— ëª©ì ì§€ì— ë„ì°©í•˜ê³  ì‹¶ë‹¤.
+			// 1. ì‹œê°„ì´ í˜ëŸ¬ì•¼í•œë‹¤.
 			CurTime += GetWorld()->DeltaTimeSeconds;
-			// ÇöÀç
+			// í˜„ì¬
 			FVector CurPos = GetActorLocation();
-			// µµÂø
+			// ë„ì°©
 			FVector EndPos = RollingLocation + FVector::UpVector * GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-			// 2. ÀÌµ¿ÇØ¾ßÇÑ´Ù.
+			// 2. ì´ë™í•´ì•¼í•œë‹¤.
 			CurPos = FMath::Lerp<FVector>(CurPos, EndPos, CurTime /RollingTime);
-			// 3. ¸ñÀûÁö¿¡ µµÂø
+			// 3. ëª©ì ì§€ì— ë„ì°©
 			SetActorLocation(CurPos);
-			// ½Ã°£ÀÌ ´Ù Èê·¶´Ù¸é 
+			// ì‹œê°„ì´ ë‹¤ í˜ë €ë‹¤ë©´ 
 			if (CurTime >= RollingTime)
 			{
-				// -> ±× À§Ä¡·Î ÇÒ´çÇÏ°í
+				// -> ê·¸ ìœ„ì¹˜ë¡œ í• ë‹¹í•˜ê³ 
 				SetActorLocation(EndPos);
-				// -> Å¸ÀÌ¸Ó Á¾·áÇØÁÖ±â
+				// -> íƒ€ì´ë¨¸ ì¢…ë£Œí•´ì£¼ê¸°
 				GetWorld()->GetTimerManager().ClearTimer(RollingHandle);
 				GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 			}
