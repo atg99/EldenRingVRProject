@@ -29,11 +29,17 @@ public:
 
 	//이동속도
 	UPROPERTY(EditAnywhere)
-		float moveSpeed = 500;
+	float moveSpeed = 500;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-		class UInputMappingContext* IMC_VRInput;
+	class UInputMappingContext* IMC_VRInput;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-		class UInputAction* IA_Move;
+	class UInputAction* IA_Move;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* IA_Interaction;
+	
 	// 이동 처리
 	void Move(const FInputActionValue& Values);
 public:
@@ -126,10 +132,25 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Jump;
 	//점프 처리
+	UFUNCTION()
 	void onActionJump();
-
+	
+	UFUNCTION()
 	void DoAttack();
+
+	UFUNCTION()
 	void DoDefence();
+
+	UFUNCTION()
+	void Interact();
+
+	UFUNCTION()
+	void InteractEnd();
+
+	UPROPERTY(EditAnywhere)
+	class UWidgetInteractionComponent* interactionComp;
+	//UPROPERTY()
+	//TSubclassOf<class APlayerStatActor> statActor;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -137,5 +158,11 @@ public:
 
 	UPROPERTY()
 		class UBossHP* BossHP;
+
+	UPROPERTY()
+	class APlayerStatActor* statWindow;
+	
+	UPROPERTY()
+	bool bStatInteraction;
 
 };

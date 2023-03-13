@@ -3,8 +3,12 @@
 
 #include "PlayerStatActor.h"
 
+#include "UI_PlayerStat.h"
+#include "VRPlayer.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 APlayerStatActor::APlayerStatActor()
@@ -24,13 +28,29 @@ APlayerStatActor::APlayerStatActor()
 void APlayerStatActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	player = Cast<AVRPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	player->statWindow = this;
+
+	statUI = Cast<UUI_PlayerStat>(statWindow->GetWidget());
 }
 
 // Called every frame
 void APlayerStatActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	SetActorRotation(FRotator( 0,(player->GetActorLocation()-GetActorLocation()).Rotation().Yaw, 0));
+	//SetActorRotation((player->GetActorLocation()-GetActorLocation()).GetSafeNormal().)
 }
 
+void APlayerStatActor::HideStatWindow()
+{
+}
+
+void APlayerStatActor::SetStatWindow()
+{
+	if(statUI)
+	{
+		statUI->ShowStatSet();
+	}
+}

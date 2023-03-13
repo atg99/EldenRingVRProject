@@ -12,6 +12,8 @@
 #include <HeadMountedDisplayFunctionLibrary.h>
 #include <Components/CapsuleComponent.h>
 #include "BossHP.h"
+#include "PlayerStatActor.h"
+#include "Components/WidgetInteractionComponent.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -63,6 +65,9 @@ AVRPlayer::AVRPlayer()
 	{
 		BossHPC = BossHPCL.Class;
 	}
+
+	interactionComp = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("interaction"));
+	interactionComp->SetupAttachment(VRCamera);
 }
 
 // Called when the game starts or when spawned
@@ -120,6 +125,8 @@ void AVRPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 		InputSystem->BindAction(IA_Rolling, ETriggerEvent::Started, this, &AVRPlayer::RollingStart);
 		InputSystem->BindAction(IA_Rolling, ETriggerEvent::Completed, this, &AVRPlayer::RollingEnd);
+		InputSystem->BindAction(IA_Interaction, ETriggerEvent::Started, this, &AVRPlayer::Interact);
+		InputSystem->BindAction(IA_Interaction, ETriggerEvent::Completed, this, &AVRPlayer::InteractEnd);
 	}
 }
 
@@ -278,4 +285,28 @@ void AVRPlayer::DoAttack()
 }
 void AVRPlayer::DoDefence()
 {
+}
+
+void AVRPlayer::Interact()
+{
+	if(interactionComp)
+	{
+		//interactionComp->PressPointerKey(FKey(FName("E")));
+		UE_LOG(LogTemp, Warning, TEXT("INteraction"));
+		interactionComp->PressPointerKey(EKeys::E);
+	}
+	if(bStatInteraction)
+	{
+		// 	GetWorld()->SpawnActor<APlayerStatActor>(statActor, VRCamera->GetComponentLocation()+VRCamera->GetForwardVector()*600, FRotator::ZeroRotator);statWindow->SetStatWindow();
+		statWindow->SetStatWindow();
+	}
+}
+
+void AVRPlayer::InteractEnd()
+{
+	if(interactionComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("INteractionEnd"));
+		interactionComp->ReleasePointerKey(EKeys::E);
+	}
 }

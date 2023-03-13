@@ -13,7 +13,8 @@ void UUI_PlayerStat::NativeConstruct()
 	Super::NativeConstruct();
 
 	player = Cast<AVRPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("Set"));
 	HP->OnPressed.AddDynamic(this, &UUI_PlayerStat::HP_Press);
 	MP->OnPressed.AddDynamic(this, &UUI_PlayerStat::MP_Press);
 	SP->OnPressed.AddDynamic(this, &UUI_PlayerStat::SP_Press);
@@ -41,36 +42,42 @@ void UUI_PlayerStat::ShowStatSet()
 
 void UUI_PlayerStat::HP_Press()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HP"));
 	increaseHP++;
 	nextHP->SetText(FText::AsNumber(player->maxHP++));
 }
 
 void UUI_PlayerStat::MP_Press()
 {
+	UE_LOG(LogTemp, Warning, TEXT("MP"));
 	increaseMP++;
 	nextMP->SetText(FText::AsNumber(player->maxMP++));
 }
 
 void UUI_PlayerStat::SP_Press()
 {
+	UE_LOG(LogTemp, Warning, TEXT("SP"));
 	increaseSP++;
 	nextSP->SetText(FText::AsNumber(player->maxStamina++));
 }
 
 void UUI_PlayerStat::INT_Press()
 {
+	UE_LOG(LogTemp, Warning, TEXT("INT"));
 	increaseINT++;
 	nextINT->SetText(FText::AsNumber(player->INT++));
 }
 
 void UUI_PlayerStat::STR_Press()
 {
+	UE_LOG(LogTemp, Warning, TEXT("STR"));
 	increaseSTR++;
 	nextSTR->SetText(FText::AsNumber(player->STR++));
 }
 
 void UUI_PlayerStat::decision_Press()
 {
+	UE_LOG(LogTemp, Warning, TEXT("decision"));
 	player->maxHP += increaseHP;
 	player->maxMP += increaseMP;
 	player->maxStamina += increaseSP;

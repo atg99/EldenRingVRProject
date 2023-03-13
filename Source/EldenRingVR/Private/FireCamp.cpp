@@ -4,6 +4,7 @@
 #include "FireCamp.h"
 
 #include "PCPlayer.h"
+#include "VRPlayer.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
@@ -51,6 +52,12 @@ void AFireCamp::FireBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		//auto player = Cast<APCPlayer>(OtherActor);
 		interaction->SetVisibility(true);
+
+		AVRPlayer* vrPlayer = Cast<AVRPlayer>(OtherActor);
+		if(vrPlayer)
+		{
+			vrPlayer->bStatInteraction = true;
+		}
 		
 	}
 }
@@ -62,6 +69,11 @@ void AFireCamp::FireEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	{
 		
 		interaction->SetVisibility(false);
+		AVRPlayer* vrPlayer = Cast<AVRPlayer>(OtherActor);
+		if(vrPlayer)
+		{
+			vrPlayer->bStatInteraction = false;
+		}
 		
 	}
 }

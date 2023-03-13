@@ -22,19 +22,19 @@ public:
 	class UButton* decision;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	class UButton* HP;
+	class UButton* HP = 0;
 	
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	class UButton* MP;
+	class UButton* MP = 0;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	class UButton* SP;
+	class UButton* SP = 0;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	class UButton* INT;
+	class UButton* INT = 0;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
-	class UButton* STR;
+	class UButton* STR = 0;
 
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	class UTextBlock* curHP;
@@ -71,22 +71,22 @@ public:
 
 private:
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void HP_Press();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void MP_Press();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SP_Press();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void INT_Press();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void STR_Press();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void decision_Press();
 
 	UPROPERTY()
@@ -106,4 +106,5 @@ private:
 
 	UPROPERTY()
 	class AVRPlayer* player;
+	
 };
