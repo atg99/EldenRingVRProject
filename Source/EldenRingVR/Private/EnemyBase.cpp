@@ -327,13 +327,20 @@ void AEnemyBase::EnemyMergeV2()
 		poseableMesh->SetBoneTransformByName(Bone, lerpTransform, EBoneSpaces::WorldSpace);
 		a++;
 	}
-	
-	if(mergeV2LerpTime >= 1)
+
+	FTimerHandle timerHandle_merge;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle_merge, FTimerDelegate::CreateLambda([this]()->void
 	{
 		mergeV2LerpTime = 0;
 		bMergeV2 = false;
 		EnemyMergeEnd();
-	}
+	}), 3 ,false);
+	// if(mergeV2LerpTime >= 1)
+	// {
+	// 	mergeV2LerpTime = 0;
+	// 	bMergeV2 = false;
+	// 	EnemyMergeEnd();
+	// }
 }
 
 void AEnemyBase::EnemyMergeEnd() 
