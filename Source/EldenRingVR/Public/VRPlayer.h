@@ -60,7 +60,6 @@ protected:
 public:	
 
 	// 생명력
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -75,7 +74,12 @@ public:
 		int Stamina;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int maxStamina = 100;
-
+	//지력
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int INT = 100;
+	// 힘
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int STR = 100;
 
 public:	// 회피 시작하기
 
