@@ -46,6 +46,39 @@ public:
 		class UInputAction* IA_Mouse;
 	// 마우스 회전
 	void Turn(const FInputActionValue& Values);
-		
 
+	//점프 입력
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Jump;
+	//점프 처리
+	void onActionJump();
+	// 공격입력
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Attack;
+	//공격처리
+	void Attack();
+	//방어입력
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Defence;
+	//방어처리
+	void Defence();
+	//대시입력
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Desh;
+	//대시처리
+	void Desh();
+
+	//몽타주
+	UPROPERTY(EditAnywhere)
+	class UAnimMontage* AttackMontageFactory;
+
+	/*
+	UFUNCTION(BlueprintCallable)
+		void CallByBlueprint();
+	UFUNCTION(BlueprintCallable)
+		void OnAttack(FName sectionName);
+	*/
+	
+
+	
 };

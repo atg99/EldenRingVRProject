@@ -27,32 +27,97 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//ì´ë™ì†ë„
+	//ÀÌµ¿¼Óµµ
 	UPROPERTY(EditAnywhere)
 		float moveSpeed = 500;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputMappingContext* IMC_VRInput;
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Move;
-	// ì´ë™ ì²˜ë¦¬
+	// ÀÌµ¿ Ã³¸®
 	void Move(const FInputActionValue& Values);
-	// ë§ˆìš°ìŠ¤ ì…ë ¥
+public:
+	// ¸¶¿ì½º ÀÔ·Â
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputAction* IA_Mouse;
-	// ë§ˆìš°ìŠ¤ íšŒì „
+	// ¸¶¿ì½º È¸Àü
 	void Turn(const FInputActionValue& Values);
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "VRCamera")
 		class UCameraComponent* VRCamera;
-	// VRì»¨íŠ¸ë¡¤ëŸ¬
+	// VRÄÁÆ®·Ñ·¯
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class UMotionControllerComponent* LeftHand;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class UMotionControllerComponent* RightHand;
-	// ì‚¬ìš©í•  ì† ëª¨ë¸
+	// »ç¿ëÇÒ ¼Õ ¸ğµ¨
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class USkeletalMeshComponent* LeftHandMesh;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class USkeletalMeshComponent* RightHandMesh;
+	// »ı¸í·Â
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int HP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int maxHP = 100;
+	// ¸¶³ª
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int MP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int maxMP = 100;
+	// ½ºÅ×¹Ì³ª
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int Stamina;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int maxStamina = 100;
+
+public:	// È¸ÇÇ ½ÃÀÛÇÏ±â
+	UPROPERTY(VisibleAnywhere, Category = "Rolling")
+		class UStaticMeshComponent* RollingCircle;
+	// È¸ÇÇ È°¼ºÈ­ ¿©ºÎ
+	bool bRolling = false;
+	// È¸ÇÇ ¹öÆ° ´­·¶À»¶§
+	void RollingStart(const FInputActionValue& Values);
+	// È¸ÇÇ ¹öÆ° ¶­À»¶§
+	void RollingEnd(const FInputActionValue& Values);
+	// È¸ÇÇ ±â´É ¸®¼Â
+	bool ResetRolling();
+	// Á÷¼± È¸ÇÇ Ã³¸®ÇÏ±â
+	void DrawRollingStraight();
+	// È¸ÇÇ¼±°ú Ãæµ¹Ã¼Å© ÇÔ¼ö
+	bool CheckHitRolling(FVector LastPos, FVector& CurPos);
+	// Ãæµ¹ Ã³¸® ÇÔ¼ö
+	bool HitTest(FVector LastPos, FVector CurPos, FHitResult& HitInfo);
+	// È¸ÇÇ ÀÔ·Â¾×¼Ç
+		UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Rolling;
+	// ÅÚ·¹Æ÷Æ®ÇÒ À§Ä¡
+	FVector RollingLocation;
+	
+private:
+	// È¸ÇÇ »ç¿ë¿©ºÎ
+	UPROPERTY(EditAnywhere, Category = "Rolling", meta = (AllowPrivateAccess = true))
+		bool IsRolling = true;
+
+	// Å¸ÀÌ¸Ó
+	UPROPERTY()
+		FTimerHandle RollingHandle;
+	// °æ°ú½Ã°£
+	UPROPERTY()
+		float CurTime = 0;
+	// ¿öÇÁÇÒ ¶§ °É¸± ½Ã°£
+	UPROPERTY(EditAnywhere, Category = "Rolling", meta = (AllowPrivateAccess = true))
+		float RollingTime = 0.4f;
+
+	// È¸ÇÇ ¼öÇàÇÒ ÇÔ¼ö
+	void DoRolling();
+	//Á¡ÇÁ ÀÔ·Â
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_Jump;
+	//Á¡ÇÁ Ã³¸®
+	void onActionJump();
+
+	void DoAttack();
+	void DoDefence();
 };
