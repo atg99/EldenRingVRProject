@@ -79,6 +79,19 @@ public:
 		void OnAttack(FName sectionName);
 	*/
 	
+public:
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//	TSubclassOf<AActor> BossHPFac;
+	//
+	//UPROPERTY()
+	//	AActor* BossHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<class UBossHP> BossHPC;
+
+	UPROPERTY()
+		class UBossHP* BossHP;
 
 	
 };

@@ -14,4 +14,12 @@ class ELDENRINGVR_API AVRGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+
+	AVRGameModeBase();
+	virtual void BeginPlay() override;
+
+	
+
+
 };

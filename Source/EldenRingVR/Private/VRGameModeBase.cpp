@@ -3,3 +3,17 @@
 
 #include "VRGameModeBase.h"
 
+
+AVRGameModeBase::AVRGameModeBase()
+{
+	
+
+}
+
+void AVRGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
+
+}
