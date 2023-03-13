@@ -128,11 +128,13 @@ void UBossFSM::IdleState()
 				if (Target->GetDistanceTo(Boss) <= 200)
 				{
 					IsTailAttack = true;
+					Boss->CanHit = true;
 					BState = EBossState::TailAttack;
 				}
 				else
 				{	
 					IsTailAttack = true;
+					Boss->CanHit = true;
 					ReservState = EBossState::TailAttack;
 					BState = EBossState::MoveClose;
 					
@@ -301,6 +303,10 @@ void UBossFSM::JumpAttackState(float time)
 			}
 			else
 			{
+				if (Target->GetDistanceTo(Boss) < 300)
+				{
+					Target->HP--;
+				}
 				JumpAnimNum = 3;
 				IsJumpAttack = false;
 				IsLocationReset = false;
@@ -319,8 +325,7 @@ void UBossFSM::TailAttackState(float time)
 	if (IsTailAttack)
 	{
 		if (TailAttackCount <= 25)
-		{
-			
+		{		
 			Boss->AddActorLocalRotation(FRotator(0.0f, -1.0f, 0.0f));
 			TailAttackCount++;
 		}
@@ -334,12 +339,18 @@ void UBossFSM::TailAttackState(float time)
 		{
 			Boss->AddActorLocalRotation(FRotator(0.0f, 12.4333f, 0.0f));
 			TailAttackCount++;
+			if (Boss->CanHit && Boss->GetDistanceTo(Target) <= 300)
+			{
+				Boss->CanHit = false;
+				Target->HP--;
+			}
 		}
 		else
 		{
 			
 			TailAttackCount = 0;
 			IsTailAttack = false;
+			Boss->CanHit = false;
 			BState = EBossState::Wait;
 		}
 	
@@ -433,13 +444,14 @@ void UBossFSM::DaggerAttackThrowState()
 void UBossFSM::DaggerAttackThrow2()
 {
 	Boss->BossAnimInst->DaggerAttack(FName("Dagger"));
+	Boss->CanHit = true;
 	
 
 }
 
 void UBossFSM::DaggerAttackThrow3()
 {
-
+	Boss->CanHit = false;
 	Boss->Dagger->SetVisibility(false);
 	LocationSet();
 	RotationSet();

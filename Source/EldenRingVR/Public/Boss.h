@@ -56,6 +56,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int32 CurHP = MaxHP;
 
+	bool CanHit;
 
 	
 };

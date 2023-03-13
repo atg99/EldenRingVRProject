@@ -4,6 +4,8 @@
 #include "Dagger.h"
 #include "Components/CapsuleComponent.h"
 #include "Boss.h"
+#include "VRPlayer.h"
+#include "BossFSM.h"
 
 // Sets default values
 ADagger::ADagger()
@@ -29,7 +31,7 @@ ADagger::ADagger()
 void ADagger::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
 // Called every frame
@@ -47,6 +49,14 @@ void ADagger::Tick(float DeltaTime)
 
 void ADagger::OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	class AVRPlayer* Player = Cast<AVRPlayer>(SweepResult.GetActor());
+	if (Player && CanAttack)
+	{
+		Player->HP--;
+		CanAttack = false;
+	}
+	
+
 	
 }
 
@@ -57,11 +67,13 @@ void ADagger::DaggerThrow(FVector vec, FRotator rot)
 	ToTargetR = rot;
 	SetActorRotation(rot + FRotator(0, 90, -90));
 	IsDaggerThrow = true;
+	CanAttack = true;
 	FTimerHandle DestroyTime;
 	GetWorldTimerManager().SetTimer(DestroyTime, this, &ADagger::DaggerDestroy, 5);
 }
 
 void ADagger::DaggerDestroy()
 {
+	CanAttack = false;
 	Destroy();
 }

@@ -32,7 +32,11 @@ public:
 	UFUNCTION()
 		void AnimNotify_ThrowDagger();
 	UFUNCTION()
+		void AnimNotify_InwardSlashStart();	
+	UFUNCTION()
 		void AnimNotify_InwardSlashEnd();	
+	UFUNCTION()
+		void AnimNotify_SlashGroundStart();
 	UFUNCTION()
 		void AnimNotify_SlashGroundEnd();
 

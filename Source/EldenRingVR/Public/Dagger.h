@@ -42,4 +42,6 @@ public:
 	bool IsDaggerThrow;
 	FVector ToTargetV;
 	FRotator ToTargetR;
+
+	bool CanAttack;
 };

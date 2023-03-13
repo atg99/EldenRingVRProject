@@ -6,6 +6,7 @@
 #include "Dagger.h"
 #include "BossFSM.h"
 #include "Components/CapsuleComponent.h"
+#include "VRPlayer.h"
 
 // Sets default values
 ABoss::ABoss()
@@ -82,11 +83,23 @@ void ABoss::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ABoss::OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Dagger"));
+	if (CanHit)
+	{
+		BossFSM->Target->HP--;
+		UE_LOG(LogTemp, Warning, TEXT("Dagger"));
+		CanHit = false;
+	}
+	
 
 }
 
 void ABoss::OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Mace"));
+	if (CanHit)
+	{
+		BossFSM->Target->HP--;
+		UE_LOG(LogTemp, Warning, TEXT("Mace"));
+		CanHit = false;
+	}
+
 }
