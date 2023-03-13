@@ -11,6 +11,7 @@
 #include <DrawDebugHelpers.h>
 #include <Components/CapsuleComponent.h>
 #include "PCPlayerAnim.h"
+#include "BossHP.h"
 
 
 // Sets default values
@@ -38,7 +39,11 @@ APCPlayer::APCPlayer()
 	springArmComp->bUsePawnControlRotation = true;
 	cameraComp->bUsePawnControlRotation = true;
 	
-
+	ConstructorHelpers::FClassFinder<UBossHP> BossHPCL(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/TW/UI/UI_Boss.UI_Boss_C'"));
+	if (BossHPCL.Succeeded())
+	{
+		BossHPC = BossHPCL.Class;
+	}
 
 }
 
@@ -57,12 +62,33 @@ void APCPlayer::BeginPlay()
 			subSystem->AddMappingContext(IMC_VRInput, 0);
 		}
 	}
+
+	BossHP = CreateWidget<UBossHP>(GetWorld(), BossHPC);
+	if (GetWorld()->GetMapName() == FString("UEDPIE_0_T_Lev"))
+	{
+		BossHP->AddToViewport();
+		
+	}
+
+	//if (BossHPFac)
+	//{
+	//	BossHP = GetWorld()->SpawnActor(BossHPFac);
+	//}
+	//
+	//BossHP->SetActorEnableCollision(false);
+	//BossHP->SetActorScale3D(FVector(0.1f));
+	
 }
 
 // Called every frame
 void APCPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	//BossHP->SetActorLocation(GetActorLocation() + GetActorForwardVector() * 1000 - FVector::UpVector * 100);
+	//BossHP->SetActorRotation(FRotator(0, (BossHP->GetActorLocation() - GetActorLocation()).Rotation().Yaw + 180, 0));
+	
+
 
 }
 

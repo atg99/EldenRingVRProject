@@ -3,7 +3,7 @@
 
 #include "BossFSM.h"
 #include "Boss.h"
-#include "TPlayer.h"
+#include "PCPlayer.h"
 #include "Kismet/GameplayStatics.h"
 #include "Dagger.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -35,7 +35,7 @@ void UBossFSM::BeginPlay()
 	Super::BeginPlay();
 
 	Boss = Cast<ABoss>(GetOwner());
-	Target = Cast<ATPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	Target = Cast<APCPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 }
 
 
