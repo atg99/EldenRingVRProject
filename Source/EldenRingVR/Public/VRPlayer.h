@@ -186,4 +186,16 @@ public:
 	UFUNCTION()
 	void OnDamaged(float damage);
 
+	UPROPERTY()
+	class AFireCamp* savePoint;
+	
+	UPROPERTY()
+	FString PlayerStartLocation;
+
+	UPROPERTY()
+	FVector PlayerStartVec;
+
+	UPROPERTY()
+	FString startLoc = FString("../../../Content/SaveFiles/startLoc.txt");
+	
 };
