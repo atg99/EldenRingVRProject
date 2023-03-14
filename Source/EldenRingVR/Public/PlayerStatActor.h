@@ -43,6 +43,7 @@ private:
 	
 	UPROPERTY()
 	class AVRPlayer* player;
+	
 };
 
 

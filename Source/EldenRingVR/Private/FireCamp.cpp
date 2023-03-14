@@ -56,6 +56,7 @@ void AFireCamp::FireBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		AVRPlayer* vrPlayer = Cast<AVRPlayer>(OtherActor);
 		if(vrPlayer)
 		{
+			vrPlayer->savePoint = this;
 			vrPlayer->bStatInteraction = true;
 		}
 		

@@ -12,8 +12,11 @@
 #include <HeadMountedDisplayFunctionLibrary.h>
 #include <Components/CapsuleComponent.h>
 #include "BossHP.h"
+#include "FireCamp.h"
 #include "PlayerStatActor.h"
 #include "Components/WidgetInteractionComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -111,7 +114,16 @@ void AVRPlayer::BeginPlay()
 		BossHP->AddToViewport();
 
 	}
-
+	if(UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("ATG_EldenMap"))
+	{
+		FFileHelper::LoadFileToString(PlayerStartLocation, *startLoc);
+		bool bLco;
+		UKismetStringLibrary::Conv_StringToVector(PlayerStartLocation, PlayerStartVec, bLco);
+		if(bLco)
+		{
+			SetActorLocation(PlayerStartVec);
+		}
+	}
 }
 
 // Called every frame
@@ -315,6 +327,12 @@ void AVRPlayer::Interact()
 	{
 		// 	GetWorld()->SpawnActor<APlayerStatActor>(statActor, VRCamera->GetComponentLocation()+VRCamera->GetForwardVector()*600, FRotator::ZeroRotator);statWindow->SetStatWindow();
 		statWindow->SetStatWindow();
+		//UKismetStringLibrary::Conv_StringToVector()
+		
+		PlayerStartLocation = UKismetStringLibrary::Conv_VectorToString(savePoint->GetActorLocation());
+		
+		FFileHelper::SaveStringToFile(PlayerStartLocation, *startLoc);
+		
 		bStatInteraction = false;
 	}
 }
@@ -331,4 +349,12 @@ void AVRPlayer::InteractEnd()
 void AVRPlayer::OnDamaged(float damage)
 {
 	HP -= damage;
+	if(HP <= 0)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
+		if(savePoint)
+		{
+			
+		}
+	}
 }
