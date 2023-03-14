@@ -5,6 +5,7 @@
 
 #include "UI_PlayerStat.h"
 #include "VRPlayer.h"
+#include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -51,7 +52,7 @@ void APlayerStatActor::SetStatWindow()
 {
 	if(statUI)
 	{
-		SetActorLocation(player->)
+		SetActorLocation(player->VRCamera->GetComponentLocation()+player->VRCamera->GetForwardVector()*650);
 		statUI->ShowStatSet();
 	}
 }

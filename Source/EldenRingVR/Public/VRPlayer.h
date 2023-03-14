@@ -49,12 +49,14 @@ public:
 	// 마우스 회전
 	void Turn(const FInputActionValue& Values);
 
+
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 		class UInputMappingContext* IMC_Hand;
 
-protected:
+
 	UPROPERTY(VisibleAnywhere, Category = "VRCamera")
 		class UCameraComponent* VRCamera;
+protected:
 	// VR컨트롤러
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class UMotionControllerComponent* LeftHand;
@@ -180,5 +182,8 @@ public:
 	
 	UPROPERTY()
 	bool bStatInteraction;
+	
+	UFUNCTION()
+	void OnDamaged(float damage);
 
 };

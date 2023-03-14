@@ -5,6 +5,7 @@
 
 #include "EnemyBase.h"
 #include "TPlayer.h"
+#include "VRPlayer.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -51,13 +52,13 @@ void AEnemySword::SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		return;
 	}
 	//플레이어에게 칼이 닿았다
-	ATPlayer* player0 = Cast<ATPlayer>(OtherActor);
+	AVRPlayer* player0 = Cast<AVRPlayer>(OtherActor);
 	if(player0)
 	{
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("PlayerHit")));
 		//데미지 함수
-		
+		player0->OnDamaged(15);
 		//플레이어 임펙트
 		WeaponTrace();
 
