@@ -70,8 +70,12 @@ AVRPlayer::AVRPlayer()
 		BossHPC = BossHPCL.Class;
 	}
 
+	rightAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("rightAim"));
+	rightAim->SetupAttachment(RightHand);
+	rightAim->MotionSource = FName("RightAim");
+	
 	interactionComp = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("interaction"));
-	interactionComp->SetupAttachment(VRCamera);
+	interactionComp->SetupAttachment(rightAim);
 
 	
 	weponMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("weponMeshComp"));

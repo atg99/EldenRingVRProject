@@ -197,5 +197,8 @@ public:
 
 	UPROPERTY()
 	FString startLoc = FString("../../../Content/SaveFiles/startLoc.txt");
+
+	UPROPERTY(EditAnywhere)
+	class UMotionControllerComponent* rightAim;
 	
 };
