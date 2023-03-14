@@ -19,9 +19,11 @@ APCPlayer::APCPlayer()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// 스프링암, 카메라 컴포넌트
+	// 스프링암, 카메라, 무기, 방패 컴포넌트
 	springArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("springArmComp"));
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("cameraComp"));
+	weponMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("weponMeshComp"));
+	shieldMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("shieldMeshComp"));
 
 	// 스프링암을 루트에 붙임
 	springArmComp->SetupAttachment(RootComponent);
@@ -37,7 +39,10 @@ APCPlayer::APCPlayer()
 	bUseControllerRotationYaw = true;
 	springArmComp->bUsePawnControlRotation = true;
 	cameraComp->bUsePawnControlRotation = true;
-	
+	//무기, 방패를 손에 붙임
+	weponMeshComp->SetupAttachment(GetMesh(), TEXT("RightHand"));
+	shieldMeshComp->SetupAttachment(GetMesh(), TEXT("LeftHand"));
+
 
 
 }

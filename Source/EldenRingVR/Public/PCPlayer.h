@@ -32,6 +32,12 @@ public:
 	// 카메라
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* cameraComp;
+	// 무기
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* weponMeshComp;
+	// 방패
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* shieldMeshComp;
 	//이동속도
 	UPROPERTY(EditAnywhere)
 		float moveSpeed = 500;

@@ -56,6 +56,13 @@ AVRPlayer::AVRPlayer()
 	RollingCircle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RollingCircle"));
 	RollingCircle->SetupAttachment(RootComponent);
 	RollingCircle->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	weponMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("weponMeshComp"));
+	shieldMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("shieldMeshComp"));
+	//무기, 방패를 손에 붙임
+	shieldMeshComp->SetupAttachment(GetMesh(), TEXT("hand_l"));
+	weponMeshComp->SetupAttachment(GetMesh(), TEXT("hand_r"));
+	
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +78,8 @@ void AVRPlayer::BeginPlay()
 		if (subSystem)
 		{
 			subSystem->AddMappingContext(IMC_VRInput, 0);
+			subSystem->AddMappingContext(IMC_Hand, 0);
+
 		}
 	}
 	ResetRolling();
@@ -79,6 +88,7 @@ void AVRPlayer::BeginPlay()
 	HP = maxHP;
 	MP = maxMP;
 	Stamina = maxStamina;
+
 }
 
 // Called every frame
