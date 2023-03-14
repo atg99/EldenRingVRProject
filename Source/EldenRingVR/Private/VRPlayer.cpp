@@ -147,6 +147,8 @@ void AVRPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AVRPlayer::Move(const FInputActionValue& Values)
 {
 	FVector2D Axis = Values.Get<FVector2D>();
+	FString msg = FString::Printf(TEXT("X : %.3f, Y : %.3f"), Axis.X, Axis.Y);
+	GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, msg);
 	AddMovementInput(GetActorForwardVector(), Axis.X);
 	AddMovementInput(GetActorRightVector(), Axis.Y);
 }
