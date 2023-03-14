@@ -111,7 +111,7 @@ public:
 	FVector JumpAttackLoc;
 
 	float Timer = 0;
-	float WaitTime = 3;
+	float WaitTime = 1.5;
 	bool IsTimerSet;
 	FTimerHandle WaitTimer;
 	void IdleSet();

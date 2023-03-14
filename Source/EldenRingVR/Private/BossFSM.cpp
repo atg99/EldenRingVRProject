@@ -436,7 +436,7 @@ void UBossFSM::DaggerAttackThrowState()
 		Boss->Dagger->SetVisibility(true);
 		Boss->DaggerComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		FTimerHandle DaggerThrowTime;
-		GetWorld()->GetTimerManager().SetTimer(DaggerThrowTime, this, &UBossFSM::DaggerAttackThrow2, 2.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(DaggerThrowTime, this, &UBossFSM::DaggerAttackThrow2, 0.5f, false);
 	}
 
 
