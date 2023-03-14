@@ -30,4 +30,21 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UWidgetComponent* statWindow;
 
+	UFUNCTION()
+	void SetStatWindow();
+
+	UFUNCTION()
+	void HideStatWindow();
+	
+private:
+
+	UPROPERTY()
+	class UUI_PlayerStat* statUI;
+	
+	UPROPERTY()
+	class AVRPlayer* player;
 };
+
+
+
+
