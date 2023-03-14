@@ -297,7 +297,7 @@ void UBossFSM::JumpAttackState(float time)
 			}
 			else if (Rate - 0.7f < 1)
 			{
-				Speed += Excel;
+				Speed += Excel * 4;
 				Rate += Speed;
 				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
 			}
@@ -305,7 +305,7 @@ void UBossFSM::JumpAttackState(float time)
 			{
 				if (Target->GetDistanceTo(Boss) < 300)
 				{
-					Target->HP--;
+					Target->OnDamaged(10);
 				}
 				JumpAnimNum = 3;
 				IsJumpAttack = false;
@@ -342,7 +342,7 @@ void UBossFSM::TailAttackState(float time)
 			if (Boss->CanHit && Boss->GetDistanceTo(Target) <= 300)
 			{
 				Boss->CanHit = false;
-				Target->HP--;
+				Target->OnDamaged(5);
 			}
 		}
 		else

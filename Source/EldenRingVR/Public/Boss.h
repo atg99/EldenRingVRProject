@@ -52,11 +52,13 @@ public:
 		void OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 MaxHP = 100;
+		float MaxHP = 1000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int32 CurHP = MaxHP;
+		float CurHP = MaxHP;
 
 	bool CanHit;
 
+	UFUNCTION()
+		void OnDamaged(float damage);
 	
 };

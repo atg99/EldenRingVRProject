@@ -41,7 +41,7 @@ void ADagger::Tick(float DeltaTime)
 	
 	if (IsDaggerThrow)
 	{
-		SetActorLocation(GetActorLocation() + ToTargetV * 10);
+		SetActorLocation(GetActorLocation() + ToTargetV * 30);
 	}
 	
 
@@ -52,7 +52,7 @@ void ADagger::OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 	class AVRPlayer* Player = Cast<AVRPlayer>(SweepResult.GetActor());
 	if (Player && CanAttack)
 	{
-		Player->HP--;
+		Player->OnDamaged(3);
 		CanAttack = false;
 	}
 	

@@ -91,7 +91,7 @@ void ABoss::OnDaggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 	if (CanHit)
 	{
-		BossFSM->Target->HP--;
+		BossFSM->Target->OnDamaged(5);
 		UE_LOG(LogTemp, Warning, TEXT("Dagger"));
 		CanHit = false;
 	}
@@ -103,9 +103,15 @@ void ABoss::OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 {
 	if (CanHit)
 	{
-		BossFSM->Target->HP--;
+		BossFSM->Target->OnDamaged(5);
 		UE_LOG(LogTemp, Warning, TEXT("Mace"));
 		CanHit = false;
 	}
 
+}
+
+
+void ABoss::OnDamaged(float damage)
+{
+	CurHP -= damage;
 }
