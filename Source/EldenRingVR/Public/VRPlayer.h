@@ -49,6 +49,9 @@ public:
 	// 마우스 회전
 	void Turn(const FInputActionValue& Values);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputMappingContext* IMC_Hand;
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "VRCamera")
 		class UCameraComponent* VRCamera;
@@ -57,15 +60,28 @@ protected:
 		class UMotionControllerComponent* LeftHand;
 	UPROPERTY(VisibleAnywhere, Category = "MotionController")
 		class UMotionControllerComponent* RightHand;
-	// 사용할 손 모델
-	UPROPERTY(VisibleAnywhere, Category = "MotionController")
+
+	// ����� �� ��
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "MotionController")
 		class USkeletalMeshComponent* LeftHandMesh;
-	UPROPERTY(VisibleAnywhere, Category = "MotionController")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MotionController")
 		class USkeletalMeshComponent* RightHandMesh;
 
 public:	
 
 	// 생명력
+
+	
+	// ����
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* weponMeshComp;
+	// ����
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* shieldMeshComp;
+	
+public:	
+	
+	// ������
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

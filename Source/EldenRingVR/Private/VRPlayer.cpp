@@ -60,6 +60,7 @@ AVRPlayer::AVRPlayer()
 	RollingCircle->SetupAttachment(RootComponent);
 	RollingCircle->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+
 	ConstructorHelpers::FClassFinder<UBossHP> BossHPCL(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/TW/UI/UI_Boss.UI_Boss_C'"));
 	if (BossHPCL.Succeeded())
 	{
@@ -68,6 +69,15 @@ AVRPlayer::AVRPlayer()
 
 	interactionComp = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("interaction"));
 	interactionComp->SetupAttachment(VRCamera);
+
+	
+	weponMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("weponMeshComp"));
+	shieldMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("shieldMeshComp"));
+	//����, ���и� �տ� ����
+	shieldMeshComp->SetupAttachment(GetMesh(), TEXT("hand_l"));
+	weponMeshComp->SetupAttachment(GetMesh(), TEXT("hand_r"));
+	
+
 }
 
 // Called when the game starts or when spawned
@@ -83,6 +93,8 @@ void AVRPlayer::BeginPlay()
 		if (subSystem)
 		{
 			subSystem->AddMappingContext(IMC_VRInput, 0);
+			subSystem->AddMappingContext(IMC_Hand, 0);
+
 		}
 	}
 	ResetRolling();
@@ -92,12 +104,14 @@ void AVRPlayer::BeginPlay()
 	MP = maxMP;
 	Stamina = maxStamina;
 
+
 	BossHP = CreateWidget<UBossHP>(GetWorld(), BossHPC);
 	if (GetWorld()->GetMapName() == FString("UEDPIE_0_T_Lev"))
 	{
 		BossHP->AddToViewport();
 
 	}
+
 }
 
 // Called every frame

@@ -20,24 +20,27 @@ APCPlayer::APCPlayer()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ½ºÇÁ¸µ¾Ï, Ä«¸Þ¶ó ÄÄÆ÷³ÍÆ®
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Ä«ï¿½Þ¶ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	springArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("springArmComp"));
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("cameraComp"));
+	weponMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("weponMeshComp"));
+	shieldMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("shieldMeshComp"));
 
-	// ½ºÇÁ¸µ¾ÏÀ» ·çÆ®¿¡ ºÙÀÓ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	springArmComp->SetupAttachment(RootComponent);
-	// Ä«¸Þ¶ó¸¦ ½ºÇÁ¸µ¾Ï¿¡ ºÙÀÓ
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½
 	cameraComp->SetupAttachment(springArmComp);
-	// ½ºÇÁ¸µ¾Ï À§Ä¡,°Å¸®
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡,ï¿½Å¸ï¿½
 	springArmComp->SetRelativeLocation(FVector(0, 0, 0));
 	springArmComp->TargetArmLength = 400;
-	// Ä«¸Þ¶ó À§Ä¡,°¢µµ
+	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½Ä¡,ï¿½ï¿½ï¿½ï¿½
 	cameraComp->SetRelativeLocation(FVector(41, 0, 87));
 	cameraComp->SetRelativeRotation(FRotator(-20, 0, 0));
-	//ÀÔ·Â°ªÀ» È¸Àü¿¡ ¹Ý¿µ°¡´É
+	//ï¿½Ô·Â°ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½ï¿½
 	bUseControllerRotationYaw = true;
 	springArmComp->bUsePawnControlRotation = true;
 	cameraComp->bUsePawnControlRotation = true;
+
 	
 	ConstructorHelpers::FClassFinder<UBossHP> BossHPCL(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/TW/UI/UI_Boss.UI_Boss_C'"));
 	if (BossHPCL.Succeeded())
@@ -45,13 +48,20 @@ APCPlayer::APCPlayer()
 		BossHPC = BossHPCL.Class;
 	}
 
+	//ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ð¸ï¿½ ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+	weponMeshComp->SetupAttachment(GetMesh(), TEXT("RightHand"));
+	shieldMeshComp->SetupAttachment(GetMesh(), TEXT("LeftHand"));
+
+
+
+
 }
 
 // Called when the game starts or when spawned
 void APCPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	//Enhanced Input »ç¿ëÃ³¸®
+	//Enhanced Input ï¿½ï¿½ï¿½Ã³ï¿½ï¿½
 	auto PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PC)
 	{
