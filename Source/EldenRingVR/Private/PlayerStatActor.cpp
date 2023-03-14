@@ -51,6 +51,7 @@ void APlayerStatActor::SetStatWindow()
 {
 	if(statUI)
 	{
+		SetActorLocation(player->)
 		statUI->ShowStatSet();
 	}
 }

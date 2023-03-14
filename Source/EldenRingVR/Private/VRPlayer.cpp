@@ -293,12 +293,13 @@ void AVRPlayer::Interact()
 	{
 		//interactionComp->PressPointerKey(FKey(FName("E")));
 		UE_LOG(LogTemp, Warning, TEXT("INteraction"));
-		interactionComp->PressPointerKey(EKeys::E);
+		interactionComp->PressPointerKey(EKeys::LeftMouseButton);
 	}
 	if(bStatInteraction)
 	{
 		// 	GetWorld()->SpawnActor<APlayerStatActor>(statActor, VRCamera->GetComponentLocation()+VRCamera->GetForwardVector()*600, FRotator::ZeroRotator);statWindow->SetStatWindow();
 		statWindow->SetStatWindow();
+		bStatInteraction = false;
 	}
 }
 
@@ -307,6 +308,6 @@ void AVRPlayer::InteractEnd()
 	if(interactionComp)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("INteractionEnd"));
-		interactionComp->ReleasePointerKey(EKeys::E);
+		interactionComp->ReleasePointerKey(EKeys::LeftMouseButton);
 	}
 }
