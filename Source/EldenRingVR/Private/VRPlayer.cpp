@@ -311,3 +311,8 @@ void AVRPlayer::InteractEnd()
 		interactionComp->ReleasePointerKey(EKeys::LeftMouseButton);
 	}
 }
+
+void AVRPlayer::OnDamaged(float damage)
+{
+	HP -= damage;
+}
