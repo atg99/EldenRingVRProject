@@ -7,6 +7,7 @@
 #include "BossFSM.h"
 #include "Components/CapsuleComponent.h"
 #include "VRPlayer.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABoss::ABoss()
@@ -71,6 +72,11 @@ void ABoss::BeginPlay()
 void ABoss::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CurHP <= 0)
+	{
+		UGameplayStatics::SetGamePaused(this , true);
+	}
 
 }
 
