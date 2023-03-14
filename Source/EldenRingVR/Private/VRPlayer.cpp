@@ -109,7 +109,7 @@ void AVRPlayer::BeginPlay()
 
 
 	BossHP = CreateWidget<UBossHP>(GetWorld(), BossHPC);
-	if (GetWorld()->GetMapName() == FString("UEDPIE_0_T_Lev"))
+	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("T_Lev"))
 	{
 		BossHP->AddToViewport();
 
