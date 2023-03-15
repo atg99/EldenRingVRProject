@@ -25,6 +25,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UAnimMontage* DaggerAnim;
 
+	FTimerHandle GroundNotchResetTimer;
+
 	void DaggerAttack(FName SectionName);
 	
 	UFUNCTION()
@@ -37,6 +39,8 @@ public:
 		void AnimNotify_InwardSlashEnd();	
 	UFUNCTION()
 		void AnimNotify_SlashGroundStart();
+	UFUNCTION()
+		void AnimNotify_SlashGroundNow();
 	UFUNCTION()
 		void AnimNotify_SlashGroundEnd();
 

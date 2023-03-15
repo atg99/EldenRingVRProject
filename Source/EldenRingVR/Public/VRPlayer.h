@@ -171,11 +171,14 @@ private:
 	//TSubclassOf<class APlayerStatActor> statActor;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<class UBossHP> BossHPC;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<AActor> BossHPFac;
+	
 	UPROPERTY()
-		class UBossHP* BossHP;
+		AActor* BossHP;
+
+	bool IsBossLev;
 
 	UPROPERTY()
 	class APlayerStatActor* statWindow;

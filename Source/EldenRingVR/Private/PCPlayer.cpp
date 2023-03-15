@@ -80,13 +80,6 @@ void APCPlayer::BeginPlay()
 		
 	}
 
-	//if (BossHPFac)
-	//{
-	//	BossHP = GetWorld()->SpawnActor(BossHPFac);
-	//}
-	//
-	//BossHP->SetActorEnableCollision(false);
-	//BossHP->SetActorScale3D(FVector(0.1f));
 	
 }
 

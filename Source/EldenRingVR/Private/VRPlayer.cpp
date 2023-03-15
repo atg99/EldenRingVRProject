@@ -63,11 +63,10 @@ AVRPlayer::AVRPlayer()
 	RollingCircle->SetupAttachment(RootComponent);
 	RollingCircle->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-
-	ConstructorHelpers::FClassFinder<UBossHP> BossHPCL(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/TW/UI/UI_Boss.UI_Boss_C'"));
-	if (BossHPCL.Succeeded())
+	ConstructorHelpers::FClassFinder<AActor> BossHPUI(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_BossHP.BP_BossHP_C'"));
+	if (BossHPUI.Succeeded())
 	{
-		BossHPC = BossHPCL.Class;
+		BossHPFac = BossHPUI.Class;
 	}
 
 	rightAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("rightAim"));
@@ -112,10 +111,14 @@ void AVRPlayer::BeginPlay()
 	Stamina = maxStamina;
 
 
-	BossHP = CreateWidget<UBossHP>(GetWorld(), BossHPC);
-	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("T_Lev"))
+	if (IsBossLev = UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("T_Lev"))
 	{
-		BossHP->AddToViewport();
+		
+		if (BossHPFac)
+		{
+			BossHP = GetWorld()->SpawnActor(BossHPFac);
+			BossHP->SetActorEnableCollision(false);
+		}
 
 	}
 	if(UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("ATG_EldenMap"))
@@ -140,6 +143,13 @@ void AVRPlayer::Tick(float DeltaTime)
 		DrawRollingStraight();
 	}
 
+	if (IsBossLev)
+	{
+		BossHP->SetActorScale3D(FVector(0.02f));
+		BossHP->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20 - VRCamera->GetUpVector() * 10);
+		BossHP->SetActorRotation((VRCamera->GetComponentLocation() - BossHP->GetActorLocation()).Rotation());
+	}
+	
 }
 
 // Called to bind functionality to input

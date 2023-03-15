@@ -4,6 +4,9 @@
 #include "BossAnim.h"
 #include "Boss.h"
 #include "BossFSM.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Engine/World.h"
+
 
 UBossAnim::UBossAnim()
 {
@@ -44,11 +47,13 @@ void UBossAnim::AnimNotify_ThrowDagger()
 void UBossAnim::AnimNotify_InwardSlashStart()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	Boss->BossMaceAct->SetVisibility(true);
 	Boss->CanHit = true;
 	
 }void UBossAnim::AnimNotify_InwardSlashEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	//Boss->BossMaceAct->SetVisibility(false);
 	Boss->BossFSM->IsInwardSlash = false;
 	Boss->CanHit = false;
 	
@@ -56,12 +61,22 @@ void UBossAnim::AnimNotify_InwardSlashStart()
 void UBossAnim::AnimNotify_SlashGroundStart()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	Boss->BossMaceAct->SetVisibility(true);
 	Boss->CanHit = true;
 	
+}
+void UBossAnim::AnimNotify_SlashGroundNow()
+{
+	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	FRotator GroundNotchRot = FRotator(Boss->BossFSM->HeadToTargetR.Pitch, Boss->BossFSM->HeadToTargetR.Yaw + 90, Boss->BossFSM->HeadToTargetR.Roll);
+	GetWorld()->GetTimerManager().ClearTimer(GroundNotchResetTimer);
+	Boss->GroundNotch->SetActorLocationAndRotation(Boss->Mace->GetComponentLocation() + FVector(0, 0, 30), GroundNotchRot);
 }
 void UBossAnim::AnimNotify_SlashGroundEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	//Boss->BossMaceAct->SetVisibility(false);
 	Boss->BossFSM->IsSlashGround = false;
 	Boss->CanHit = false;
+	GetWorld()->GetTimerManager().SetTimer(GroundNotchResetTimer, Boss, &ABoss::GroundNotchDistReset, 5.0f);
 }

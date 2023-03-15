@@ -8,15 +8,36 @@
 #include "Components/CapsuleComponent.h"
 #include "VRPlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 ABoss::ABoss()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	SetActorScale3D(FVector(2));
 	FName RightHandSocket(TEXT("RightHandSocket"));
 	FName LeftHandSocket(TEXT("LeftHandSocket"));
+	BossDust = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BossDust"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> BossDustCas(TEXT("/Script/Engine.ParticleSystem'/Game/TW/VFX/VFX_BossDust.VFX_BossDust'"));
+	if (BossDustCas.Succeeded())
+	{
+		BossDust->SetTemplate(BossDustCas.Object);
+	}
+	BossDust->SetupAttachment(RootComponent);
+	BossDust->SetRelativeLocation(FVector(0, 0, -120));
+	BossDust->SetRelativeScale3D(FVector(0.5f));
+
+	BossTailDust = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BossTailDust"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> BossTailDustCas(TEXT("/Script/Engine.ParticleSystem'/Game/TW/VFX/VFX_TailAttack.VFX_TailAttack'"));
+	if (BossTailDustCas.Succeeded())
+	{
+		BossTailDust->SetTemplate(BossTailDustCas.Object);
+		BossTailDust->SetVisibility(false);
+	}
+	BossTailDust->SetupAttachment(RootComponent);
+
+
 	Dagger = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Dagger"));
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> DaggerMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapon_Pack/Skeletal_Mesh/SK_Dagger_1.SK_Dagger_1'"));
 	if (DaggerMesh.Succeeded())
@@ -35,8 +56,19 @@ ABoss::ABoss()
 		Mace->SetStaticMesh(MaceMesh.Object);
 	}
 	Mace->SetupAttachment(GetMesh(), LeftHandSocket);
-	Mace->SetRelativeRotation(FRotator(-90, 0, 0));
+	Mace->SetRelativeRotation(FRotator(90, 0, 0));
 	Mace->SetRelativeScale3D(FVector(1.5f));
+
+	BossMaceAct = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BossMaceAct"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> BossMaceActCas(TEXT("/Script/Engine.ParticleSystem'/Game/TW/VFX/VFX_BossMace.VFX_BossMace'"));
+	if (BossMaceActCas.Succeeded())
+	{
+		BossMaceAct->SetTemplate(BossMaceActCas.Object);
+		BossMaceAct->SetVisibility(false);
+	}
+	BossMaceAct->SetupAttachment(Mace);
+	BossMaceAct->SetRelativeLocation(FVector(0, 0, 67));
+	BossMaceAct->SetRelativeScale3D(FVector(0.25f));
 
 	ConstructorHelpers::FClassFinder<UBossAnim> BossAnim(TEXT("/Script/Engine.AnimBlueprint'/Game/TW/Animation/ABP_Boss.ABP_Boss_C'"));
 	if (BossAnim.Succeeded())
@@ -56,6 +88,13 @@ ABoss::ABoss()
 	MaceComp->SetRelativeScale3D(FVector(0.7, 0.7, 1.2));
 	MaceComp->SetRelativeLocation(FVector(0, 0, 33.3333f));
 	MaceComp->OnComponentBeginOverlap.AddDynamic(this, &ABoss::OnMaceBeginOverlap);
+
+
+	ConstructorHelpers::FClassFinder<AActor>GroundNotchC(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_GroundHitted.BP_GroundHitted_C'"));
+	if (GroundNotchC.Succeeded())
+	{
+		GroundNotchFac = GroundNotchC.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +104,8 @@ void ABoss::BeginPlay()
 
 	BossAnimInst = Cast<UBossAnim>(GetMesh()->GetAnimInstance());
 
+	FActorSpawnParameters SpawnInfo;
+	GroundNotch = GetWorld()->SpawnActor<AActor>(GroundNotchFac, FVector(0, 0, 0), FRotator(0, 0, 0), SpawnInfo);
 
 }
 
@@ -114,4 +155,9 @@ void ABoss::OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 void ABoss::OnDamaged(float damage)
 {
 	CurHP -= damage;
+}
+
+void ABoss::GroundNotchDistReset()
+{
+	GroundNotch->SetActorLocationAndRotation(FVector(0, 0, 0), FRotator(0, 0, 0));
 }

@@ -13,6 +13,7 @@
 #include "BossAnim.h"
 #include "Engine/World.h"
 #include "Components/CapsuleComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values for this component's properties
 UBossFSM::UBossFSM()
@@ -26,6 +27,7 @@ UBossFSM::UBossFSM()
 	{
 		DaggerFac = BossDagger.Class;
 	}
+
 }
 
 
@@ -36,6 +38,8 @@ void UBossFSM::BeginPlay()
 
 	Boss = Cast<ABoss>(GetOwner());
 	Target = Cast<AVRPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+	
 }
 
 
@@ -123,7 +127,7 @@ void UBossFSM::IdleState()
 		if (FVector::DotProduct(Boss->GetActorForwardVector(), HeadToTargetV) < 0)
 		{
 			int32 RandNum = FMath::RandRange(1, 4);
-			if (RandNum == 1)
+			if (RandNum != 1)
 			{
 				if (Target->GetDistanceTo(Boss) <= 200)
 				{
@@ -199,7 +203,7 @@ void UBossFSM::IdleState()
 
 	}
   
-	Boss->Mace->SetRelativeRotation(FRotator(90, 0, 0));
+	//Boss->Mace->SetRelativeRotation(FRotator(90, 0, 0));
 }
 
 void UBossFSM::WaitState()
@@ -211,12 +215,16 @@ void UBossFSM::WaitState()
 
 		
 	}
-	Boss->Mace->SetRelativeRotation(FRotator(-90, 0, 0));
+	//Boss->Mace->SetRelativeRotation(FRotator(-90, 0, 0));
 	
 }
 
 void UBossFSM::IdleSet()
 {
+	if (Boss->BossMaceAct->IsVisible())
+	{
+		Boss->BossMaceAct->SetVisibility(false);
+	}
 	BState = EBossState::Idle;
 	IsTimerSet = false;
 	GetWorld()->GetTimerManager().ClearTimer(WaitTimer);
@@ -326,6 +334,11 @@ void UBossFSM::TailAttackState(float time)
 	{
 		if (TailAttackCount <= 25)
 		{		
+			if (!Boss->BossTailDust->IsVisible())
+			{
+				Boss->BossTailDust->SetVisibility(true);
+				Boss->BossDust->SetVisibility(false);
+			}
 			Boss->AddActorLocalRotation(FRotator(0.0f, -1.0f, 0.0f));
 			TailAttackCount++;
 		}
@@ -347,7 +360,9 @@ void UBossFSM::TailAttackState(float time)
 		}
 		else
 		{
-			
+			Boss->BossTailDust->SetVisibility(false);
+			Boss->BossDust->SetVisibility(true);
+
 			TailAttackCount = 0;
 			IsTailAttack = false;
 			Boss->CanHit = false;

@@ -30,6 +30,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* Dagger;
+	UPROPERTY(EditAnywhere)
+		class UParticleSystemComponent* BossDust;
+	UPROPERTY(EditAnywhere)
+		class UParticleSystemComponent* BossTailDust;
+	UPROPERTY(EditAnywhere)
+		class UParticleSystemComponent* BossMaceAct;
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* Mace;
@@ -37,6 +43,11 @@ public:
 		class UCapsuleComponent* DaggerComp;
 	UPROPERTY(EditAnywhere)
 		class UCapsuleComponent* MaceComp;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AActor> GroundNotchFac;
+	UPROPERTY(EditAnywhere)
+		class AActor* GroundNotch;
 
 
 	UPROPERTY()
@@ -52,7 +63,7 @@ public:
 		void OnMaceBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float MaxHP = 1000;
+		float MaxHP = 10000;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float CurHP = MaxHP;
 
@@ -60,5 +71,7 @@ public:
 
 	UFUNCTION()
 		void OnDamaged(float damage);
+
+	void GroundNotchDistReset();
 	
 };

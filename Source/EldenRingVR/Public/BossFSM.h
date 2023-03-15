@@ -56,6 +56,7 @@ public:
 		TSubclassOf<class ADagger> DaggerFac;
 	UPROPERTY(EditAnywhere)
 		class ADagger* DaggerAct;
+	
 
 	void IdleState();
 	void WaitState();
