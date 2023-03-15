@@ -69,6 +69,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "MotionController")
 		class USkeletalMeshComponent* RightHandMesh;
 
+	UPROPERTY(EditAnywhere)
+	class UChildActorComponent* playerSword;
+	
+
+
 public:	
 
 	// 생명력
@@ -167,6 +172,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UWidgetInteractionComponent* interactionComp;
+
 	//UPROPERTY()
 	//TSubclassOf<class APlayerStatActor> statActor;
 

@@ -14,6 +14,7 @@
 #include "BossHP.h"
 #include "FireCamp.h"
 #include "PlayerStatActor.h"
+#include "Components/BoxComponent.h"
 #include "Components/WidgetInteractionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
@@ -83,7 +84,9 @@ AVRPlayer::AVRPlayer()
 	//����, ���и� �տ� ����
 	shieldMeshComp->SetupAttachment(GetMesh(), TEXT("hand_l"));
 	weponMeshComp->SetupAttachment(GetMesh(), TEXT("hand_r"));
-	
+
+	playerSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("playerSword"));
+	playerSword->SetupAttachment(RightHandMesh);
 
 }
 
@@ -355,6 +358,7 @@ void AVRPlayer::OnDamaged(float damage)
 	HP -= damage;
 	if(HP <= 0)
 	{
+	    //체력이 0이하면 레벨을 다시 시작한다
 		UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
 		if(savePoint)
 		{
@@ -362,3 +366,4 @@ void AVRPlayer::OnDamaged(float damage)
 		}
 	}
 }
+

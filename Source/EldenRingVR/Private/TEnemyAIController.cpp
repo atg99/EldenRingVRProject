@@ -134,6 +134,12 @@ void ATEnemyAIController::SetbDieValue()
 	GetBlackboardComponent()->SetValueAsBool(TEXT("bDie"), true);
 }
 
+void ATEnemyAIController::ClearbDieValue()
+{
+	//죽음 상태를 되돌린다
+	GetBlackboardComponent()->ClearValue(TEXT("bDie"));
+}
+
 void ATEnemyAIController::NoClearTimer()
 {
 	FTimerHandle TimerHandle_NoClear;

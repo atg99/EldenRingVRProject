@@ -36,4 +36,27 @@ public:
 	FTimerHandle lifeTimer;
 	UFUNCTION()
 	void AttackCoolTime();
+	
+	UFUNCTION()
+	void WeaponTrace();
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* wStart;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* wEnd;
+
+protected:
+
+	UPROPERTY()
+	class AEnemyBase* enemyBase;
+
+	UPROPERTY()
+	FVector prevPos;
+
+	UPROPERTY()
+	FVector swordSpeed;
+
+	UFUNCTION()
+	void GetSwordSpeed();
 };

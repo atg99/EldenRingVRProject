@@ -7,6 +7,7 @@
 #include "Boss.h"
 #include "EnemyBase.h"
 #include "TimerManager.h"
+#include "Kismet/KismetSystemLibrary.h"
 // Sets default values
 APlayerWeapon::APlayerWeapon()
 {
@@ -18,14 +19,19 @@ APlayerWeapon::APlayerWeapon()
 	boxComp->SetWorldScale3D(FVector(0.09f, 0.02f, 0.43f));
 	
 
-	//ÃÑ¾Ë Ãæµ¹ ÇÁ¸®¼Â
+	//ï¿½Ñ¾ï¿½ ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	boxComp->SetCollisionProfileName(TEXT("WeaponPreset"));
 
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	meshComp->SetupAttachment(RootComponent);
-	//»ó´ëÀûÀÎ À§Ä¡
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
 	meshComp->SetRelativeLocation(FVector(0, 0, 0));
 	meshComp->SetRelativeScale3D(FVector(1));
+	
+	wStart = CreateDefaultSubobject<UBoxComponent>(TEXT("start"));
+	wStart->SetupAttachment(meshComp);
+	wEnd = CreateDefaultSubobject<UBoxComponent>(TEXT("wEnd"));
+	wEnd->SetupAttachment(meshComp);
 }
 
 // Called when the game starts or when spawned
@@ -33,14 +39,14 @@ void APlayerWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Ãæµ¹(¿À¹ö·¦)ÀÌ ¹ß»ıÇÏ¸é ½ÇÇàÇÒ ÇÔ¼ö¸¦ ¿¬°áÇÑ´Ù.
+	//ï¿½æµ¹(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	boxComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerWeapon::OnOverlap);
 
-	//¿À¹ö·¦ÀÌº¥Æ®¸¦ true·Î ¼³Á¤ÇÑ´Ù
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìºï¿½Æ®ï¿½ï¿½ trueï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
 	boxComp->SetGenerateOverlapEvents(true);
 	
-	//¿ùµåÅ¸ÀÌ¸Ó ¼³Á¤ÇÑ ÇÔ¼ö ½ÇÇà
-	//                                                     ½ÇÇàÇÒÇÔ¼ö   ÃÊ¼³Á¤, ¹İº¹Âü°ÅÁş, 
+	//ï¿½ï¿½ï¿½ï¿½Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//                                                     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½   ï¿½Ê¼ï¿½ï¿½ï¿½, ï¿½İºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 
 	GetWorld()->GetTimerManager().SetTimer(lifeTimer, this, &APlayerWeapon::AttackCoolTime, 1, false);
 }
 
@@ -49,19 +55,29 @@ void APlayerWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	GetSwordSpeed();
+	//if (GEngine)
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), swordSpeed.Size()));
 }
+
 void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//¸¸ÀÏ ºÎµúÈù ´ë»óÀÌ ¿¡³Ê¹Ì¶ó¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¹Ì¶ï¿½ï¿½
+	//if(meshComp->GetComponentVelocity())
+	
 	AEnemyBase* enemy = Cast<AEnemyBase>(OtherActor); 
 	ABoss* boss = Cast<ABoss>(OtherActor); 
 	if (enemy != nullptr) 
 	{
-		enemy -> OnDamaged(60);
-		
+		enemy -> OnDamaged(swordSpeed.Size());
+		enemyBase = enemy;
+		if(swordSpeed.Size() > 10)
+		{
+			WeaponTrace();
+		}
 		//boxComp->SetGenerateOverlapEvents(false);
 	}
-	//¸¸ÀÏ ºÎµúÈù ´ë»óÀÌ º¸½º¶ó¸é
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (boss != nullptr)
 	{
 		boss -> CurHP-=60;
@@ -77,4 +93,44 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 void APlayerWeapon::AttackCoolTime()
 {
 	boxComp->SetGenerateOverlapEvents(true);
-}	
+}
+
+void APlayerWeapon::WeaponTrace()
+{
+	//í”¼ ìœ„ì¹˜ ìƒì„±
+	TArray<AActor*> ActorsToIgnore;
+	FHitResult hitResult;
+	
+	FVector traceStartLoc = wStart->GetComponentLocation();
+	FVector endLoc = wEnd->GetComponentLocation();
+
+	const bool isHit = UKismetSystemLibrary::BoxTraceSingle(
+		wStart,
+		traceStartLoc,
+		endLoc,
+		FVector(10, 10, 5),
+		GetActorRotation()+FRotator(0,90,0),
+		UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel10),
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::ForDuration,
+		hitResult,
+		true,
+		FLinearColor::Gray,
+		FLinearColor::Red,
+		10
+	);
+
+	if(isHit)
+	{
+		enemyBase->Desmemberment(hitResult.BoneName, hitResult.ImpactPoint, hitResult.ImpactNormal);
+	}
+	
+}
+
+void APlayerWeapon::GetSwordSpeed()
+{
+	swordSpeed = meshComp->GetComponentLocation() - prevPos;
+
+	prevPos = meshComp->GetComponentLocation();
+}

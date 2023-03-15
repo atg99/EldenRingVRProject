@@ -35,6 +35,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UPoseableMeshComponent* poseableMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmHead;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmBody;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmWaist;
+
+	
 	//UPROPERTY(EditAnywhere)
 	//class UAIPerceptionComponent* aiPercep;
 
@@ -97,7 +107,7 @@ public:
 	void Dash(float force);
 
 	UFUNCTION(BlueprintCallable)
-	void Desmemberment(FName hitBone);
+	void Desmemberment(FName hitBone, FVector hitLoc, FVector hitNoraml);
 
 	UFUNCTION()
 	void Crawl();
@@ -143,6 +153,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UMaterialInterface* bloodDecal;
 
+	UPROPERTY(EditAnywhere)
+	class UMaterialInterface* mat;
+	
 	UFUNCTION()
 	void EnemyMergeV2Setup();
 
@@ -160,8 +173,18 @@ private:
 
 	UPROPERTY()
 	TArray<float> mergeDis;
-	
-	
+
+	UPROPERTY()
+	FTimerHandle timerHandle_Die;
+
+	UFUNCTION()
+	double EaseInElastic(double t);
+
+	UFUNCTION()
+	double EaseInOutBounce(double t);
+
+	UFUNCTION()
+	double EaseInBounce(double t);
 };
 
 

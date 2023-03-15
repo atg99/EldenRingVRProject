@@ -74,6 +74,9 @@ public:
 	void SetbDieValue();
 
 	UFUNCTION()
+	void ClearbDieValue();
+
+	UFUNCTION()
 	void NoClearTimer();
 
 	UFUNCTION()

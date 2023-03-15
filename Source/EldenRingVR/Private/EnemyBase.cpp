@@ -16,6 +16,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Materials/MaterialInterface.h"
+#include "ProceduralMeshComponent.h"
+#include "KismetProceduralMeshLibrary.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -35,6 +37,9 @@ AEnemyBase::AEnemyBase()
 	poseableMesh = CreateDefaultSubobject<UPoseableMeshComponent>(TEXT("poseableMesh"));
 	poseableMesh->SetupAttachment(RootComponent);
 	poseableMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	pmHead = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("pmHead"));
+	pmHead->SetupAttachment(RootComponent);
 	//behaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("behavior"));
 	//AIControllerClass = ATEnemyAIController::StaticClass();;
 
@@ -204,6 +209,15 @@ void AEnemyBase::OnDamaged(float damage)
 void AEnemyBase::EnemyDie()
 {
 	con->SetbDieValue();
+
+	//모든 뼈에 한번씩 적용
+	// for (auto bone : GetMesh()->GetAllSocketNames())
+	// {
+	// 	Desmemberment(bone, FVector::ZeroVector, FVector::ZeroVector);
+	// }
+
+	//합쳐지기 타이머 시작
+	GetWorldTimerManager().SetTimer(timerHandle_Die, this, &AEnemyBase::SetPoseableMeshToGetMesh, 3, false);
 }
 
 void AEnemyBase::SetSwordDoOnce()
@@ -216,14 +230,33 @@ void AEnemyBase::Dash(float force)
 	LaunchCharacter(GetActorForwardVector()*force, true, false);
 }
 
-void AEnemyBase::Desmemberment(FName hitBone)
+void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 {
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *hitBone.ToString()));
+	//잘린 반
+	//UProceduralMeshComponent* otherHalf;
 	
-	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="head"&&hitBone!="spine_03"&&hitBone!="spine_02"&&hitBone!="neck_01"))
+	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="spine_03"&&hitBone!="spine_02"))
 	{
-		GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
+		if(hitBone == "head"||hitBone == "neck_01")
+		{
+			GetMesh()->HideBoneByName(hitBone, PBO_None);
+			// pmHead->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
+			// UKismetProceduralMeshLibrary::SliceProceduralMesh(pmHead, hitLoc, hitNormal, true, otherHalf, EProcMeshSliceCapOption::CreateNewSectionForCap, mat);
+			// 	
+			// otherHalf->SetCollisionProfileName(TEXT("Ragdoll"));
+			// pmHead->SetCollisionProfileName(TEXT("Ragdoll"));
+			// pmHead->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+			// pmHead->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			// otherHalf->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+			// otherHalf->SetSimulatePhysics(true);
+			// pmHead->SetSimulatePhysics(true);
+		}
+		else
+		{
+			GetMesh()->BreakConstraint(FVector(0),FVector(0), hitBone);
+		}
 	}
 	else if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
 		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" /*|| hitBone == "head" || hitBone == "neck_01"||hitBone=="spine_03"*/||hitBone == "spine_02")
@@ -276,11 +309,11 @@ void AEnemyBase::Crawl()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	ChangeSpeed(500);
 
-	con->SetbCrawl();
+	con->SetbCrawl();//w죽으,죽으면 레벨 다시 시 시작한다체력이 0이하면을rawl();
 
 	//con->DisableBT();
 	//con->MoveToPlayer();
-	PlayEnemyAnim(TEXT("Crawl"), 5);
+	PlayEnemyAnim(TEXT("Crawl"), 2);
 }
 
 void AEnemyBase::EnemyMerge()
@@ -313,34 +346,39 @@ void AEnemyBase::EnemyMergeV2Setup()
 	GetMesh()->SetVisibility(false);
 	poseableMesh->SetVisibility(true);
 	bMergeV2 = true;
+
+	//마지가 끝나면 복구 실행
+	// FTimerHandle timerHandle_merge;
+	// GetWorld()->GetTimerManager().SetTimer(timerHandle_merge, FTimerDelegate::CreateLambda([this]()->void
+	// {
+	// 	mergeV2LerpTime = 0;
+	// 	bMergeV2 = false;
+	// 	EnemyMergeEnd();
+	// }), 3 ,false);
 }
 
 void AEnemyBase::EnemyMergeV2()
 {
-	mergeV2LerpTime = GetWorld()->DeltaTimeSeconds;
+	mergeV2LerpTime += GetWorld()->DeltaTimeSeconds;
+	float t = EaseInBounce(mergeV2LerpTime)*0.01;
 	int a = 0;
 	for (auto Bone : poseableMesh->GetAllSocketNames())
 	{
 		FTransform From2 = poseableMesh->GetSocketTransform(Bone);
 		FTransform To = originMesh->GetSocketTransform(Bone);
-		FTransform lerpTransform = UKismetMathLibrary::TLerp(From2, To, mergeV2LerpTime);
+		FTransform lerpTransform = UKismetMathLibrary::TLerp(From2, To, t);
 		poseableMesh->SetBoneTransformByName(Bone, lerpTransform, EBoneSpaces::WorldSpace);
 		a++;
 	}
 
-	FTimerHandle timerHandle_merge;
-	GetWorld()->GetTimerManager().SetTimer(timerHandle_merge, FTimerDelegate::CreateLambda([this]()->void
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), t));
+	if(t >= 1)
 	{
 		mergeV2LerpTime = 0;
 		bMergeV2 = false;
 		EnemyMergeEnd();
-	}), 3 ,false);
-	// if(mergeV2LerpTime >= 1)
-	// {
-	// 	mergeV2LerpTime = 0;
-	// 	bMergeV2 = false;
-	// 	EnemyMergeEnd();
-	// }
+	}
 }
 
 void AEnemyBase::EnemyMergeEnd() 
@@ -351,5 +389,26 @@ void AEnemyBase::EnemyMergeEnd()
 	GetMesh()->SetWorldTransform(originMesh->GetComponentTransform());
 	GetMesh()->SetVisibility(true);
 	poseableMesh->SetVisibility(false);
+
+	//죽음상태를 되돌린다
+	con->ClearbDieValue();
+	enemyHP = 100;
+}
+
+double AEnemyBase::EaseInElastic( double t ) {
+	double t2 = t * t;
+	return t2 * t2 * sin( t * PI * 4.5 );
+}
+
+double AEnemyBase::EaseInOutBounce( double t ) {
+	if( t < 0.5 ) {
+		return 8 * pow( 2, 8 * (t - 1) ) * abs( sin( t * PI * 7 ) );
+	} else {
+		return 1 - 8 * pow( 2, -8 * t ) * abs( sin( t * PI * 7 ) );
+	}
+}
+
+double AEnemyBase::EaseInBounce( double t ) {
+	return pow( 2, 6 * (t - 1) ) * abs( sin( t * PI * 3.5 ) );
 }
 
