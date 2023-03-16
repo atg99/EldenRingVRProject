@@ -95,6 +95,12 @@ ABoss::ABoss()
 	{
 		GroundNotchFac = GroundNotchC.Class;
 	}
+
+	ConstructorHelpers::FClassFinder<AActor>GroundAttackNotchC(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_GroundAttack.BP_GroundAttack_C'"));
+	if (GroundAttackNotchC.Succeeded())
+	{
+		GroundAttackNotchFac = GroundAttackNotchC.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -106,6 +112,7 @@ void ABoss::BeginPlay()
 
 	FActorSpawnParameters SpawnInfo;
 	GroundNotch = GetWorld()->SpawnActor<AActor>(GroundNotchFac, FVector(0, 0, 0), FRotator(0, 0, 0), SpawnInfo);
+	
 
 }
 
@@ -160,4 +167,11 @@ void ABoss::OnDamaged(float damage)
 void ABoss::GroundNotchDistReset()
 {
 	GroundNotch->SetActorLocationAndRotation(FVector(0, 0, 0), FRotator(0, 0, 0));
+}
+
+void ABoss::SpawnGroundAttackNotch(FVector Loc, FRotator Rot)
+{
+
+	FActorSpawnParameters SpawnInfoN;
+	GetWorld()->SpawnActor<AActor>(GroundAttackNotchFac, Loc, Rot, SpawnInfoN);
 }

@@ -48,6 +48,10 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (IsLevSeq)
+	{
+		return;
+	}
 	switch (BState)
 	{
 	case EBossState::Idle:
@@ -215,6 +219,7 @@ void UBossFSM::WaitState()
 
 		
 	}
+	
 	//Boss->Mace->SetRelativeRotation(FRotator(-90, 0, 0));
 	
 }
@@ -315,9 +320,20 @@ void UBossFSM::JumpAttackState(float time)
 				{
 					Target->OnDamaged(10);
 				}
+			
+				
 				JumpAnimNum = 3;
 				IsJumpAttack = false;
 				IsLocationReset = false;
+				FCollisionQueryParams Param;
+				FHitResult HitInfo;
+				Param.AddIgnoredActor(Boss);
+				bool IsHit = GetWorld()->LineTraceSingleByChannel(HitInfo, Boss->GetActorLocation(), Boss->GetActorLocation() - Boss->GetActorUpVector() * 1000, ECollisionChannel::ECC_Visibility, Param);
+				if (IsHit)
+				{
+					Boss->SpawnGroundAttackNotch(HitInfo.ImpactPoint, HeadToTargetR);
+				}
+				
 				Speed = 0.01f;
 				Rate = 0.1f;
 				BState = EBossState::Wait;

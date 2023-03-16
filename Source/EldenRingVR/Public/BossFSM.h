@@ -136,6 +136,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool IsTurnToT;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool IsLevSeq;
+
+
+	
 
 	int32 TailAttackCount = 0;
 	int32 TurnToTCount = 0;
