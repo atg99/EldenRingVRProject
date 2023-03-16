@@ -70,6 +70,7 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	if (enemy != nullptr&&swordSpeed.Size() > 10) 
 	{
 		enemy -> OnDamaged(swordSpeed.Size());
+		// 맞은 객체를 대입
 		enemyBase = enemy;
 		if(swordSpeed.Size() > 10)
 		{
@@ -113,7 +114,7 @@ void APlayerWeapon::WeaponTrace()
 		UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel10),
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		hitResult,
 		true,
 		FLinearColor::Gray,
@@ -123,7 +124,10 @@ void APlayerWeapon::WeaponTrace()
 
 	if(isHit)
 	{
-		enemyBase->Desmemberment(hitResult.BoneName, hitResult.ImpactPoint, hitResult.ImpactNormal);
+		//절단 함수
+		enemyBase->Desmemberment(hitResult.BoneName, hitResult.ImpactNormal, hitResult.ImpactNormal);
+		//blood niagara
+		enemyBase->SpawnNiagaraAttach(hitResult.BoneName, hitResult.Location, (hitResult.Location-enemyBase->GetActorLocation()).Rotation());
 	}
 	
 }

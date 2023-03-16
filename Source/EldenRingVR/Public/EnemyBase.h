@@ -42,7 +42,35 @@ public:
 	class UProceduralMeshComponent* pmBody;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UProceduralMeshComponent* pmWaist;
+	class UProceduralMeshComponent* pmPevis;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmUpperarm_l;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmUpperarm_r;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmLowerarm_l;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmLowerarm_r;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmThigh_r;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmThigh_l;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmCalf_l;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmCalf_r;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UProceduralMeshComponent* pmSpine_01;
+	
 
 	
 	//UPROPERTY(EditAnywhere)
@@ -129,6 +157,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetPoseableMeshToGetMesh();
+
+	UFUNCTION()
+	void SpawnNiagaraAttach(FName attachBone, FVector hitLoc, FRotator hitRot);
 	
 private:
 
@@ -188,6 +219,42 @@ private:
 
 	UPROPERTY()
 	bool bCompleteDie;
+
+	UPROPERTY()
+	FVector scale = FVector(10,10,10);
+	
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	class UNiagaraSystem* slashHigh;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	class UNiagaraSystem* amputatedLim;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	class UNiagaraSystem* amputatedHead;
+
+	UFUNCTION()
+	void SpawnAmputatedLim(FName socket);
+
+	UFUNCTION()
+	void SpawnAmputatedHead();
+
+	UPROPERTY()
+	TArray<FName> bones {TEXT("upperarm_l"), TEXT("upperarm_r"), TEXT("thigh_l"), TEXT("thigh_r")};
+
+	UPROPERTY(EditAnywhere)
+	TArray<class UNiagaraComponent* > niagaraArray;
+
+	UFUNCTION()
+	void NiagaraDeactivate();
+
+	UFUNCTION()
+	void SlicePM(UProceduralMeshComponent*& pm, FVector hitNoraml);
+
+	UPROPERTY()
+	TMap<FName, class UProceduralMeshComponent*> pmMap;;
+
+	UFUNCTION()
+	void Add_pmMap();
 };
 
 
