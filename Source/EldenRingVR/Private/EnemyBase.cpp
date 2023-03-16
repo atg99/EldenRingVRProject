@@ -40,6 +40,9 @@ AEnemyBase::AEnemyBase()
 
 	pmHead = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("pmHead"));
 	pmHead->SetupAttachment(RootComponent);
+
+	pmBody = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("pmBody"));
+	pmBody->SetupAttachment(RootComponent);
 	//behaviorTree = CreateDefaultSubobject<UBehaviorTree>(TEXT("behavior"));
 	//AIControllerClass = ATEnemyAIController::StaticClass();;
 
@@ -217,6 +220,10 @@ void AEnemyBase::EnemyDie()
 	// }
 
 	//합쳐지기 타이머 시작
+	if(bCompleteDie)
+	{
+		return;;
+	}
 	GetWorldTimerManager().SetTimer(timerHandle_Die, this, &AEnemyBase::SetPoseableMeshToGetMesh, 3, false);
 }
 
@@ -235,23 +242,41 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *hitBone.ToString()));
 	//잘린 반
-	//UProceduralMeshComponent* otherHalf;
+	UProceduralMeshComponent* otherHalf;
 	
-	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="spine_03"&&hitBone!="spine_02"))
+	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="spine_02"))
 	{
 		if(hitBone == "head"||hitBone == "neck_01")
 		{
-			GetMesh()->HideBoneByName(hitBone, PBO_None);
-			// pmHead->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
-			// UKismetProceduralMeshLibrary::SliceProceduralMesh(pmHead, hitLoc, hitNormal, true, otherHalf, EProcMeshSliceCapOption::CreateNewSectionForCap, mat);
-			// 	
-			// otherHalf->SetCollisionProfileName(TEXT("Ragdoll"));
-			// pmHead->SetCollisionProfileName(TEXT("Ragdoll"));
-			// pmHead->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-			// pmHead->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			// otherHalf->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			// otherHalf->SetSimulatePhysics(true);
-			// pmHead->SetSimulatePhysics(true);
+			if(enemyHP <= 0)
+			{
+				GetMesh()->HideBoneByName(hitBone, PBO_None);
+				pmHead->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
+				UKismetProceduralMeshLibrary::SliceProceduralMesh(pmHead, pmHead->GetComponentLocation(), hitNormal, true, otherHalf, EProcMeshSliceCapOption::CreateNewSectionForCap, mat);
+					
+				otherHalf->SetCollisionProfileName(TEXT("Ragdoll"));
+				pmHead->SetCollisionProfileName(TEXT("Ragdoll"));
+				//pmHead->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+				pmHead->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+				otherHalf->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+				otherHalf->SetSimulatePhysics(true);
+				pmHead->SetSimulatePhysics(true);
+				GetWorldTimerManager().ClearTimer(timerHandle_Die);
+				bCompleteDie = true;
+			}
+		}
+		else if(hitBone=="spine_03")
+		{
+			if(enemyHP <= 0)
+			{
+				GetMesh()->HideBoneByName(hitBone, PBO_None);
+				pmBody->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
+				UKismetProceduralMeshLibrary::SliceProceduralMesh(pmBody, pmBody->GetComponentLocation(), hitNormal, true, otherHalf, EProcMeshSliceCapOption::CreateNewSectionForCap, mat);
+				otherHalf->SetSimulatePhysics(true);
+				pmBody->SetSimulatePhysics(true);
+				GetWorldTimerManager().ClearTimer(timerHandle_Die);
+				bCompleteDie = true;
+			}
 		}
 		else
 		{

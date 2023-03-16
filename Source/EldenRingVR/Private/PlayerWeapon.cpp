@@ -67,7 +67,7 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	
 	AEnemyBase* enemy = Cast<AEnemyBase>(OtherActor); 
 	ABoss* boss = Cast<ABoss>(OtherActor); 
-	if (enemy != nullptr) 
+	if (enemy != nullptr&&swordSpeed.Size() > 10) 
 	{
 		enemy -> OnDamaged(swordSpeed.Size());
 		enemyBase = enemy;

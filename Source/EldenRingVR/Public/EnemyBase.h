@@ -185,6 +185,9 @@ private:
 
 	UFUNCTION()
 	double EaseInBounce(double t);
+
+	UPROPERTY()
+	bool bCompleteDie;
 };
 
 
