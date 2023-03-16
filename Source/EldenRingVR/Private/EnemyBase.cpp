@@ -318,7 +318,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
 
 				//슬라이스 기능 호출
-				SlicePM(pmBody, hitNormal);
+				SlicePM(pmMap[hitBone], hitNormal);
 				
 				GetWorldTimerManager().ClearTimer(timerHandle_Die);
 				//체력이 0이하일 때 몸통이나 머리를 맞으면 완전히 죽는다.
@@ -336,7 +336,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
 			
 				//슬라이스 기능 호출
-				SlicePM(pmBody, hitNormal);
+				SlicePM(pmMap[hitBone], hitNormal);
 			}
 		}
 		//체력이 0이상이라면 분리한다
@@ -358,7 +358,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 		}
 	}
 	else if(hitBone == "spine_01" || hitBone == "thigh_l" ||  hitBone == "thigh_r" || hitBone == "calf_l" ||
-		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r" /*|| hitBone == "head" || hitBone == "neck_01"||hitBone=="spine_03"*/||hitBone == "spine_02")
+		hitBone == "calf_r" || hitBone == "foot_l" || hitBone == "foot_r"||hitBone == "spine_02")
 	{
 		//SetRagdoll();
 		Crawl();
@@ -545,6 +545,11 @@ void AEnemyBase::SpawnNiagaraAttach(FName attachBone, FVector hitLoc, FRotator h
 void AEnemyBase::SlicePM(UProceduralMeshComponent*& pm, FVector hitNoraml)
 {
 	UProceduralMeshComponent* otherHalf;
+	pm->SetCollisionProfileName(TEXT("Ragdoll"));
+	//pmHead->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	pm->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	pm->SetVisibility(true);
+	pm->SetSimulatePhysics(true);
 	UKismetProceduralMeshLibrary::SliceProceduralMesh(pm, pm->GetComponentLocation(), hitNoraml, true, otherHalf, EProcMeshSliceCapOption::CreateNewSectionForCap, mat);
 	if(otherHalf)
 	{
@@ -552,12 +557,7 @@ void AEnemyBase::SlicePM(UProceduralMeshComponent*& pm, FVector hitNoraml)
 		otherHalf->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		otherHalf->SetSimulatePhysics(true);
 	}	
-				
-	pm->SetCollisionProfileName(TEXT("Ragdoll"));
-	//pmHead->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	pm->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	pm->SetVisibility(true);
-	pm->SetSimulatePhysics(true);
+
 }
 
 void AEnemyBase::Add_pmMap()
