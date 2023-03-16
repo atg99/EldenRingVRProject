@@ -48,6 +48,10 @@ public:
 		TSubclassOf<class AActor> GroundNotchFac;
 	UPROPERTY(EditAnywhere)
 		class AActor* GroundNotch;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AActor> GroundAttackNotchFac;
+	UPROPERTY(EditAnywhere)
+		class AActor* GroundAttackNotch;
 
 
 	UPROPERTY()
@@ -73,5 +77,7 @@ public:
 		void OnDamaged(float damage);
 
 	void GroundNotchDistReset();
+
+	void SpawnGroundAttackNotch(FVector Loc, FRotator Rot);
 	
 };
