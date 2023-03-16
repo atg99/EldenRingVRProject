@@ -39,18 +39,14 @@ void APlayerWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//�浹(������)�� �߻��ϸ� ������ �Լ��� �����Ѵ�.
+	//콜리전 박스에 오버랩 됬을때 사용할 함수
 	boxComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerWeapon::OnOverlap);
 
 
-	//�������̺�Ʈ�� true�� �����Ѵ�
+	//콜리전 박스에 오버랩 이벤트 발생
 	boxComp->SetGenerateOverlapEvents(true);
 	
-	//����Ÿ�̸� ������ �Լ� ����
-	//                                                     �������Լ�   �ʼ���, �ݺ�������, 
-	GetWorld()->GetTimerManager().SetTimer(lifeTimer, this, &APlayerWeapon::AttackCoolTime, 1, false);
-
-	//�������̺�Ʈ�� true�� �����Ѵ�
+	// 보스를 공격할때 쿨타임
 	AttackCoolTime = 1.5f;
 
 }
@@ -71,18 +67,19 @@ void APlayerWeapon::Tick(float DeltaTime)
 	}
 
 }
-
+// 콜리젼 박스 오버랩 함수
 void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	//���� �ε��� ����� ���ʹ̶��
+	
 	//if(meshComp->GetComponentVelocity())
 
 	UE_LOG(LogTemp, Warning, TEXT("PWeponAttack"));
 
-	//���� �ε��� ����� ���ʹ̶��
+	// 적에게 오버랩 되었다면.
 	AEnemyBase* enemy = Cast<AEnemyBase>(OtherActor); 
 	ABoss* boss = Cast<ABoss>(OtherActor); 
+	// 졸병일 경우
 	if (enemy != nullptr) 
 	{
 		enemy -> OnDamaged(swordSpeed.Size());
@@ -94,12 +91,8 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 		//boxComp->SetGenerateOverlapEvents(false);
 	}
 
-	//���� �ε��� ����� �������
-	if (boss != nullptr)
-
-	//���� �ε��� ����� �������
+	//보스일 경우
 	if (boss != nullptr && AttackCoolTime >= 1.5f)
-
 	{
 		boss -> CurHP-=60;
 		AttackCoolTime = 0;
@@ -108,12 +101,6 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	{
 		return;
 	}
-}
-
-
-void APlayerWeapon::AttackCoolTime()
-{
-	boxComp->SetGenerateOverlapEvents(true);
 }
 
 void APlayerWeapon::WeaponTrace()
@@ -152,6 +139,5 @@ void APlayerWeapon::WeaponTrace()
 void APlayerWeapon::GetSwordSpeed()
 {
 	swordSpeed = meshComp->GetComponentLocation() - prevPos;
-
 	prevPos = meshComp->GetComponentLocation();
 }
