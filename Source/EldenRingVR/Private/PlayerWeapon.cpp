@@ -17,14 +17,14 @@ APlayerWeapon::APlayerWeapon()
 	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	SetRootComponent(boxComp);
 	boxComp->SetWorldScale3D(FVector(0.09f, 0.02f, 0.43f));
-	
 
-	//�Ѿ� �浹 ������
 	boxComp->SetCollisionProfileName(TEXT("WeaponPreset"));
+	boxComp->SetGenerateOverlapEvents(true);
 
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	meshComp->SetupAttachment(RootComponent);
-	//������� ��ġ
+	meshComp->SetSimulatePhysics(true);
+
 	meshComp->SetRelativeLocation(FVector(0, 0, 0));
 	meshComp->SetRelativeScale3D(FVector(1));
 	
@@ -42,12 +42,17 @@ void APlayerWeapon::BeginPlay()
 	//�浹(������)�� �߻��ϸ� ������ �Լ��� �����Ѵ�.
 	boxComp->OnComponentBeginOverlap.AddDynamic(this, &APlayerWeapon::OnOverlap);
 
+
 	//�������̺�Ʈ�� true�� �����Ѵ�
 	boxComp->SetGenerateOverlapEvents(true);
 	
 	//����Ÿ�̸� ������ �Լ� ����
 	//                                                     �������Լ�   �ʼ���, �ݺ�������, 
 	GetWorld()->GetTimerManager().SetTimer(lifeTimer, this, &APlayerWeapon::AttackCoolTime, 1, false);
+
+	//�������̺�Ʈ�� true�� �����Ѵ�
+	AttackCoolTime = 1.5f;
+
 }
 
 // Called every frame
@@ -55,16 +60,27 @@ void APlayerWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 	GetSwordSpeed();
 	//if (GEngine)
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), swordSpeed.Size()));
+
+	if (AttackCoolTime < 1.6f)
+	{
+		AttackCoolTime += DeltaTime;
+	}
+
 }
 
 void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
 	//���� �ε��� ����� ���ʹ̶��
 	//if(meshComp->GetComponentVelocity())
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("PWeponAttack"));
+
+	//���� �ε��� ����� ���ʹ̶��
 	AEnemyBase* enemy = Cast<AEnemyBase>(OtherActor); 
 	ABoss* boss = Cast<ABoss>(OtherActor); 
 	if (enemy != nullptr) 
@@ -77,18 +93,23 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 		}
 		//boxComp->SetGenerateOverlapEvents(false);
 	}
+
 	//���� �ε��� ����� �������
 	if (boss != nullptr)
+
+	//���� �ε��� ����� �������
+	if (boss != nullptr && AttackCoolTime >= 1.5f)
+
 	{
 		boss -> CurHP-=60;
-
-		//boxComp->SetGenerateOverlapEvents(false);
+		AttackCoolTime = 0;
 	}
 	else
 	{
 		return;
 	}
 }
+
 
 void APlayerWeapon::AttackCoolTime()
 {
