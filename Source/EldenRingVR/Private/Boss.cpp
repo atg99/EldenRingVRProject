@@ -123,7 +123,8 @@ void ABoss::Tick(float DeltaTime)
 
 	if (CurHP <= 0)
 	{
-		UGameplayStatics::SetGamePaused(this , true);
+		BossFSM->Target->IsBossDie = true;
+		//UGameplayStatics::SetGamePaused(this , true);
 	}
 
 }

@@ -174,13 +174,25 @@ private:
 
 public:
 
+	UPROPERTY(BlueprintReadOnly)
+	class ABoss* Boss;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AActor> BossHPFac;
 	
 	UPROPERTY()
 		AActor* BossHP;
 
+	UPROPERTY()
+		TSubclassOf<AActor> GameOverUIFac;
+	UPROPERTY()
+		TSubclassOf<AActor> ClearUIFac;
+	UPROPERTY()
+		AActor* EndingUI;
+
 	bool IsBossLev;
+	bool IsEndingUISpawn;
+	bool IsBossDie;
 
 	UPROPERTY()
 	class APlayerStatActor* statWindow;

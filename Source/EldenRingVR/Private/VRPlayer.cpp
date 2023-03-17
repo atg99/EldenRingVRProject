@@ -18,6 +18,8 @@
 #include "Components/WidgetInteractionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Boss.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -29,6 +31,7 @@ AVRPlayer::AVRPlayer()
 	VRCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("VRCamera"));
 	VRCamera->SetupAttachment(RootComponent);
 	VRCamera->bUsePawnControlRotation = true;
+	VRCamera->SetRelativeLocation(FVector(0, 0, 70));
 	// 손 추가
 	LeftHand = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftHand"));
 	LeftHand->SetupAttachment(RootComponent);
@@ -69,6 +72,17 @@ AVRPlayer::AVRPlayer()
 	{
 		BossHPFac = BossHPUI.Class;
 	}
+	ConstructorHelpers::FClassFinder<AActor> GameOverUI(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_GameOverUI.BP_GameOverUI_C'"));
+	if (GameOverUI.Succeeded())
+	{
+		GameOverUIFac = GameOverUI.Class;
+	}
+	ConstructorHelpers::FClassFinder<AActor> ClearUI(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_ClearUI.BP_ClearUI_C'"));
+	if (ClearUI.Succeeded())
+	{
+		ClearUIFac = ClearUI.Class;
+	}
+
 	// 집게 손가락 생성
 	//오른손
 	rightAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("rightAim"));
@@ -126,6 +140,12 @@ void AVRPlayer::BeginPlay()
 
 	if (IsBossLev = UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("T_Lev"))
 	{
+
+		//for (TActorIterator<ABoss> it(GetWorld()); it; ++it)
+		//{
+		//	Boss = *it;
+		//}
+
 		
 		if (BossHPFac)
 		{
@@ -134,16 +154,19 @@ void AVRPlayer::BeginPlay()
 		}
 
 	}
-	if(UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("ATG_EldenMap"))
+	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("ATG_EldenMap"))
 	{
 		FFileHelper::LoadFileToString(PlayerStartLocation, *startLoc);
 		bool bLco;
 		UKismetStringLibrary::Conv_StringToVector(PlayerStartLocation, PlayerStartVec, bLco);
-		if(bLco)
+		if (bLco)
 		{
 			SetActorLocation(PlayerStartVec);
 		}
 	}
+
+
+
 }
 
 // Called every frame
@@ -159,9 +182,32 @@ void AVRPlayer::Tick(float DeltaTime)
 	if (IsBossLev)
 	{
 		BossHP->SetActorScale3D(FVector(0.02f));
+		FRotator HeadToCamRot = (VRCamera->GetComponentLocation() - BossHP->GetActorLocation()).Rotation();
 		BossHP->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20 - VRCamera->GetUpVector() * 10);
-		BossHP->SetActorRotation((VRCamera->GetComponentLocation() - BossHP->GetActorLocation()).Rotation());
+		BossHP->SetActorRotation(FRotator(0, HeadToCamRot.Yaw, HeadToCamRot.Roll));
+		if (EndingUI)
+		{
+			EndingUI->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20);
+			EndingUI->SetActorRotation((VRCamera->GetComponentLocation() - EndingUI->GetActorLocation()).Rotation());
+		}
+		if (!IsEndingUISpawn)
+		{
+			if (HP <= 0)
+			{
+				EndingUI = GetWorld()->SpawnActor(GameOverUIFac);
+				EndingUI->SetActorScale3D(FVector(0.021f));
+				IsEndingUISpawn = true;
+			}
+			else if (IsBossDie)
+			{
+				EndingUI = GetWorld()->SpawnActor(ClearUIFac);
+				EndingUI->SetActorScale3D(FVector(0.021f));
+				IsEndingUISpawn = true;
+			}
+		}
+
 	}
+
 	
 }
 
@@ -378,7 +424,7 @@ void AVRPlayer::OnDamaged(float damage)
 	if(HP <= 0)
 	{
 	    //체력이 0이하면 레벨을 다시 시작한다
-		UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
+		//UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
 		if(savePoint)
 		{
 			

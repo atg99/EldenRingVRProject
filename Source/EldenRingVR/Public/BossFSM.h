@@ -92,7 +92,7 @@ public:
 
 	float Speed = 0.01f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Decel = 0.00008f;
+		float Decel = 0.0001f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Excel = 0.0005f;
 	float Rate = 0.1f;
