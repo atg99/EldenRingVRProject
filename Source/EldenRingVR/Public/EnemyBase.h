@@ -232,6 +232,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Blood")
 	class UNiagaraSystem* amputatedHead;
 
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	class UNiagaraSystem* bloodBoom;
+
 	UFUNCTION()
 	void SpawnAmputatedLim(FName socket);
 
@@ -255,6 +258,24 @@ private:
 
 	UFUNCTION()
 	void Add_pmMap();
+
+	UPROPERTY()
+	TSet<class UProceduralMeshComponent*> otherHalfs;
+
+	UFUNCTION()
+	void SpawnPMDecal(UProceduralMeshComponent* decalPm);
+
+	UFUNCTION()
+	void SetPMDecalTimer();
+	
+	UFUNCTION()
+	void SetPMDecalTimer_Map();
+
+	UFUNCTION()
+	void SetPMDecalTimer_Set();
+
+	UPROPERTY()
+	FTimerHandle TimerHandle_PMDecal;
 };
 
 

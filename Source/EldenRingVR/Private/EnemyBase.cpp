@@ -262,6 +262,9 @@ void AEnemyBase::EnemyDie()
 	con->SetbDieValue();
 	SetRagdoll();
 
+	//육편의 데칼 생성 타이머를 시작한다
+	SetPMDecalTimer();
+	
 	//모든 뼈에 한번씩 적용
 	// for (auto bone : GetMesh()->GetAllSocketNames())
 	// {
@@ -271,7 +274,7 @@ void AEnemyBase::EnemyDie()
 	//합쳐지기 타이머 시작
 	if(bCompleteDie)
 	{
-		return;;
+		return;
 	}
 	GetWorldTimerManager().SetTimer(timerHandle_Die, this, &AEnemyBase::SetPoseableMeshToGetMesh, 3, false);
 }
@@ -293,12 +296,13 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 	
 	if(GetMesh()->IsSimulatingPhysics(hitBone)&&(hitBone!="spine_02"))
 	{
-		if(hitBone == "head"||hitBone == "neck_01")
+		if((hitBone == "head"||hitBone == "neck_01")&&pmMap.Contains(hitBone))
 		{
 			if(enemyHP <= 0)
 			{
 				GetMesh()->HideBoneByName(hitBone, PBO_None);
-				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
+				//땅에 박히지 않게 올린다
+				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone)+UKismetMathLibrary::MakeTransform(FVector(0,0,50), FRotator(0), FVector(0)));
 
 				//슬라이스 기능 호출
 				SlicePM(pmMap[hitBone], hitNormal);
@@ -310,12 +314,12 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 				SpawnAmputatedHead();
 			}
 		}
-		else if(hitBone=="spine_03")
+		else if(hitBone=="spine_03"&&pmMap.Contains(hitBone))
 		{
 			if(enemyHP <= 0)
 			{
 				GetMesh()->HideBoneByName(hitBone, PBO_None);
-				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
+				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone)+UKismetMathLibrary::MakeTransform(FVector(0,0,50), FRotator(0), FVector(0)));
 
 				//슬라이스 기능 호출
 				SlicePM(pmMap[hitBone], hitNormal);
@@ -333,7 +337,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 				//맞은 본을 숨기고
 				GetMesh()->HideBoneByName(hitBone, PBO_None);
 				//proceduralMesh를 가져온다
-				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone));
+				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone)+UKismetMathLibrary::MakeTransform(FVector(0,0,50), FRotator(0), FVector(0)));
 			
 				//슬라이스 기능 호출
 				SlicePM(pmMap[hitBone], hitNormal);
@@ -396,7 +400,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 	GetWorld()->LineTraceSingleByChannel(result, socketLoc, socketLoc+FVector(0,0,-1)*1500, ECC_Visibility
 	, params);
 
-	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-63, -128, -128), result.Location, FVector(0,0,1).Rotation(), 60);
+	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-63, -128, -128), result.Location, FVector(0,0,1).Rotation(), 10);
 }
 
 void AEnemyBase::Crawl()
@@ -544,6 +548,12 @@ void AEnemyBase::SpawnNiagaraAttach(FName attachBone, FVector hitLoc, FRotator h
 
 void AEnemyBase::SlicePM(UProceduralMeshComponent*& pm, FVector hitNoraml)
 {
+	if(!pm){ return; }
+
+	if(bloodBoom)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), bloodBoom, pm->GetComponentLocation());
+	}
 	UProceduralMeshComponent* otherHalf;
 	pm->SetCollisionProfileName(TEXT("Ragdoll"));
 	//pmHead->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
@@ -556,6 +566,9 @@ void AEnemyBase::SlicePM(UProceduralMeshComponent*& pm, FVector hitNoraml)
 		otherHalf->SetCollisionProfileName(TEXT("Ragdoll"));
 		otherHalf->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		otherHalf->SetSimulatePhysics(true);
+
+		//TSet으로 중복을 피한다
+		otherHalfs.Add(otherHalf);
 	}	
 
 }
@@ -577,5 +590,50 @@ void AEnemyBase::Add_pmMap()
 	pmMap.Add(TEXT("calf_l"), pmCalf_l);
 	pmMap.Add(TEXT("calf_r"), pmCalf_r);
 	pmMap.Add(TEXT("spine_01"), pmSpine_01);
+}
+
+void AEnemyBase::SpawnPMDecal(UProceduralMeshComponent* decalPm)
+{
+	if(decalPm->GetComponentVelocity().Size() > 5)
+	{
+		FCollisionQueryParams params;
+		params.AddIgnoredActor(this);
+		FHitResult result;
+		FVector startLoc = decalPm->GetComponentLocation();
+			
+		GetWorld()->LineTraceSingleByChannel(result, startLoc, startLoc+FVector(0,0,-1)*1500, ECC_Visibility, params);
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-7.56, -15.36, -15.36), result.Location, FVector(0,0,1).Rotation(), 5);
+	}
+}
+
+void AEnemyBase::SetPMDecalTimer()
+{
+	GetWorldTimerManager().SetTimer(TimerHandle_PMDecal, FTimerDelegate::CreateLambda([this]()->void
+	{
+		SetPMDecalTimer_Map(); SetPMDecalTimer_Set();
+	}), 0.02, true);
+}
+
+void AEnemyBase::SetPMDecalTimer_Map()
+{
+	for (auto pm : pmMap)
+	{
+		//육편의 속도가 5이상이면 피를 뿌린다
+		if(pm.Value->GetComponentVelocity().Size() > 5)
+		{
+			SpawnPMDecal(pm.Value);
+		}
+	}
+}
+
+void AEnemyBase::SetPMDecalTimer_Set()
+{
+	for (auto half : otherHalfs)
+	{
+		if(half->GetComponentVelocity().Size() > 5)
+		{
+			SpawnPMDecal(half);
+		}
+	}
 }
 

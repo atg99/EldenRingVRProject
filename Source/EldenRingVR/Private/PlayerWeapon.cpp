@@ -109,17 +109,17 @@ void APlayerWeapon::WeaponTrace()
 		wStart,
 		traceStartLoc,
 		endLoc,
-		FVector(10, 10, 5),
+		FVector(0.1, 20, 0.1),
 		GetActorRotation()+FRotator(0,90,0),
 		UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel10),
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		hitResult,
 		true,
 		FLinearColor::Gray,
 		FLinearColor::Red,
-		10
+		1
 	);
 
 	if(isHit)
