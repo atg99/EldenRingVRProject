@@ -20,6 +20,7 @@
 #include "KismetProceduralMeshLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Animation/Skeleton.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -300,7 +301,15 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 		{
 			if(enemyHP <= 0)
 			{
-				GetMesh()->HideBoneByName(hitBone, PBO_None);
+				GetMesh()->HideBoneByName(hitBone, EPhysBodyOp::PBO_None);
+				
+				//USkinnedMeshComponent::GetBoneIndex(hitBone);
+				//USkinnedMeshComponent::GetBoneIndex(hitBone);
+				//int32 boneIndex = GetMesh()->GetBoneIndex(hitBone);
+				//child index 배열
+				//TArray<int32> childIndex
+				//USkeleton::GetChildBones(boneIndex, childIndex);
+				
 				//땅에 박히지 않게 올린다
 				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone)+UKismetMathLibrary::MakeTransform(FVector(0,0,50), FRotator(0), FVector(0)));
 
@@ -319,6 +328,15 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 			if(enemyHP <= 0)
 			{
 				GetMesh()->HideBoneByName(hitBone, PBO_None);
+
+				for (auto cb : GetMesh()->GetAllSocketNames())
+				{
+					if(GetMesh()->BoneIsChildOf(cb, hitBone))
+					{
+						GetMesh()->UnHideBoneByName(cb);	
+					}
+				}
+				
 				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone)+UKismetMathLibrary::MakeTransform(FVector(0,0,50), FRotator(0), FVector(0)));
 
 				//슬라이스 기능 호출
@@ -336,6 +354,16 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 			{
 				//맞은 본을 숨기고
 				GetMesh()->HideBoneByName(hitBone, PBO_None);
+
+				//하위 본을 가져와서 보이게한다
+				 for (auto cb : GetMesh()->GetAllSocketNames())
+				 {
+				 	if(GetMesh()->BoneIsChildOf(cb, hitBone))
+				 	{
+				 		GetMesh()->UnHideBoneByName(cb);	
+				 	}
+				 }
+				
 				//proceduralMesh를 가져온다
 				pmMap[hitBone]->SetWorldTransform(GetMesh()->GetSocketTransform(hitBone)+UKismetMathLibrary::MakeTransform(FVector(0,0,50), FRotator(0), FVector(0)));
 			
@@ -400,7 +428,10 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 	GetWorld()->LineTraceSingleByChannel(result, socketLoc, socketLoc+FVector(0,0,-1)*1500, ECC_Visibility
 	, params);
 
-	UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-63, -128, -128), result.Location, FVector(0,0,1).Rotation(), 10);
+	//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-63, -128, -128), result.Location, FVector(0,0,1).Rotation(), 10);
+	UGameplayStatics::SpawnDecalAttached(bloodDecal, FVector(-5, -128, -128), result.GetComponent(), NAME_None, result.Location, FVector(0,0,1).Rotation(), EAttachLocation::KeepRelativeOffset, 10);
+
+	//SpawnDecalOnBody(hitLoc, hitBone, hitNormal);
 }
 
 void AEnemyBase::Crawl()
@@ -497,7 +528,7 @@ void AEnemyBase::EnemyMergeEnd()
 	NiagaraDeactivate();
 	//죽음상태를 되돌린다
 	con->ClearbDieValue();
-	enemyHP = 100;
+	enemyHP = maxEnemyHP;
 }
 
 double AEnemyBase::EaseInElastic( double t ) {
@@ -594,15 +625,26 @@ void AEnemyBase::Add_pmMap()
 
 void AEnemyBase::SpawnPMDecal(UProceduralMeshComponent* decalPm)
 {
-	if(decalPm->GetComponentVelocity().Size() > 5)
+	float pmVelo = decalPm->GetComponentVelocity().Size();
+	if(pmVelo > 5)
 	{
+		// 값이 20 이하면 20으로 고정한다
+		if(pmVelo < 20)
+		{
+			pmVelo = 20;
+		}
+		else if(pmVelo > 90)
+		{
+			pmVelo = 90;
+		}
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		FHitResult result;
 		FVector startLoc = decalPm->GetComponentLocation();
-			
-		GetWorld()->LineTraceSingleByChannel(result, startLoc, startLoc+FVector(0,0,-1)*1500, ECC_Visibility, params);
-		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-7.56, -15.36, -15.36), result.Location, FVector(0,0,1).Rotation(), 5);
+
+		//속도가 느리면 데칼이 커지게 한다 //-756, -1536, -1536
+		GetWorld()->LineTraceSingleByChannel(result, startLoc, startLoc+FVector(0,0,-1)*200, ECC_Visibility, params);
+		UGameplayStatics::SpawnDecalAtLocation(GetWorld(), bloodDecal, FVector(-500, -1536, -1536)* (1/pmVelo), result.Location, FVector(0,0,1).Rotation(), 20);
 	}
 }
 
@@ -618,11 +660,8 @@ void AEnemyBase::SetPMDecalTimer_Map()
 {
 	for (auto pm : pmMap)
 	{
-		//육편의 속도가 5이상이면 피를 뿌린다
-		if(pm.Value->GetComponentVelocity().Size() > 5)
-		{
-			SpawnPMDecal(pm.Value);
-		}
+		//파편의 속도가 5이상이면 피를 뿌린다
+		SpawnPMDecal(pm.Value);
 	}
 }
 
@@ -630,10 +669,12 @@ void AEnemyBase::SetPMDecalTimer_Set()
 {
 	for (auto half : otherHalfs)
 	{
-		if(half->GetComponentVelocity().Size() > 5)
-		{
-			SpawnPMDecal(half);
-		}
+		SpawnPMDecal(half);
 	}
 }
+
+// void AEnemyBase::SpawnDecalOnBody(FVector loc, FName bone, FVector impactNormal)
+// {
+// 	UGameplayStatics::SpawnDecalAttached(bloodDecal, FVector(-640, -1280, -1280), GetMesh(), bone, loc, impactNormal.Rotation(), EAttachLocation::KeepRelativeOffset, 10);
+// }
 

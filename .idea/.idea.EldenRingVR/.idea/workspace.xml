@@ -7,19 +7,32 @@
   <component name="ChangeListManager">
     <list default="true" id="d3102999-2a9c-4fe0-8ef3-70588c3f0937" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EldenRingVR/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EldenRingVR/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/ATG_EldenMap.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/ATG_EldenMap.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/HDRI/HDRI_Epic_Courtyard_Daylight.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/StarterContent/Particles/P_Ambient_Dust.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/StarterContent/Particles/P_Ambient_Dust.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_Desmemberment.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_Desmemberment.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_TEnemy.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_TEnemy.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/BP_VRPlayerAT.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/BP_VRPlayerAT.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/NewBlueprint1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/NewBlueprint1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TaeGun/BP/NewBlueprint2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/BP/NewBlueprint2.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TaeGun/TaeGunLevel.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TaeGun/TaeGunLevel.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/UyYeon/Blueprint/BP_PSword.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UyYeon/Blueprint/BP_PSword.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UyYeon/Blueprint/BP_VRPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UyYeon/Blueprint/BP_VRPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/8/8A/M4DQBQH2XGMHAZEWO2DWC8.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/8/8A/M4DQBQH2XGMHAZEWO2DWC8.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/9/UE/SVOBPHAM55LCX8N5VMU7VH.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/9/UE/SVOBPHAM55LCX8N5VMU7VH.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/F/5G/1YLIFG7D7819EL9UUX1HSX.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/F/5G/1YLIFG7D7819EL9UUX1HSX.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/0/9T/5CKCF5BFC3ILFDQR5E2583.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/0/9T/5CKCF5BFC3ILFDQR5E2583.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/1/3Z/SD2KZ9SYDPLUQGK2IXILEH.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/1/3Z/SD2KZ9SYDPLUQGK2IXILEH.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/1/B7/JL2BBVA2S2H70C954GZKX5.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/1/B7/JL2BBVA2S2H70C954GZKX5.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/1/S4/ITFX1PX9RLZ7X5ZID136KO.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/1/S4/ITFX1PX9RLZ7X5ZID136KO.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/2/VB/5WXITYZ4FY8G58WJNG14NM.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/2/VB/5WXITYZ4FY8G58WJNG14NM.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/6/CU/BD1NXMXT6XZBNM6S2O8A5Q.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/6/CU/BD1NXMXT6XZBNM6S2O8A5Q.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/6/T9/8KBC9FB49FKU5WX13W8EBB.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/6/T9/8KBC9FB49FKU5WX13W8EBB.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/8/LB/F9G1WU7K4ORJAXOO9541L1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/8/LB/F9G1WU7K4ORJAXOO9541L1.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/9/77/N6L9YFE2K2XPQBAC5CK4XF.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/9/77/N6L9YFE2K2XPQBAC5CK4XF.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/9/FS/G87LUEXULOVUO49JODE8R0.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/9/FS/G87LUEXULOVUO49JODE8R0.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/A/06/1YVBLEMBPAR8OZZ3IPHIA0.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/A/06/1YVBLEMBPAR8OZZ3IPHIA0.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/A/J0/P2JPF87HB87RI9SHGDM3SF.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/A/J0/P2JPF87HB87RI9SHGDM3SF.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/A/YP/D0VLE32IYJUI8T4NJQBGDT.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/A/YP/D0VLE32IYJUI8T4NJQBGDT.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/B/G1/J6QZ0PKWTAYP6OA29V8UOY.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/B/G1/J6QZ0PKWTAYP6OA29V8UOY.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/C/5I/K41RE95CTPVDD0PLCXTFJO.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/C/5I/K41RE95CTPVDD0PLCXTFJO.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/D/J6/Q0HH867T9M6J0LKTFRINWJ.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/D/J6/Q0HH867T9M6J0LKTFRINWJ.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/D/SF/KWOZWGY75C847DWDPW9L98.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/D/SF/KWOZWGY75C847DWDPW9L98.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/E/AW/QKNMAMIPKZ05M9AWAVTQM3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/E/AW/QKNMAMIPKZ05M9AWAVTQM3.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/E/OJ/24N5JE9OG3EODQAHBAM23K.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/__ExternalActors__/Maps/ATG_EldenMap/E/OJ/24N5JE9OG3EODQAHBAM23K.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/EnemyBase.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Private/PlayerWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Private/PlayerWeapon.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/EldenRingVR/Public/EnemyBase.h" afterDir="false" />
@@ -217,6 +230,8 @@
       <workItem from="1678972516537" duration="1453000" />
       <workItem from="1679060438594" duration="86000" />
       <workItem from="1679060609952" duration="10718000" />
+      <workItem from="1679134158684" duration="9727000" />
+      <workItem from="1679203744463" duration="595000" />
     </task>
     <servers />
   </component>

@@ -125,7 +125,7 @@ void APlayerWeapon::WeaponTrace()
 	if(isHit)
 	{
 		//절단 함수
-		enemyBase->Desmemberment(hitResult.BoneName, hitResult.ImpactNormal, hitResult.ImpactNormal);
+		enemyBase->Desmemberment(hitResult.BoneName, hitResult.Location, hitResult.ImpactNormal);
 		//blood niagara
 		enemyBase->SpawnNiagaraAttach(hitResult.BoneName, hitResult.Location, (hitResult.Location-enemyBase->GetActorLocation()).Rotation());
 	}

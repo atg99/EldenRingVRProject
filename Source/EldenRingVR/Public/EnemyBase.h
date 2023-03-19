@@ -179,7 +179,10 @@ private:
 	float eSpeed;
 
 	UPROPERTY()
-	float enemyHP = 100;
+	float enemyHP = 200;
+
+	UPROPERTY()
+	float maxEnemyHP = 200;
 
 	UPROPERTY(EditAnywhere)
 	class UMaterialInterface* bloodDecal;
@@ -276,6 +279,9 @@ private:
 
 	UPROPERTY()
 	FTimerHandle TimerHandle_PMDecal;
+
+	// UFUNCTION()
+	// void SpawnDecalOnBody(FVector loc, FName bone, FVector impactNormal);
 };
 
 
