@@ -21,6 +21,7 @@
 #include "Boss.h"
 #include "EngineUtils.h"
 #include "PlayerWeapon.h"
+#include "Potion.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -134,7 +135,7 @@ void AVRPlayer::BeginPlay()
 	ResetRolling();
 	UHeadMountedDisplayFunctionLibrary::SetTrackingOrigin(EHMDTrackingOrigin::Eye);
 
-	HP = maxHP;
+	HP = 100;
 	MP = maxMP;
 	Stamina = maxStamina;
 
@@ -207,7 +208,18 @@ void AVRPlayer::Tick(float DeltaTime)
 
 	}
 
-	
+	if (Stamina < 100)
+	{
+		Stamina += 2*DeltaTime;
+	}
+	if (PoWTime <1.6f)
+	{
+		PoWTime += DeltaTime;
+	}
+	else if (PoWTime > 1.5f)
+	{
+		PoWEnd();
+	}
 }
 
 // Called to bind functionality to input
@@ -255,8 +267,15 @@ void AVRPlayer::Turn(const FInputActionValue& Values)
 // 회피 기능 활성화처리
 void AVRPlayer::RollingStart(const FInputActionValue& Values)
 {
+	if (Stamina > 10)
+	{
 	// 누르고 있는 중에는 사용자가 어디를 가리키는지 주시하고 싶다.
 	bRolling = true;
+	}
+	else
+	{
+		return;
+	}
 }
 
 void AVRPlayer::RollingEnd(const FInputActionValue& Values)
@@ -273,6 +292,7 @@ void AVRPlayer::RollingEnd(const FInputActionValue& Values)
 	if (IsRolling)
 	{
 		DoRolling();
+		Stamina -= 10;
 		return;
 	}
 	// 그렇지 않을경우 회피
@@ -578,7 +598,7 @@ void AVRPlayer::lTryGrab()
 		lGrabbedObject->SetSimulatePhysics(false);
 		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
-		APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
+		APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject->GetOwner());
 		if(weapon)
 		{
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
@@ -605,10 +625,22 @@ void AVRPlayer::lUnTryGrab()
 	// 4. 충돌기능 활성화
 	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
+	APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject->GetOwner());
 	if(weapon)
 	{
 		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
 	}
 
 }
+// 무적시간 (Power over wellming)
+void AVRPlayer::PoWStart()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PoWTime = 0;
+}
+
+void AVRPlayer::PoWEnd()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
