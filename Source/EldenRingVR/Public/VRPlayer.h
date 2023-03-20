@@ -76,19 +76,16 @@ protected:
 
 public:	
 
-	// 생명력
-
-	
-	// ����
+	// 무기 메쉬
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* weponMeshComp;
-	// ����
+	// 방패 메쉬
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* shieldMeshComp;
 	
 public:	
 	
-	// ������
+	// 생명력
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -158,11 +155,7 @@ private:
 	UFUNCTION()
 	void onActionJump();
 	
-	UFUNCTION()
-	void DoAttack();
-
-	UFUNCTION()
-	void DoDefence();
+	
 
 	UFUNCTION()
 	void Interact();
@@ -173,10 +166,16 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UWidgetInteractionComponent* interactionComp;
 
+	UPROPERTY(EditAnywhere)
+	class UWidgetInteractionComponent* interactionComp1;
+
 	//UPROPERTY()
 	//TSubclassOf<class APlayerStatActor> statActor;
 
 public:
+
+	UPROPERTY(BlueprintReadOnly)
+	class ABoss* Boss;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AActor> BossHPFac;
@@ -184,7 +183,16 @@ public:
 	UPROPERTY()
 		AActor* BossHP;
 
+	UPROPERTY()
+		TSubclassOf<AActor> GameOverUIFac;
+	UPROPERTY()
+		TSubclassOf<AActor> ClearUIFac;
+	UPROPERTY()
+		AActor* EndingUI;
+
 	bool IsBossLev;
+	bool IsEndingUISpawn;
+	bool IsBossDie;
 
 	UPROPERTY()
 	class APlayerStatActor* statWindow;
@@ -209,5 +217,47 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class UMotionControllerComponent* rightAim;
+	UPROPERTY(EditAnywhere)
+	class UMotionControllerComponent* leftAim;
+	
+	//잡기 버튼을 누르면 물체를 잡고싶다.
+	// 필요속성: 입력액션,잡을범위
+	// 잡을 범위
+	UPROPERTY(EditDefaultsOnly, Category = "Grab")
+		float GrabRange = 100;
+
+	//오른손
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_rGrab;
+	// 잡은 물체 기억
+	UPROPERTY()
+		class UPrimitiveComponent* rGrabbedObject;
+	// 잡은 녀석이 있는지 여부 기억할 변수
+	bool rIsGrabbed = false;
+	// 잡기 시도
+	void rTryGrab();
+	// 놓기
+	void rUnTryGrab();
+	//잡고 있는중
+	void rGrabbing();
+	// Release 상태로 되돌려놓기
+	void rReleaseUIInput();
+
+	//왼손
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+		class UInputAction* IA_lGrab;
+	// 잡은 물체 기억
+	UPROPERTY()
+		class UPrimitiveComponent* lGrabbedObject;
+	// 잡은 녀석이 있는지 여부 기억할 변수
+	bool lIsGrabbed = false;
+	// 잡기 시도
+	void lTryGrab();
+	// 놓기
+	void lUnTryGrab();
+	//잡고 있는중
+	void lGrabbing();
+	// Release 상태로 되돌려놓기
+	void lReleaseUIInput();
 	
 };

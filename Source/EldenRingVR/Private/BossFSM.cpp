@@ -48,6 +48,10 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (IsLevSeq)
+	{
+		return;
+	}
 	switch (BState)
 	{
 	case EBossState::Idle:
@@ -110,12 +114,12 @@ void UBossFSM::IdleState()
 	
 	
   
-	if (Target->GetDistanceTo(Boss) > 1000)
+	if (Target->GetDistanceTo(Boss) > 1500)
 	{
 		BState = EBossState::Move;
 	}
 	
-	else if (Target->GetDistanceTo(Boss) < 1000 && 800 < Target->GetDistanceTo(Boss))
+	else if (Target->GetDistanceTo(Boss) < 1500 && 1000 < Target->GetDistanceTo(Boss))
 	{
 		
 		IsJumpAttack = true;
@@ -127,9 +131,9 @@ void UBossFSM::IdleState()
 		if (FVector::DotProduct(Boss->GetActorForwardVector(), HeadToTargetV) < 0)
 		{
 			int32 RandNum = FMath::RandRange(1, 4);
-			if (RandNum != 1)
+			if (RandNum == 1)
 			{
-				if (Target->GetDistanceTo(Boss) <= 200)
+				if (Target->GetDistanceTo(Boss) <= 300)
 				{
 					IsTailAttack = true;
 					Boss->CanHit = true;
@@ -155,7 +159,7 @@ void UBossFSM::IdleState()
 			int32 RandNum = FMath::RandRange(1, 3);
 			if (RandNum == 1)
 			{
-				if (Target->GetDistanceTo(Boss) <= 200)
+				if (Target->GetDistanceTo(Boss) <= 300)
 				{
 					IsDaggerThrow = true;
 					BState = EBossState::DaggerAttackThrow;
@@ -170,7 +174,7 @@ void UBossFSM::IdleState()
 			}
 			else if (RandNum == 2)
 			{
-				if (Target->GetDistanceTo(Boss) <= 200)
+				if (Target->GetDistanceTo(Boss) <= 300)
 				{
 					IsInwardSlash = true;
 					BState = EBossState::InwardSlash;
@@ -185,7 +189,7 @@ void UBossFSM::IdleState()
 			}
 			else if (RandNum == 3)
 			{
-				if (Target->GetDistanceTo(Boss) <= 200)
+				if (Target->GetDistanceTo(Boss) <= 300)
 				{
 					IsSlashGround = true;
 					BState = EBossState::SlashGround;
@@ -215,6 +219,7 @@ void UBossFSM::WaitState()
 
 		
 	}
+	
 	//Boss->Mace->SetRelativeRotation(FRotator(-90, 0, 0));
 	
 }
@@ -234,7 +239,7 @@ void UBossFSM::IdleSet()
 
 void UBossFSM::MoveState()
 {
-	if (Target->GetDistanceTo(Boss) <= 1000)
+	if (Target->GetDistanceTo(Boss) <= 1500)
 	{
 		BState = EBossState::Idle;
 	}
@@ -251,7 +256,7 @@ void UBossFSM::MoveState()
 
 void UBossFSM::MoveCloseState()
 {
-	if (Target->GetDistanceTo(Boss) <= 200)
+	if (Target->GetDistanceTo(Boss) <= 300)
 	{
 		BState = ReservState;
 	}
@@ -278,15 +283,17 @@ void UBossFSM::JumpAttackState(float time)
 	if (IsJumpAttack)
 	{
 
-		if (Speed > 0.0f && Rate < 0.7f)
+		if (Speed > 0.0f && Rate < 0.5f)
 		{
 			JumpAnimNum = 1;
 			Speed -= Decel;
 			Rate += Speed;
-			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate), UKismetMathLibrary::Lerp   (BossLocation.Y, TargetLocation.Y, Rate), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 720, 0.5 * Rate)));
+			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate), UKismetMathLibrary::Lerp   (BossLocation.Y, TargetLocation.Y, Rate), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 3000, 0.5 * Rate)));
 		}
 		else
 		{
+
+
 			if (!IsLocationReset)
 			{
 				
@@ -295,29 +302,43 @@ void UBossFSM::JumpAttackState(float time)
 				IsLocationReset = true;
 			}
 
-			if (Rate - 0.7f < 0.05)
+			FVector HitLoc = TargetLocation - HeadToTargetV * 300;
+			
+			if (Rate - 0.5f < 0.3)
 			{
 				JumpAnimNum = 2;
-				Speed += 0.001 * Excel;
+				Speed += 0.0005 * Excel;
 				Rate += Speed;
-				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
+				
+				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, HitLoc.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, HitLoc.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
 
 			}
-			else if (Rate - 0.7f < 1)
+			else if (Rate - 0.5f < 1)
 			{
-				Speed += Excel * 4;
+				Speed += Excel * 25;
 				Rate += Speed;
-				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, TargetLocation.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, TargetLocation.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
+				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, HitLoc.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, HitLoc.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
 			}
 			else
 			{
-				if (Target->GetDistanceTo(Boss) < 300)
+				if (Target->GetDistanceTo(Boss) < 600)
 				{
 					Target->OnDamaged(10);
 				}
+			
+				
 				JumpAnimNum = 3;
 				IsJumpAttack = false;
 				IsLocationReset = false;
+				FCollisionQueryParams Param;
+				FHitResult HitInfo;
+				Param.AddIgnoredActor(Boss);
+				bool IsHit = GetWorld()->LineTraceSingleByChannel(HitInfo, Boss->GetActorLocation(), Boss->GetActorLocation() - Boss->GetActorUpVector() * 1000, ECollisionChannel::ECC_Visibility, Param);
+				if (IsHit)
+				{
+					Boss->SpawnGroundAttackNotch(HitInfo.ImpactPoint, HeadToTargetR);
+				}
+				
 				Speed = 0.01f;
 				Rate = 0.1f;
 				BState = EBossState::Wait;
@@ -430,6 +451,8 @@ void UBossFSM::TurnToTState()
 	
 	else if (TurnToTCount * 0.007 < 1)
 	{
+		LocationSet();
+		Boss->AddMovementInput((Boss->GetActorForwardVector() - Boss->GetActorForwardVector() * 0.006 * TurnToTCount + HeadToTargetV * 0.003 * TurnToTCount));
 		Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, 0.007 * TurnToTCount, true));
 		TurnToTCount++;
 	}

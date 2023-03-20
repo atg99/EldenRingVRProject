@@ -34,9 +34,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FTimerHandle lifeTimer;
-	UFUNCTION()
-	void AttackCoolTime();
-	
+
 	UFUNCTION()
 	void WeaponTrace();
 
@@ -59,4 +57,7 @@ protected:
 
 	UFUNCTION()
 	void GetSwordSpeed();
+
+	float AttackCoolTime;
+
 };

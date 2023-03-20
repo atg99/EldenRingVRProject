@@ -18,6 +18,8 @@
 #include "Components/WidgetInteractionComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Boss.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -29,6 +31,7 @@ AVRPlayer::AVRPlayer()
 	VRCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("VRCamera"));
 	VRCamera->SetupAttachment(RootComponent);
 	VRCamera->bUsePawnControlRotation = true;
+	VRCamera->SetRelativeLocation(FVector(0, 0, 70));
 	// 손 추가
 	LeftHand = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftHand"));
 	LeftHand->SetupAttachment(RootComponent);
@@ -69,18 +72,39 @@ AVRPlayer::AVRPlayer()
 	{
 		BossHPFac = BossHPUI.Class;
 	}
+	ConstructorHelpers::FClassFinder<AActor> GameOverUI(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_GameOverUI.BP_GameOverUI_C'"));
+	if (GameOverUI.Succeeded())
+	{
+		GameOverUIFac = GameOverUI.Class;
+	}
+	ConstructorHelpers::FClassFinder<AActor> ClearUI(TEXT("/Script/Engine.Blueprint'/Game/TW/Blueprint/BP_ClearUI.BP_ClearUI_C'"));
+	if (ClearUI.Succeeded())
+	{
+		ClearUIFac = ClearUI.Class;
+	}
 
+	// 집게 손가락 생성
+	//오른손
 	rightAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("rightAim"));
-	rightAim->SetupAttachment(RightHand);
+	rightAim->SetupAttachment(RootComponent);
 	rightAim->MotionSource = FName("RightAim");
 	
 	interactionComp = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("interaction"));
 	interactionComp->SetupAttachment(rightAim);
+	//왼손
+	leftAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("leftAim"));
+	leftAim->SetupAttachment(RootComponent);
+	leftAim->MotionSource = FName("LeftAim");
 
 	
+	interactionComp1 = CreateDefaultSubobject<UWidgetInteractionComponent>(TEXT("interaction1"));
+	interactionComp1->SetupAttachment(leftAim);
+	
+
+
 	weponMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("weponMeshComp"));
 	shieldMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("shieldMeshComp"));
-	//����, ���и� �տ� ����
+	// 왼손과 오른손에 장비 착용
 	shieldMeshComp->SetupAttachment(GetMesh(), TEXT("hand_l"));
 	weponMeshComp->SetupAttachment(GetMesh(), TEXT("hand_r"));
 
@@ -116,6 +140,12 @@ void AVRPlayer::BeginPlay()
 
 	if (IsBossLev = UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("T_Lev"))
 	{
+
+		//for (TActorIterator<ABoss> it(GetWorld()); it; ++it)
+		//{
+		//	Boss = *it;
+		//}
+
 		
 		if (BossHPFac)
 		{
@@ -124,16 +154,19 @@ void AVRPlayer::BeginPlay()
 		}
 
 	}
-	if(UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("ATG_EldenMap"))
+	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("ATG_EldenMap"))
 	{
 		FFileHelper::LoadFileToString(PlayerStartLocation, *startLoc);
 		bool bLco;
 		UKismetStringLibrary::Conv_StringToVector(PlayerStartLocation, PlayerStartVec, bLco);
-		if(bLco)
+		if (bLco)
 		{
 			SetActorLocation(PlayerStartVec);
 		}
 	}
+
+
+
 }
 
 // Called every frame
@@ -149,9 +182,32 @@ void AVRPlayer::Tick(float DeltaTime)
 	if (IsBossLev)
 	{
 		BossHP->SetActorScale3D(FVector(0.02f));
+		FRotator HeadToCamRot = (VRCamera->GetComponentLocation() - BossHP->GetActorLocation()).Rotation();
 		BossHP->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20 - VRCamera->GetUpVector() * 10);
-		BossHP->SetActorRotation((VRCamera->GetComponentLocation() - BossHP->GetActorLocation()).Rotation());
+		BossHP->SetActorRotation(FRotator(0, HeadToCamRot.Yaw, HeadToCamRot.Roll));
+		if (EndingUI)
+		{
+			EndingUI->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20);
+			EndingUI->SetActorRotation((VRCamera->GetComponentLocation() - EndingUI->GetActorLocation()).Rotation());
+		}
+		if (!IsEndingUISpawn)
+		{
+			if (HP <= 0)
+			{
+				EndingUI = GetWorld()->SpawnActor(GameOverUIFac);
+				EndingUI->SetActorScale3D(FVector(0.021f));
+				IsEndingUISpawn = true;
+			}
+			else if (IsBossDie)
+			{
+				EndingUI = GetWorld()->SpawnActor(ClearUIFac);
+				EndingUI->SetActorScale3D(FVector(0.021f));
+				IsEndingUISpawn = true;
+			}
+		}
+
 	}
+
 	
 }
 
@@ -170,6 +226,11 @@ void AVRPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		InputSystem->BindAction(IA_Rolling, ETriggerEvent::Completed, this, &AVRPlayer::RollingEnd);
 		InputSystem->BindAction(IA_Interaction, ETriggerEvent::Started, this, &AVRPlayer::Interact);
 		InputSystem->BindAction(IA_Interaction, ETriggerEvent::Completed, this, &AVRPlayer::InteractEnd);
+
+		InputSystem->BindAction(IA_rGrab, ETriggerEvent::Started, this, &AVRPlayer::rTryGrab);
+		InputSystem->BindAction(IA_rGrab, ETriggerEvent::Completed, this, &AVRPlayer::rUnTryGrab);
+		InputSystem->BindAction(IA_lGrab, ETriggerEvent::Started, this, &AVRPlayer::lTryGrab);
+		InputSystem->BindAction(IA_lGrab, ETriggerEvent::Completed, this, &AVRPlayer::lUnTryGrab);
 	}
 }
 
@@ -186,7 +247,7 @@ void AVRPlayer::Turn(const FInputActionValue& Values)
 {
 	FVector2D Axis = Values.Get<FVector2D>();
 	AddControllerYawInput(Axis.X);
-	AddControllerPitchInput(Axis.Y);
+	//AddControllerPitchInput(Axis.Y);
 }
 
 // 회피 기능 활성화처리
@@ -234,8 +295,8 @@ void AVRPlayer::DrawRollingStraight()
 	
 	// 직선을 그리고 싶다.
 	// 필요정보 : 시작점, 종료점
-	FVector StartPos = VRCamera->GetComponentLocation();
-	FVector EndPos = StartPos + VRCamera->GetForwardVector() * 500;
+	FVector StartPos = leftAim->GetComponentLocation();
+	FVector EndPos = StartPos + leftAim->GetForwardVector() * 500;
 
 	// 두 점 사이에 충돌체가 있는지 체크하자	
 	CheckHitRolling(StartPos, EndPos);
@@ -247,8 +308,7 @@ bool AVRPlayer::CheckHitRolling(FVector LastPos, FVector& CurPos)
 {
 	FHitResult HitInfo;
 	bool bHit = HitTest(LastPos, CurPos, HitInfo);
-	// 만약 부딪힌 대상이 바닥이라면
-	if (bHit && HitInfo.GetActor()->GetName().Contains(TEXT("Floor")))
+	if (bHit)
 	{
 		// 마지막 점을(EndPos) 최종 점으로 수정하고 싶다.
 		CurPos = HitInfo.Location;
@@ -325,12 +385,7 @@ void AVRPlayer::onActionJump()
 	Jump();
 }
 
-void AVRPlayer::DoAttack()
-{
-}
-void AVRPlayer::DoDefence()
-{
-}
+
 
 void AVRPlayer::Interact()
 {
@@ -369,11 +424,167 @@ void AVRPlayer::OnDamaged(float damage)
 	if(HP <= 0)
 	{
 	    //체력이 0이하면 레벨을 다시 시작한다
-		UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
+		//UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
 		if(savePoint)
 		{
 			
 		}
 	}
 }
+// 물체를 잡고 싶다.
+// 오른손으로 잡고싶다.
+void AVRPlayer::rTryGrab()
+{
+	
+	// 중심점
+	FVector Center = RightHand->GetComponentLocation();
+	// 충돌체크(구충돌)
+	// 충돌할 물체를 기록할 배열
+	// 충돌 질의 작성
+	FCollisionQueryParams Param;
+	Param.AddIgnoredActor(this);
+	Param.AddIgnoredComponent(RightHand);
+	TArray<FOverlapResult> HitObjs;
+	bool bHit = GetWorld()->OverlapMultiByChannel(HitObjs, Center, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(GrabRange), Param);
+	// 충돌하지 않았다면 아무처리 하지 않는다.
+	if (bHit == false)
+	{
+		return;
+	}
+	// ->가장 가까운 물체 잡도록 하자(검출과정)
 
+	// 가장 가까운 물체 인덱스
+	float ClosestDist = 100000000;
+	int Closest = 0;
+	for (int i = 0; i < HitObjs.Num(); i++)
+	{
+		// 1. 물리 기능이 활성화 되어 있는 녀석만 판단
+		//-> 만약 부딪힌 컴포넌트가 물리기능이 비활성화 되어있었다면
+		if (HitObjs[i].GetComponent()->IsSimulatingPhysics() == false)
+		{
+			//검출하고 싶지 않다.
+			continue;
+		}
+		//잡았다!
+		rIsGrabbed = true;
+		// 2. 현재 가장 가까운 녀석과 이번에 검출할 녀석과 더 가까운 녀석이 있다면
+		// ->필요속성: 이번에 검출할 녀석과 손과의 거리
+		float NextDist = FVector::Dist(HitObjs[i].GetActor()->GetActorLocation(), Center);
+
+		// 3. 만일 이번에 현제꺼 보다 더 가깝다면
+		if (NextDist < ClosestDist)
+		{
+			ClosestDist = NextDist;
+			// ->가장 가까운 녀석으로 변경하기
+			Closest = i;
+		}
+	}
+	// 만약 잡았다면
+	if (rIsGrabbed)
+	{
+		rGrabbedObject = HitObjs[Closest].GetComponent();
+		// -> 물체 물리기능 비활성화
+		rGrabbedObject->SetSimulatePhysics(false);
+		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		// -> 손에 붙여주자
+		rGrabbedObject->AttachToComponent(RightHand, FAttachmentTransformRules::KeepWorldTransform);
+	}
+}
+//잡은 녀석이 있으면 놓고싶다.
+void AVRPlayer::rUnTryGrab()
+{
+	if (rIsGrabbed == false)
+	{
+		return;
+	}
+
+	// 1. 잡지 않은 상태로 전환
+	rIsGrabbed = false;
+	// 2. 손에서 떼어내기
+	rGrabbedObject->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	// 3. 물리기능 활성화
+	rGrabbedObject->SetSimulatePhysics(true);
+	// 4. 충돌기능 활성화
+	rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	
+}
+
+// 왼손으로 잡고싶다.
+void AVRPlayer::lTryGrab()
+{
+
+	// 중심점
+	FVector Center = LeftHand->GetComponentLocation();
+	// 충돌체크(구충돌)
+	// 충돌할 물체를 기록할 배열
+	// 충돌 질의 작성
+	FCollisionQueryParams Param;
+	Param.AddIgnoredActor(this);
+	Param.AddIgnoredComponent(LeftHand);
+	TArray<FOverlapResult> HitObjs;
+	bool bHit = GetWorld()->OverlapMultiByChannel(HitObjs, Center, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(GrabRange), Param);
+	// 충돌하지 않았다면 아무처리 하지 않는다.
+	if (bHit == false)
+	{
+		return;
+	}
+	// ->가장 가까운 물체 잡도록 하자(검출과정)
+
+	// 가장 가까운 물체 인덱스
+	int Closest = 0;
+	for (int i = 0; i < HitObjs.Num(); i++)
+	{
+		// 1. 물리 기능이 활성화 되어 있는 녀석만 판단
+		//-> 만약 부딪힌 컴포넌트가 물리기능이 비활성화 되어있었다면
+		if (HitObjs[i].GetComponent()->IsSimulatingPhysics() == false)
+		{
+			//검출하고 싶지 않다.
+			continue;
+		}
+		//잡았다!
+		lIsGrabbed = true;
+		// 2. 현재 가장 가까운 녀석과 이번에 검출할 녀석과 더 가까운 녀석이 있다면
+
+		// ->필요속성: 현제 가장 가까운 녀석과 손과의 거리
+		float ClosestDist = FVector::Dist(HitObjs[Closest].GetActor()->GetActorLocation(), Center);
+		// ->필요속성: 이번에 검출할 녀석과 손과의 거리
+		float NextDist = FVector::Dist(HitObjs[i].GetActor()->GetActorLocation(), Center);
+
+		// 3. 만일 이번에 현제꺼 보다 더 가깝다면
+		if (NextDist < ClosestDist)
+		{
+			// ->가장 가까운 녀석으로 변경하기
+			Closest = i;
+		}
+	}
+	// 만약 잡았다면
+	if (lIsGrabbed)
+	{
+		lGrabbedObject = HitObjs[Closest].GetComponent();
+		// -> 물체 물리기능 비활성화
+		lGrabbedObject->SetSimulatePhysics(false);
+		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		// -> 손에 붙여주자
+		lGrabbedObject->AttachToComponent(LeftHand, FAttachmentTransformRules::KeepWorldTransform);
+	}
+}
+//잡은 녀석이 있으면 놓고싶다.
+void AVRPlayer::lUnTryGrab()
+{
+	if (lIsGrabbed == false)
+	{
+		return;
+	}
+
+	// 1. 잡지 않은 상태로 전환
+	lIsGrabbed = false;
+	// 2. 손에서 떼어내기
+	lGrabbedObject->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	// 3. 물리기능 활성화
+	lGrabbedObject->SetSimulatePhysics(true);
+	// 4. 충돌기능 활성화
+	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+}
