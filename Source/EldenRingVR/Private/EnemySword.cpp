@@ -41,7 +41,6 @@ void AEnemySword::BeginPlay()
 void AEnemySword::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AEnemySword::SwordBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
