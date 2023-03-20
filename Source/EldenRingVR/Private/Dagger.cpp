@@ -41,7 +41,7 @@ void ADagger::Tick(float DeltaTime)
 	
 	if (IsDaggerThrow)
 	{
-		SetActorLocation(GetActorLocation() + ToTargetV * 100);
+		SetActorLocation(GetActorLocation() + ToTargetV * 70);
 	}
 	
 

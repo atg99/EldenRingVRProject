@@ -189,11 +189,14 @@ public:
 		TSubclassOf<AActor> ClearUIFac;
 	UPROPERTY()
 		AActor* EndingUI;
+	
 
 	bool IsBossLev;
 	bool IsEndingUISpawn;
 	bool IsBossDie;
 
+
+public:
 	UPROPERTY()
 	class APlayerStatActor* statWindow;
 	

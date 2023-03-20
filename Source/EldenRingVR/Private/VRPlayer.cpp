@@ -83,6 +83,8 @@ AVRPlayer::AVRPlayer()
 		ClearUIFac = ClearUI.Class;
 	}
 
+	
+
 	// 집게 손가락 생성
 	//오른손
 	rightAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("rightAim"));
@@ -588,3 +590,4 @@ void AVRPlayer::lUnTryGrab()
 	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 }
+
