@@ -44,6 +44,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* wEnd;
 
+	UPROPERTY(EditAnywhere)
+		float WeponDamage = 60;
+
+
 protected:
 
 	UPROPERTY()

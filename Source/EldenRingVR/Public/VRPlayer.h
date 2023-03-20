@@ -86,25 +86,25 @@ public:
 public:	
 	
 	// 생명력
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int HP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int maxHP = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int maxHP = 200;
 	// 마나
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int MP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int maxMP = 100;
 	// 스테미나
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Stamina;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int maxStamina = 100;
 	//지력
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int INT = 100;
 	// 힘
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int STR = 100;
 
 public:	// 회피 시작하기
@@ -263,4 +263,8 @@ public:
 	// Release 상태로 되돌려놓기
 	void lReleaseUIInput();
 	
+	void PoWStart();
+	void PoWEnd();
+
+	float PoWTime = 1.5f;
 };

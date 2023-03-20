@@ -23,7 +23,48 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponSettings)
+		class UBoxComponent* boxComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponSettings)
+		class UStaticMeshComponent* meshComp;
+
+	UFUNCTION()
+		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere)
+		FTimerHandle lifeTimer;
+
+	UFUNCTION()
+		void WeaponTrace();
+
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* wStart;
+
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* wEnd;
+
+	UPROPERTY(EditAnywhere)
+		float WeponDamage = 10;
+
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+
+	UPROPERTY()
+		class AEnemyBase* enemyBase;
+
+	UPROPERTY()
+		FVector prevPos;
+
+	UPROPERTY()
+		FVector shieldSpeed;
+
+	UFUNCTION()
+		void GetShieldSpeed();
+
+	float AttackCoolTime = 1.5f;
+	float ShieldTime = 1.5f;
 
 };

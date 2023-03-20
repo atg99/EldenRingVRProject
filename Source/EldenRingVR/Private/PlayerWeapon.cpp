@@ -96,7 +96,7 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	//보스일 경우
 	if (boss != nullptr && AttackCoolTime >= 1.5f)
 	{
-		boss -> CurHP-=60;
+		boss -> CurHP-= WeponDamage;
 		AttackCoolTime = 0;
 	}
 	else
