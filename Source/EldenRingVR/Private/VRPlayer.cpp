@@ -408,7 +408,7 @@ void AVRPlayer::rTryGrab()
 	// ->가장 가까운 물체 잡도록 하자(검출과정)
 
 	// 가장 가까운 물체 인덱스
-	float ClosestDist = 100000000;
+	float ClosestDist = 101;
 	int Closest = 0;
 	for (int i = 0; i < HitObjs.Num(); i++)
 	{
@@ -486,6 +486,7 @@ void AVRPlayer::lTryGrab()
 	// ->가장 가까운 물체 잡도록 하자(검출과정)
 
 	// 가장 가까운 물체 인덱스
+	float ClosestDist = 101;
 	int Closest = 0;
 	for (int i = 0; i < HitObjs.Num(); i++)
 	{
@@ -499,9 +500,6 @@ void AVRPlayer::lTryGrab()
 		//잡았다!
 		lIsGrabbed = true;
 		// 2. 현재 가장 가까운 녀석과 이번에 검출할 녀석과 더 가까운 녀석이 있다면
-
-		// ->필요속성: 현제 가장 가까운 녀석과 손과의 거리
-		float ClosestDist = FVector::Dist(HitObjs[Closest].GetActor()->GetActorLocation(), Center);
 		// ->필요속성: 이번에 검출할 녀석과 손과의 거리
 		float NextDist = FVector::Dist(HitObjs[i].GetActor()->GetActorLocation(), Center);
 
