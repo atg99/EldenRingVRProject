@@ -66,6 +66,18 @@ public:
 	UPROPERTY(EditAnywhere, meta=(BindWidget))
 	class UTextBlock* nextSTR;
 
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
+	class UTextBlock* curMoney;
+
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
+	class UTextBlock* needMoney;
+
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
+	class UTextBlock* playerLevelText;
+
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
+	class UTextBlock* warningMessage;
+
 	UFUNCTION()
 	void ShowStatSet();
 
@@ -89,6 +101,9 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void decision_Press();
 
+	UFUNCTION(BlueprintCallable)
+	void CalculateNeedRune();
+
 	UPROPERTY()
 	int32 increaseHP;
 
@@ -104,6 +119,24 @@ private:
 	UPROPERTY()
 	int32 increaseSTR;
 
+	UPROPERTY()
+	int32 needRunes;
+
+	UPROPERTY()
+	int32 curRunes;
+
+	UPROPERTY()
+	int32 playerLevel;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	class UWidgetAnimation* warningAnim;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	class UWidgetAnimation* showAnim;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	class UWidgetAnimation* hideAnim;
+	
 	UPROPERTY()
 	class AVRPlayer* player;
 	

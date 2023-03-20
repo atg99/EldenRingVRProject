@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* wEnd;
 
+	UFUNCTION(BlueprintPure)
+	float GetSwordSpeedfloat();
+
 protected:
 
 	UPROPERTY()
@@ -52,7 +55,7 @@ protected:
 	UPROPERTY()
 	FVector prevPos;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FVector swordSpeed;
 
 	UFUNCTION()

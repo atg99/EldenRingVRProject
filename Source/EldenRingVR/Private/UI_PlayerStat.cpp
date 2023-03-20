@@ -21,6 +21,10 @@ void UUI_PlayerStat::NativeConstruct()
 	INT->OnPressed.AddDynamic(this, &UUI_PlayerStat::INT_Press);
 	STR->OnPressed.AddDynamic(this, &UUI_PlayerStat::STR_Press);
 	decision->OnPressed.AddDynamic(this, &UUI_PlayerStat::decision_Press);
+
+	warningMessage->SetVisibility(ESlateVisibility::Hidden);
+
+	
 }
 
 void UUI_PlayerStat::ShowStatSet()
@@ -37,42 +41,135 @@ void UUI_PlayerStat::ShowStatSet()
 	nextINT->SetText(FText::AsNumber(player->INT));
 	nextSTR->SetText(FText::AsNumber(player->STR));
 
-	this->SetVisibility(ESlateVisibility::Visible);
+	//플레이어 레벨을 설정
+	playerLevel = player->playerLevel;
+	playerLevelText->SetText(FText::AsNumber(playerLevel));
+
+	curRunes = player->PlayerMoney;
+	curMoney->SetText(FText::AsNumber(curRunes));
+
+	curRunes = player->PlayerMoney;
+	curMoney->SetText(FText::AsNumber(curRunes));
+
+	//필요룬을 계산하고 표시한다
+	CalculateNeedRune();
+
+	//버튼을 유효화 한다
+	HP->SetIsEnabled(true);
+	MP->SetIsEnabled(true);
+	SP->SetIsEnabled(true);
+	INT->SetIsEnabled(true);
+	STR->SetIsEnabled(true);
+	decision->SetIsEnabled(true);
+	
+	PlayAnimation(showAnim);
+	//this->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UUI_PlayerStat::HP_Press()
 {
+	if(curRunes < needRunes)
+	{
+		warningMessage->SetVisibility(ESlateVisibility::Visible);
+		PlayAnimation(warningAnim);
+		return;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("HP"));
 	increaseHP++;
 	nextHP->SetText(FText::AsNumber(player->maxHP++));
+
+	playerLevel++;
+	playerLevelText->SetText(FText::AsNumber(playerLevel));
+
+	//룬을 사용한다
+	curRunes -= needRunes;
+	curMoney->SetText(FText::AsNumber(curRunes));
+	
+	CalculateNeedRune();
 }
 
 void UUI_PlayerStat::MP_Press()
 {
+	if(curRunes < needRunes)
+	{
+		PlayAnimation(warningAnim);
+		return;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("MP"));
 	increaseMP++;
 	nextMP->SetText(FText::AsNumber(player->maxMP++));
+
+	playerLevel++;
+	playerLevelText->SetText(FText::AsNumber(playerLevel));
+
+	//룬을 사용한다
+	curRunes -= needRunes;
+	curMoney->SetText(FText::AsNumber(curRunes));
+	
+	CalculateNeedRune();
 }
 
 void UUI_PlayerStat::SP_Press()
 {
+	if(curRunes < needRunes)
+	{
+		PlayAnimation(warningAnim);
+		return;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("SP"));
 	increaseSP++;
 	nextSP->SetText(FText::AsNumber(player->maxStamina++));
+
+	playerLevel++;
+	playerLevelText->SetText(FText::AsNumber(playerLevel));
+
+	//룬을 사용한다
+	curRunes -= needRunes;
+	curMoney->SetText(FText::AsNumber(curRunes));
+	
+	CalculateNeedRune();
 }
 
 void UUI_PlayerStat::INT_Press()
 {
+	if(curRunes < needRunes)
+	{
+		PlayAnimation(warningAnim);
+		return;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("INT"));
 	increaseINT++;
 	nextINT->SetText(FText::AsNumber(player->INT++));
+
+	playerLevel++;
+	playerLevelText->SetText(FText::AsNumber(playerLevel));
+
+	//룬을 사용한다
+	curRunes -= needRunes;
+	curMoney->SetText(FText::AsNumber(curRunes));
+	
+	CalculateNeedRune();
 }
 
 void UUI_PlayerStat::STR_Press()
 {
+	if(curRunes < needRunes)
+	{
+		PlayAnimation(warningAnim);
+		return;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("STR"));
 	increaseSTR++;
 	nextSTR->SetText(FText::AsNumber(player->STR++));
+
+	playerLevel++;
+	playerLevelText->SetText(FText::AsNumber(playerLevel));
+
+	//룬을 사용한다
+	curRunes -= needRunes;
+	curMoney->SetText(FText::AsNumber(curRunes));
+	
+	CalculateNeedRune();
 }
 
 void UUI_PlayerStat::decision_Press()
@@ -84,11 +181,29 @@ void UUI_PlayerStat::decision_Press()
 	player->INT += increaseINT;
 	player->STR += increaseSTR;
 
+	//플레이어 레벨을 플레이어에 	playerLevel++;
+	player->playerLevel = playerLevel;
+	
 	increaseHP = 0;
 	increaseMP = 0;
 	increaseSP = 0;
 	increaseINT = 0;
 	increaseSTR = 0;
 
-	this->SetVisibility(ESlateVisibility::Hidden);
+	PlayAnimation(hideAnim);
+	//this->SetVisibility(ESlateVisibility::Hidden);
+
+	//버튼을 무효화 한다
+	HP->SetIsEnabled(false);
+	MP->SetIsEnabled(false);
+	SP->SetIsEnabled(false);
+	INT->SetIsEnabled(false);
+	STR->SetIsEnabled(false);
+	decision->SetIsEnabled(false);
+}
+
+void UUI_PlayerStat::CalculateNeedRune()
+{
+	needRunes = 600 + 18 * playerLevel;
+	needMoney->SetText(FText::AsNumber(needRunes));
 }

@@ -141,6 +141,11 @@ void APlayerWeapon::WeaponTrace()
 	
 }
 
+float APlayerWeapon::GetSwordSpeedfloat()
+{
+	return swordSpeed.Size();
+}
+
 void APlayerWeapon::GetSwordSpeed()
 {
 	swordSpeed = meshComp->GetComponentLocation() - prevPos;

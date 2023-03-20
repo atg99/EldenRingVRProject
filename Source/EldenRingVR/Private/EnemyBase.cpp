@@ -21,7 +21,9 @@
 #include "KismetProceduralMeshLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "VRPlayer.h"
 #include "Animation/Skeleton.h"
+#include "Field/FieldSystemActor.h"
 
 // Sets default values
 AEnemyBase::AEnemyBase()
@@ -319,7 +321,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 				
 				GetWorldTimerManager().ClearTimer(timerHandle_Die);
 				//체력이 0이하일 때 몸통이나 머리를 맞으면 완전히 죽는다.
-				bCompleteDie = true;
+				CompleteDie();
 				//목에 나이아가라를 생성한다.
 				SpawnAmputatedHead();
 			}
@@ -345,7 +347,7 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 				
 				GetWorldTimerManager().ClearTimer(timerHandle_Die);
 				//체력이 0이하일 때 몸통이나 머리를 맞으면 완전히 죽는다.
-				bCompleteDie = true;
+				CompleteDie();
 			}
 		}
 		else if(enemyHP <= 0)
@@ -419,8 +421,10 @@ void AEnemyBase::Desmemberment(FName hitBone, FVector hitLoc, FVector hitNormal)
 	FVector socketLoc = GetMesh()->GetSocketLocation(hitBone);
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
-	GetMesh()->AddImpulseAtLocation(camForward + up, socketLoc, hitBone);
+	if(GetMesh()->IsSimulatingPhysics(hitBone))
+	{
+		GetMesh()->AddImpulseAtLocation(camForward + up, socketLoc, hitBone);
+	}
 
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(this);
@@ -672,6 +676,17 @@ void AEnemyBase::SetPMDecalTimer_Set()
 	{
 		SpawnPMDecal(half);
 	}
+}
+
+void AEnemyBase::CompleteDie()
+{
+	bCompleteDie = true;
+	AVRPlayer* vrPlayer = Cast<AVRPlayer>(playerPawn);
+	if(vrPlayer)
+	{
+		vrPlayer->GetMoney(300);
+	}
+	
 }
 
 // void AEnemyBase::SpawnDecalOnBody(FVector loc, FName bone, FVector impactNormal)

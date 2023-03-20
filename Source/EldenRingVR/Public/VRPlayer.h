@@ -86,25 +86,25 @@ public:
 public:	
 	
 	// 생명력
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int HP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int maxHP = 100;
 	// 마나
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int MP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int maxMP = 100;
 	// 스테미나
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Stamina;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int maxStamina = 100;
 	//지력
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int INT = 100;
 	// 힘
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int STR = 100;
 
 public:	// 회피 시작하기
@@ -200,7 +200,7 @@ public:
 	UPROPERTY()
 	bool bStatInteraction;
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnDamaged(float damage);
 
 	UPROPERTY()
@@ -228,10 +228,13 @@ public:
 
 	//오른손
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-		class UInputAction* IA_rGrab;
+	class UInputAction* IA_rGrab;
 	// 잡은 물체 기억
 	UPROPERTY()
-		class UPrimitiveComponent* rGrabbedObject;
+	class UPrimitiveComponent* rGrabbedObject;
+
+	UPROPERTY()
+	class APlayerWeapon* GrabbedWeapon;
 	// 잡은 녀석이 있는지 여부 기억할 변수
 	bool rIsGrabbed = false;
 	// 잡기 시도
@@ -259,5 +262,24 @@ public:
 	void lGrabbing();
 	// Release 상태로 되돌려놓기
 	void lReleaseUIInput();
+
+	UFUNCTION()
+	void UploadMoneyFile();
+	
+	UPROPERTY()
+	FString PlayerMoneyFile = FString("../../../Content/SaveFiles/PlayerMoneyFile.txt");
+	
+	UPROPERTY(EditAnywhere, Category=PlayerStatus)
+	int32 PlayerMoney = 0;
+	
+	//돈을 얻는다
+	UFUNCTION()
+	void GetMoney(int32 income);
+
+	UPROPERTY()
+	int32 playerLevel = 1;
+
+	UPROPERTY()
+	FString playerLevelFile = FString("../../../Content/SaveFiles/PlayerLevelFile.txt");
 	
 };
