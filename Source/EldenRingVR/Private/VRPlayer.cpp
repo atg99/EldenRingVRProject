@@ -20,6 +20,7 @@
 #include "Kismet/KismetStringLibrary.h"
 #include "Boss.h"
 #include "EngineUtils.h"
+#include "PlayerWeapon.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -165,8 +166,6 @@ void AVRPlayer::BeginPlay()
 		}
 	}
 
-
-
 }
 
 // Called every frame
@@ -247,7 +246,10 @@ void AVRPlayer::Turn(const FInputActionValue& Values)
 {
 	FVector2D Axis = Values.Get<FVector2D>();
 	AddControllerYawInput(Axis.X);
-	//AddControllerPitchInput(Axis.Y);
+	if(UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled() == false)
+	{
+		AddControllerPitchInput(Axis.Y);
+	}
 }
 
 // 회피 기능 활성화처리
@@ -485,6 +487,12 @@ void AVRPlayer::rTryGrab()
 		rGrabbedObject = HitObjs[Closest].GetComponent();
 		// -> 물체 물리기능 비활성화
 		rGrabbedObject->SetSimulatePhysics(false);
+
+		APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject);
+		if(weapon)
+		{
+			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
+		}
 		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		// -> 손에 붙여주자
@@ -507,6 +515,12 @@ void AVRPlayer::rUnTryGrab()
 	rGrabbedObject->SetSimulatePhysics(true);
 	// 4. 충돌기능 활성화
 	rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject);
+	if(weapon)
+	{
+		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+	}
 	
 }
 
@@ -565,6 +579,12 @@ void AVRPlayer::lTryGrab()
 		// -> 물체 물리기능 비활성화
 		lGrabbedObject->SetSimulatePhysics(false);
 		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		
+		APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject);
+		if(weapon)
+		{
+			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
+		}
 
 		// -> 손에 붙여주자
 		lGrabbedObject->AttachToComponent(LeftHand, FAttachmentTransformRules::KeepWorldTransform);
@@ -586,5 +606,11 @@ void AVRPlayer::lUnTryGrab()
 	lGrabbedObject->SetSimulatePhysics(true);
 	// 4. 충돌기능 활성화
 	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject);
+	if(weapon)
+	{
+		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+	}
 
 }
