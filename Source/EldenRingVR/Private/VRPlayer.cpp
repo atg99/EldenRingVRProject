@@ -84,6 +84,8 @@ AVRPlayer::AVRPlayer()
 		ClearUIFac = ClearUI.Class;
 	}
 
+	
+
 	// 집게 손가락 생성
 	//오른손
 	rightAim = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("rightAim"));
@@ -605,6 +607,7 @@ void AVRPlayer::lUnTryGrab()
 	// 4. 충돌기능 활성화
 	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
+
 	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
 	if(weapon)
 	{
@@ -612,3 +615,4 @@ void AVRPlayer::lUnTryGrab()
 	}
 
 }
+

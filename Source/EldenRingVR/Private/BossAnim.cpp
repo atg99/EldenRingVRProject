@@ -50,10 +50,17 @@ void UBossAnim::AnimNotify_InwardSlashStart()
 	Boss->BossMaceAct->SetVisibility(true);
 	Boss->CanHit = true;
 	
-}void UBossAnim::AnimNotify_InwardSlashEnd()
+}
+void UBossAnim::AnimNotify_InwardSlashNow()
+{
+	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
+	Boss->BossFSM->BossAttackCameraShake(Boss->BossFSM->BossInwardSlashAttackCamShake, Boss->GetActorLocation());
+}
+void UBossAnim::AnimNotify_InwardSlashEnd()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	//Boss->BossMaceAct->SetVisibility(false);
+	
 	Boss->BossFSM->IsInwardSlash = false;
 	Boss->CanHit = false;
 	
@@ -69,6 +76,7 @@ void UBossAnim::AnimNotify_SlashGroundNow()
 {
 	ABoss* Boss = Cast<ABoss>(TryGetPawnOwner());
 	FRotator GroundNotchRot = FRotator(Boss->BossFSM->HeadToTargetR.Pitch, Boss->BossFSM->HeadToTargetR.Yaw + 90, Boss->BossFSM->HeadToTargetR.Roll);
+	Boss->BossFSM->BossAttackCameraShake(Boss->BossFSM->BossSlashAttackCamShake, Boss->GetActorLocation());
 	GetWorld()->GetTimerManager().ClearTimer(GroundNotchResetTimer);
 	Boss->GroundNotch->SetActorLocationAndRotation(Boss->Mace->GetComponentLocation() + FVector(0, 0, 30), GroundNotchRot);
 }

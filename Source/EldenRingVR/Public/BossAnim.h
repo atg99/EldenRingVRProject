@@ -36,6 +36,8 @@ public:
 	UFUNCTION()
 		void AnimNotify_InwardSlashStart();	
 	UFUNCTION()
+		void AnimNotify_InwardSlashNow();	
+	UFUNCTION()
 		void AnimNotify_InwardSlashEnd();	
 	UFUNCTION()
 		void AnimNotify_SlashGroundStart();

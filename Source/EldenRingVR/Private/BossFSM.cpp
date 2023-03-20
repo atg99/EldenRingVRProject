@@ -14,6 +14,7 @@
 #include "Engine/World.h"
 #include "Components/CapsuleComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Camera/CameraShakeBase.h"
 
 // Sets default values for this component's properties
 UBossFSM::UBossFSM()
@@ -27,6 +28,30 @@ UBossFSM::UBossFSM()
 	{
 		DaggerFac = BossDagger.Class;
 	}
+
+	ConstructorHelpers::FClassFinder<UCameraShakeBase>BossAttackCam(TEXT("/Script/Engine.Blueprint'/Game/TW/UI/BP_BossAttackCameraShake.BP_BossAttackCameraShake_C'"));
+	if (BossAttackCam.Succeeded())
+	{
+		BossAttackCamShake = BossAttackCam.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<UCameraShakeBase>BossSlashAttackCam(TEXT("/Script/Engine.Blueprint'/Game/TW/UI/BP_BossAttackCameraShake1.BP_BossAttackCameraShake1_C'"));
+	if (BossSlashAttackCam.Succeeded())
+	{
+		BossSlashAttackCamShake = BossSlashAttackCam.Class;
+	}
+	ConstructorHelpers::FClassFinder<UCameraShakeBase>BossInwardSlashAttackCam(TEXT("/Script/Engine.Blueprint'/Game/TW/UI/BP_BossAttackCameraShake2.BP_BossAttackCameraShake2_C'"));
+	if (BossInwardSlashAttackCam.Succeeded())
+	{
+		BossInwardSlashAttackCamShake = BossInwardSlashAttackCam.Class;
+	}
+	ConstructorHelpers::FClassFinder<UCameraShakeBase>BossTailAttackCam(TEXT("/Script/Engine.Blueprint'/Game/TW/UI/BP_BossAttackCameraShake3.BP_BossAttackCameraShake3_C'"));
+	if (BossTailAttackCam.Succeeded())
+	{
+		BossTailAttackCamShake = BossTailAttackCam.Class;
+	}
+
+	
 
 }
 
@@ -68,6 +93,14 @@ void UBossFSM::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	case EBossState::MoveClose:
 		MoveCloseState();
+		break;
+
+	case EBossState::MoveLeft:
+		MoveLeftState(DeltaTime);
+		break;
+
+	case EBossState::MoveRight:
+		MoveRightState(DeltaTime);
 		break;
 
 	case EBossState::Attack:
@@ -121,16 +154,34 @@ void UBossFSM::IdleState()
 	
 	else if (Target->GetDistanceTo(Boss) < 1500 && 1000 < Target->GetDistanceTo(Boss))
 	{
+		if (IsFirst)
+		{
+			IsFirst = false;
+			IsJumpAttack = true;
+			BState = EBossState::JumpAttack;
+			return;
+		}
 		
-		IsJumpAttack = true;
-		BState = EBossState::JumpAttack;
+		int32 RandNum = FMath::RandRange(1, 3);
+		if (RandNum == 1)
+		{
+			IsJumpAttack = true;
+			BState = EBossState::JumpAttack;
+		}
+		else
+		{
+			ReservState = EBossState::Idle;
+			BState = EBossState::MoveClose;
+			
+		}
+	
 	}
   
 	else
 	{
 		if (FVector::DotProduct(Boss->GetActorForwardVector(), HeadToTargetV) < 0)
 		{
-			int32 RandNum = FMath::RandRange(1, 4);
+			int32 RandNum = FMath::RandRange(1, 5);
 			if (RandNum == 1)
 			{
 				if (Target->GetDistanceTo(Boss) <= 300)
@@ -156,7 +207,12 @@ void UBossFSM::IdleState()
 		}
 		else
 		{
-			int32 RandNum = FMath::RandRange(1, 3);
+			int32 RandNum = FMath::RandRange(1, 5);
+			if (TempNum == RandNum)
+			{
+				RandNum = (TempNum + 1) % 5;
+			
+			}
 			if (RandNum == 1)
 			{
 				if (Target->GetDistanceTo(Boss) <= 300)
@@ -202,9 +258,39 @@ void UBossFSM::IdleState()
 				}
 
 			}
+			else if (RandNum == 4)
+			{
+				if (Target->GetDistanceTo(Boss) <= 300)
+				{
+					IsTailAttack = true;
+					Boss->CanHit = true;
+					BState = EBossState::TailAttack;
+				}
+				else
+				{
+					IsTailAttack = true;
+					Boss->CanHit = true;
+					ReservState = EBossState::TailAttack;
+					BState = EBossState::MoveClose;
+
+				}
+			}
+			else
+			{
+				if (FVector::DotProduct(Boss->GetActorRightVector(), HeadToTargetV) > 0)
+				{
+					BState = EBossState::MoveLeft;
+				}
+				else
+				{
+					BState = EBossState::MoveRight;
+				}
+
+
+			}
+			TempNum = RandNum;
 
 		}
-
 	}
   
 	//Boss->Mace->SetRelativeRotation(FRotator(90, 0, 0));
@@ -271,6 +357,42 @@ void UBossFSM::MoveCloseState()
 	}
 }
 
+void UBossFSM::MoveLeftState(float time)
+{
+	if (TempRate <= 1)
+	{
+		LocationSet();
+		RotationSet();
+		TempRate += time * 0.34f;
+		Boss->AddMovementInput(-Boss->GetActorRightVector() * 0.4f);
+		Boss->SetActorRotation(HeadToTargetR);
+	}
+	else
+	{
+		TempRate = 0;
+		BState = EBossState::Idle;
+	}
+
+}
+void UBossFSM::MoveRightState(float time)
+{
+
+	if (TempRate <= 1)
+	{
+		LocationSet();
+		RotationSet();
+		TempRate += time * 0.34f;
+		Boss->AddMovementInput(Boss->GetActorRightVector() * 0.4f);
+		Boss->SetActorRotation(HeadToTargetR);
+	}
+	else
+	{
+		TempRate = 0;
+		BState = EBossState::Idle;
+	}
+
+}
+
 
 void UBossFSM::AttackState()
 {
@@ -296,7 +418,7 @@ void UBossFSM::JumpAttackState(float time)
 
 			if (!IsLocationReset)
 			{
-				
+				TempRate = Rate;
 				LocationSet();
 				RotationSet();
 				IsLocationReset = true;
@@ -304,7 +426,7 @@ void UBossFSM::JumpAttackState(float time)
 
 			FVector HitLoc = TargetLocation - HeadToTargetV * 300;
 			
-			if (Rate - 0.5f < 0.3)
+			if (Rate - TempRate < 0.3)
 			{
 				JumpAnimNum = 2;
 				Speed += 0.0005 * Excel;
@@ -313,7 +435,7 @@ void UBossFSM::JumpAttackState(float time)
 				Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, HitLoc.X, Rate - 0.7f),		UKismetMathLibrary::Lerp(BossLocation.Y, HitLoc.Y, Rate - 0.7f), UKismetMathLibrary::Lerp(BossLocation.Z, TargetLocation.Z, Rate - 0.7f)));
 
 			}
-			else if (Rate - 0.5f < 1)
+			else if (Rate - TempRate < 1)
 			{
 				Speed += Excel * 25;
 				Rate += Speed;
@@ -337,10 +459,12 @@ void UBossFSM::JumpAttackState(float time)
 				if (IsHit)
 				{
 					Boss->SpawnGroundAttackNotch(HitInfo.ImpactPoint, HeadToTargetR);
+					BossAttackCameraShake(BossAttackCamShake, HitInfo.ImpactPoint);
 				}
 				
 				Speed = 0.01f;
 				Rate = 0.1f;
+				TempRate = 0;
 				BState = EBossState::Wait;
 			}
 		}
@@ -359,6 +483,7 @@ void UBossFSM::TailAttackState(float time)
 			{
 				Boss->BossTailDust->SetVisibility(true);
 				Boss->BossDust->SetVisibility(false);
+				
 			}
 			Boss->AddActorLocalRotation(FRotator(0.0f, -1.0f, 0.0f));
 			TailAttackCount++;
@@ -366,7 +491,7 @@ void UBossFSM::TailAttackState(float time)
 		else if (TailAttackCount <= 50)
 		{
 			Boss->AddActorLocalRotation(FRotator(0.0f, -0.04f, 0.0f));
-	
+			BossAttackCameraShake(BossTailAttackCamShake, Boss->GetActorLocation());
 			TailAttackCount++;
 		}
 		else if (TailAttackCount <= 110)
@@ -451,8 +576,7 @@ void UBossFSM::TurnToTState()
 	
 	else if (TurnToTCount * 0.007 < 1)
 	{
-		LocationSet();
-		Boss->AddMovementInput((Boss->GetActorForwardVector() - Boss->GetActorForwardVector() * 0.006 * TurnToTCount + HeadToTargetV * 0.003 * TurnToTCount));
+		Boss->AddMovementInput(Boss->GetActorForwardVector() * 0.7);
 		Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, 0.007 * TurnToTCount, true));
 		TurnToTCount++;
 	}
@@ -520,3 +644,9 @@ void UBossFSM::SlashGroundState()
 
 }
 
+
+void UBossFSM::BossAttackCameraShake(TSubclassOf<UCameraShakeBase> CamShake, FVector Loc)
+{
+	UGameplayStatics::PlayWorldCameraShake(GetWorld(), CamShake, Loc, 0, 1000, 1, false);
+
+}

@@ -13,6 +13,8 @@ enum class EBossState : uint8
 	Wait,
 	Move,
 	MoveClose,
+	MoveLeft,
+	MoveRight,
 	Attack,
 	TurnToT,
 	JumpAttack,
@@ -62,7 +64,8 @@ public:
 	void WaitState();
 	void MoveState();
 	void MoveCloseState();
-	
+	void MoveLeftState(float time);
+	void MoveRightState(float time);
 	void AttackState();
 
 	UFUNCTION(BlueprintCallable)
@@ -89,16 +92,19 @@ public:
 		void SlashGroundState();
 
 
-
+	bool IsFirst = true;
 	float Speed = 0.01f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Decel = 0.0001f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Excel = 0.0005f;
 	float Rate = 0.1f;
+	float TempRate = 0;
 	float JumpAttackDistance = 1100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float BackStepDistance = 1000;
+
+	int32 TempNum = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int JumpAnimNum;
@@ -146,6 +152,18 @@ public:
 	int32 TurnToTCount = 0;
 
 
+
+
+	UPROPERTY(BlueprintReadWrite)
+		TSubclassOf<class UCameraShakeBase> BossAttackCamShake;
+	UPROPERTY(BlueprintReadWrite)
+		TSubclassOf<class UCameraShakeBase> BossSlashAttackCamShake;
+	UPROPERTY(BlueprintReadWrite)
+		TSubclassOf<class UCameraShakeBase> BossInwardSlashAttackCamShake;
+	UPROPERTY(BlueprintReadWrite)
+		TSubclassOf<class UCameraShakeBase> BossTailAttackCamShake;
+
+	void BossAttackCameraShake(TSubclassOf<UCameraShakeBase> CamShake, FVector Loc);
 
 
 		
