@@ -280,6 +280,8 @@ private:
 	UPROPERTY()
 	FTimerHandle TimerHandle_PMDecal;
 
+	UFUNCTION()
+	void CompleteDie();
 	// UFUNCTION()
 	// void SpawnDecalOnBody(FVector loc, FName bone, FVector impactNormal);
 };

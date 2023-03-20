@@ -10,6 +10,7 @@
 #include <MotionControllerComponent.h>
 #include <DrawDebugHelpers.h>
 #include <HeadMountedDisplayFunctionLibrary.h>
+#include <string>
 #include <Components/CapsuleComponent.h>
 #include "BossHP.h"
 #include "FireCamp.h"
@@ -168,6 +169,8 @@ void AVRPlayer::BeginPlay()
 			SetActorLocation(PlayerStartVec);
 		}
 	}
+
+	UploadMoneyFile();
 
 }
 
@@ -424,9 +427,10 @@ void AVRPlayer::Interact()
 		// 	GetWorld()->SpawnActor<APlayerStatActor>(statActor, VRCamera->GetComponentLocation()+VRCamera->GetForwardVector()*600, FRotator::ZeroRotator);statWindow->SetStatWindow();
 		statWindow->SetStatWindow();
 		//UKismetStringLibrary::Conv_StringToVector()
-		
+
+		// 백터를 스트링으로 변환하고
 		PlayerStartLocation = UKismetStringLibrary::Conv_VectorToString(savePoint->GetActorLocation());
-		
+		// 스트링 파일에 저장한다
 		FFileHelper::SaveStringToFile(PlayerStartLocation, *startLoc);
 		
 		bStatInteraction = false;
@@ -447,7 +451,7 @@ void AVRPlayer::OnDamaged(float damage)
 	HP -= damage;
 	if(HP <= 0)
 	{
-	    //체력이 0이하면 레벨을 다시 시작한다
+		//체력이 0이하면 레벨을 다시 시작한다
 		//UGameplayStatics::OpenLevel(GetWorld(), FName("ATG_EldenMap"));
 		if(savePoint)
 		{
@@ -510,9 +514,10 @@ void AVRPlayer::rTryGrab()
 		// -> 물체 물리기능 비활성화
 		rGrabbedObject->SetSimulatePhysics(false);
 		APlayerWeapon* weapon;
-		weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
+		weapon = Cast<APlayerWeapon>(HitObjs[Closest].GetActor());
 		if(weapon)
 		{
+			GrabbedWeapon = weapon;
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
 		}
 		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -538,10 +543,10 @@ void AVRPlayer::rUnTryGrab()
 	// 4. 충돌기능 활성화
 	rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
-	if(weapon)
+	if(GrabbedWeapon)
 	{
-		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+		GrabbedWeapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+		GrabbedWeapon = nullptr;
 	}
 	
 }
@@ -599,10 +604,11 @@ void AVRPlayer::lTryGrab()
 		// -> 물체 물리기능 비활성화
 		lGrabbedObject->SetSimulatePhysics(false);
 		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		
-		APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject->GetOwner());
+		APlayerWeapon* weapon;
+		weapon = Cast<APlayerWeapon>(HitObjs[Closest].GetActor());
 		if(weapon)
 		{
+			GrabbedWeapon = weapon;
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
 		}
 
@@ -627,11 +633,11 @@ void AVRPlayer::lUnTryGrab()
 	// 4. 충돌기능 활성화
 	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject->GetOwner());
 
-	if(weapon)
+	if(GrabbedWeapon)
 	{
-		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+		GrabbedWeapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+		GrabbedWeapon = nullptr;
 	}
 
 }
@@ -648,4 +654,21 @@ void AVRPlayer::PoWEnd()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
+void AVRPlayer::UploadMoneyFile()
+{
+	FString money;
+
+	//파일을 로드한다
+	FFileHelper::LoadFileToString(money, *PlayerMoneyFile);
+	
+	//문자열을 정수로
+	PlayerMoney = FCString::Atoi(*money);
+}
+
+void AVRPlayer::GetMoney(int32 income)
+{
+	//돈을 추가한다
+	PlayerMoney += income;
+	FFileHelper::SaveStringToFile(FString::FromInt(PlayerMoney), *PlayerMoneyFile);
+}
 
