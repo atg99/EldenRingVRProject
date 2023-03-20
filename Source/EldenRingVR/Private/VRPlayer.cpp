@@ -487,8 +487,8 @@ void AVRPlayer::rTryGrab()
 		rGrabbedObject = HitObjs[Closest].GetComponent();
 		// -> 물체 물리기능 비활성화
 		rGrabbedObject->SetSimulatePhysics(false);
-
-		APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject);
+		APlayerWeapon* weapon;
+		weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
 		if(weapon)
 		{
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
@@ -516,7 +516,7 @@ void AVRPlayer::rUnTryGrab()
 	// 4. 충돌기능 활성화
 	rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject);
+	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
 	if(weapon)
 	{
 		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
@@ -578,7 +578,7 @@ void AVRPlayer::lTryGrab()
 		lGrabbedObject->SetSimulatePhysics(false);
 		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		
-		APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject);
+		APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
 		if(weapon)
 		{
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
@@ -605,7 +605,7 @@ void AVRPlayer::lUnTryGrab()
 	// 4. 충돌기능 활성화
 	lGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	APlayerWeapon* weapon = Cast<APlayerWeapon>(lGrabbedObject);
+	APlayerWeapon* weapon = Cast<APlayerWeapon>(rGrabbedObject->GetOwner());
 	if(weapon)
 	{
 		weapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
