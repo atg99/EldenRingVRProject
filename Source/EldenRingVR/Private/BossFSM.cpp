@@ -181,7 +181,7 @@ void UBossFSM::IdleState()
 	{
 		if (FVector::DotProduct(Boss->GetActorForwardVector(), HeadToTargetV) < 0)
 		{
-			int32 RandNum = FMath::RandRange(1, 5);
+			int32 RandNum = FMath::RandRange(1, 10);
 			if (RandNum == 1)
 			{
 				if (Target->GetDistanceTo(Boss) <= 300)
@@ -363,7 +363,7 @@ void UBossFSM::MoveLeftState(float time)
 	{
 		LocationSet();
 		RotationSet();
-		TempRate += time * 0.34f;
+		TempRate += time * 0.5f;
 		Boss->AddMovementInput(-Boss->GetActorRightVector() * 0.4f);
 		Boss->SetActorRotation(HeadToTargetR);
 	}
@@ -381,7 +381,7 @@ void UBossFSM::MoveRightState(float time)
 	{
 		LocationSet();
 		RotationSet();
-		TempRate += time * 0.34f;
+		TempRate += time * 0.5f;
 		Boss->AddMovementInput(Boss->GetActorRightVector() * 0.4f);
 		Boss->SetActorRotation(HeadToTargetR);
 	}
@@ -529,25 +529,69 @@ void UBossFSM::BackStep(float time)
 		
 		IsLocationReset = true;
 		IsRotationReset = true;
+		FHitResult HitInfo;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(Boss);
+		Params.AddIgnoredActor(Target);
+		IsBoundary = GetWorld()->LineTraceSingleByChannel(HitInfo, Boss->GetActorLocation(), BossLocation - (HeadToTargetV * (BackStepDistance + 100)), ECollisionChannel::ECC_Visibility, Params);
+		DistToBoundary = HitInfo.Distance - 400;
+		
 	}
-	if (time * 3 < 1)
+	if (!IsBoundary)
 	{
-	
-		Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, time * 3, true));
+		if (time * 3 < 1)
+		{
 
+			Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, time * 3, true));
+
+		}
+		if ((TargetLocation - Boss->GetActorLocation()).Length() < 800 || time * 1.5f < 1)
+		{
+			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, (BossLocation - (HeadToTargetV * BackStepDistance)).X,	time * 1.5f), UKismetMathLibrary::Lerp(BossLocation.Y, (BossLocation - (HeadToTargetV * BackStepDistance)).Y, time * 1.5f), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 180, time * 1.5f)) - Boss->GetActorUpVector() * (time * 100) + HeadToTargetV * time * 300);
+		}
+		else
+		{
+			
+			IsLocationReset = false;
+			IsRotationReset = false;
+			IsBackStep = false;
+			Timer = 0;
+		}
 	}
-	if ((TargetLocation - Boss->GetActorLocation()).Length() < 800 || time * 1.5f < 1)
+	else if (DistToBoundary > 300)
 	{
-		Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, (BossLocation - (HeadToTargetV * BackStepDistance)).X, time * 1.5f), UKismetMathLibrary::Lerp(BossLocation.Y, (BossLocation - (HeadToTargetV * BackStepDistance)).Y, time * 1.5f), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 180, time * 1.5f)) - Boss->GetActorUpVector() * (time * 100) + HeadToTargetV * time * 300);
+		if (time * 3 < 1)
+		{
+
+			Boss->SetActorRotation(UKismetMathLibrary::RLerp(BossRotation, HeadToTargetR, time * 3, true));
+
+		}
+		if ((TargetLocation - Boss->GetActorLocation()).Length() < 800 || time * 2.0f < 1)
+		{
+			Boss->SetActorLocation(FVector(UKismetMathLibrary::Lerp(BossLocation.X, (BossLocation - (HeadToTargetV * DistToBoundary)).X, time * 2.0f), UKismetMathLibrary::Lerp(BossLocation.Y, (BossLocation - (HeadToTargetV * DistToBoundary)).Y, time * 2.0f), UKismetMathLibrary::Lerp(BossLocation.Z, BossLocation.Z + 180, time * 2.0f)) - Boss->GetActorUpVector() * (time * 100) + HeadToTargetV * time * 300);
+		}
+		else
+		{
+
+			IsLocationReset = false;
+			IsRotationReset = false;
+			IsBackStep = false;
+			Timer = 0;
+			IsBoundary = false;
+			DistToBoundary = 0;
+		}
+		
 	}
 	else
 	{
-
 		IsLocationReset = false;
 		IsRotationReset = false;
 		IsBackStep = false;
 		Timer = 0;
+		IsBoundary = false;
+		DistToBoundary = 0;
 	}
+
 }
 
 void UBossFSM::LocationSet()

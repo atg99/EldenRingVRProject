@@ -124,6 +124,7 @@ void ABoss::Tick(float DeltaTime)
 	if (CurHP <= 0)
 	{
 		BossFSM->Target->IsBossDie = true;
+		SetActorHiddenInGame(true);
 		//UGameplayStatics::SetGamePaused(this , true);
 	}
 
