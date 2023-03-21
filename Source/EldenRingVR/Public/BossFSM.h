@@ -105,6 +105,8 @@ public:
 		float BackStepDistance = 1000;
 
 	int32 TempNum = 0;
+	bool IsBoundary;
+	float DistToBoundary = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int JumpAnimNum;

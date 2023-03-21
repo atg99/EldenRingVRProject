@@ -188,8 +188,11 @@ void AVRPlayer::Tick(float DeltaTime)
 	{
 		BossHP->SetActorScale3D(FVector(0.02f));
 		FRotator HeadToCamRot = (VRCamera->GetComponentLocation() - BossHP->GetActorLocation()).Rotation();
-		BossHP->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20 - VRCamera->GetUpVector() * 10);
-		BossHP->SetActorRotation(FRotator(0, HeadToCamRot.Yaw, HeadToCamRot.Roll));
+		//BossHP->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20 - VRCamera->GetUpVector() * 10);
+		//BossHP->SetActorRotation(FRotator(0, HeadToCamRot.Yaw, HeadToCamRot.Roll));
+		BossHP->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20);
+		BossHP->SetActorRotation(HeadToCamRot);
+
 		if (EndingUI)
 		{
 			EndingUI->SetActorLocation(VRCamera->GetComponentLocation() + VRCamera->GetForwardVector() * 20);
