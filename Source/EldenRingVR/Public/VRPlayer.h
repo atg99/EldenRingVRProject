@@ -258,6 +258,10 @@ public:
 
 	UPROPERTY()
 	class APlayerWeapon* GrabbedWeapon;
+
+	UPROPERTY()
+	class APCPlayershield* GrabbedShield;
+
 	// 잡은 녀석이 있는지 여부 기억할 변수
 	bool rIsGrabbed = false;
 	// 잡기 시도

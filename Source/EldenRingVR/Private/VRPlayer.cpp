@@ -23,6 +23,7 @@
 #include "EngineUtils.h"
 #include "PlayerWeapon.h"
 #include "Potion.h"
+#include "PCPlayershield.h"
 
 // Sets default values
 AVRPlayer::AVRPlayer()
@@ -218,13 +219,13 @@ void AVRPlayer::Tick(float DeltaTime)
 
 	if (Stamina < 100)
 	{
-		Stamina += 2*DeltaTime;
+		Stamina += DeltaTime;
 	}
 	if (PoWTime <1.6f)
 	{
 		PoWTime += DeltaTime;
 	}
-	else if (PoWTime > 1.5f)
+	else if (PoWTime >= 1.5f)
 	{
 		PoWEnd();
 	}
@@ -516,6 +517,7 @@ void AVRPlayer::rTryGrab()
 		rGrabbedObject = HitObjs[Closest].GetComponent();
 		// -> 물체 물리기능 비활성화
 		rGrabbedObject->SetSimulatePhysics(false);
+		//만약에 잡은게 무기라면
 		APlayerWeapon* weapon;
 		weapon = Cast<APlayerWeapon>(HitObjs[Closest].GetActor());
 		if(weapon)
@@ -523,8 +525,15 @@ void AVRPlayer::rTryGrab()
 			GrabbedWeapon = weapon;
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
 		}
-		//rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+		APCPlayershield* shield;
+		shield = Cast<APCPlayershield>(HitObjs[Closest].GetActor());
+		if (shield)
+		{
+			GrabbedShield = shield;
+			shield->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
+		}
+		
 		// -> 손에 붙여주자
 		rGrabbedObject->AttachToComponent(RightHand, FAttachmentTransformRules::KeepWorldTransform);
 	}
@@ -546,12 +555,16 @@ void AVRPlayer::rUnTryGrab()
 	// 4. 충돌기능 활성화
 	rGrabbedObject->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	if(GrabbedWeapon)
+	if(GrabbedShield)
+	{
+		GrabbedShield->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+		GrabbedShield = nullptr;
+	}
+	if (GrabbedWeapon)
 	{
 		GrabbedWeapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
 		GrabbedWeapon = nullptr;
 	}
-	
 }
 
 // 왼손으로 잡고싶다.
@@ -587,7 +600,7 @@ void AVRPlayer::lTryGrab()
 			//검출하고 싶지 않다.
 			continue;
 		}
-		//잡았다!
+		//잡았다!''
 		lIsGrabbed = true;
 		// 2. 현재 가장 가까운 녀석과 이번에 검출할 녀석과 더 가까운 녀석이 있다면
 		// ->필요속성: 이번에 검출할 녀석과 손과의 거리
@@ -615,6 +628,13 @@ void AVRPlayer::lTryGrab()
 			weapon->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
 		}
 
+		APCPlayershield* shield;
+		shield = Cast<APCPlayershield>(HitObjs[Closest].GetActor());
+		if (shield)
+		{
+			GrabbedShield = shield;
+			shield->boxComp->SetCollisionProfileName(TEXT("PlayerWeaponPresset"));
+		}
 		// -> 손에 붙여주자
 		lGrabbedObject->AttachToComponent(LeftHand, FAttachmentTransformRules::KeepWorldTransform);
 	}
@@ -642,7 +662,11 @@ void AVRPlayer::lUnTryGrab()
 		GrabbedWeapon->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
 		GrabbedWeapon = nullptr;
 	}
-
+	if (GrabbedShield)
+	{
+		GrabbedShield->boxComp->SetCollisionProfileName(TEXT("BlockAll"));
+		GrabbedShield = nullptr;
+	}
 }
 
 // 무적시간 (Power over wellming)
