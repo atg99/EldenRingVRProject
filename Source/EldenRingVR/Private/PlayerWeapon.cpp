@@ -94,10 +94,10 @@ void APlayerWeapon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	}
 
 	//보스일 경우
-	if (boss != nullptr && AttackCoolTime >= 1.5f)
+	if (boss != nullptr && swordSpeed.Size() > 10)
 	{
-		boss -> CurHP-= WeponDamage;
-		AttackCoolTime = 0;
+		boss->OnDamaged(swordSpeed.Size() * 10);
+		
 	}
 	else
 	{
