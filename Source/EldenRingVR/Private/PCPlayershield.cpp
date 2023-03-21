@@ -84,14 +84,14 @@ void APCPlayershield::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 
 	//if(meshComp->GetComponentVelocity())
 
-	UE_LOG(LogTemp, Warning, TEXT("PWeponAttack"));
+	UE_LOG(LogTemp, Warning, TEXT("Defense"));
 
 	// 적에게 오버랩 되었다면.
 	AEnemyBase* enemy = Cast<AEnemyBase>(OtherActor);
 	ABoss* boss = Cast<ABoss>(OtherActor);
 	AEnemySword* eSword = Cast<AEnemySword>(OtherActor);
 	AVRPlayer* player = Cast<AVRPlayer>(OtherActor);
-	if (eSword != nullptr && player->Stamina > 10)
+	if (eSword != nullptr && player->Stamina > 10 && player->PoWTime >= 1.5f)
 	{
 		player->Stamina -= 10;
 		player->PoWStart();
